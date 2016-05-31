@@ -188,6 +188,8 @@ def rebuild_intervals(tp, seq1, seq2, delta, score, verbose):
     aln1 = ""
     aln2 = ""
 
+    print "Berechnung der Intervalle anhand der Trace Points:\n"
+
     for i in tp.vvalue:
         if i == tp.vvalue[0]:
             test1 += str(seq1[start_seq1:delta])
@@ -249,10 +251,12 @@ def rebuild_intervals(tp, seq1, seq2, delta, score, verbose):
             c += 1
 
     if test1 == seq1 and test2 == seq2:
-        print "Die Konkatenation der Subsequenzen ergibt die ursprünglichen Sequenzen!\n"
+        print "Die Konkatenation der Teilalignments ergibt das oben genannte Gesamtalignment!\n"
+        print numbers(aln1)
         print aln1
         print calculate_middle(aln1,aln2)
         print aln2
+        print numbers(aln2)
         print ""
         if score == score_new:
             print "Der Score des neuen Alignments (%.1f) ist so groß wie der des ursprünglichen Alignments (%.1f)" % (score_new, score)
@@ -360,8 +364,7 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
 
     # check_alignment(alignment, alignment_new)
     tp = TracePoint(0, v_tp)
-    print ""
-    print "Trace Points:", tp.vvalue
+    print "\nTrace Points:", tp.vvalue, "\n"
     if check_alignment(alignment, alignment_new):
         rebuild_intervals(tp, seq1, seq2, delta, score, verbose)
     else:
@@ -373,7 +376,6 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
 # Vergleich von Input und konkateniertem Output
 def check_alignment(alignment, alignment_new):
     if alignment_new.s1 == alignment.s1 and alignment_new.s2 == alignment.s2:
-        print "\nDie Konkatenation der Teilalignments ergibt das oben genannte Gesamtalignment.\n"
         return True
     else:
         sys.stderr.write("Falsche Aufteilung der Sequenzen!")
@@ -443,65 +445,60 @@ def main(argv):
         print ""
         tp = print_intervals(seq1,seq2,alignment,delta,verbose)
 
-    # TODO BAM-File
+    # TODO BAM-File noch nicht vollständig
     elif args.bam:
         bamFile = args.bam
         print "BAM-File:", bamFile
-        """bamFP = pysam.AlignmentFile(bamFile, "rb")
-            proc = subprocess.Popen(["samtools view %s| cut -f 10 " % bamFile], stdout=subprocess.PIPE, shell=True)
-            (out, err) = proc.communicate()
-            out_split = out.split('\n')
-            c = 0"""
+        bamFP = pysam.AlignmentFile(bamFile, "rb")
+        proc = subprocess.Popen(["samtools view %s| cut -f 10 " % bamFile], stdout=subprocess.PIPE, shell=True)
+        (out, err) = proc.communicate()
+        out_split = out.split('\n')
+        c = 0
 
-        """for s in out_split:
-               c += 1
-               if c%2 == 0:
+        for s in out_split:
+            c += 1
+            if c%2 == 0:
                 seq2 = str(s)
-               else:
+            else:
                 seq1 = str(s)
-               alignment = cig_to_align(seq1,seq2,cigar)
-               tp = print_intervals(seq1,seq2,alignment,delta)
-               print "Trace Points:",tp.vvalue"""
+            alignment = cig_to_align(seq1,seq2,cigar)
+            tp = print_intervals(seq1,seq2,alignment,delta)
+            print "Trace Points:",tp.vvalue
 
-        """z = 0
-            
-            for read in bamFP:
-                if( not( read.is_unmapped ) ):
-                    cig_line = read.cigar;
-                    for (cig_type,cig_length) in cig_line:
-                        while z < 10:
-                            try:
-                                if(cig_type == 0): # match
-                                    cigar += "%dM" % cig_length
-                                elif(cig_type == 1): # insertions
-                                    cigar += "%dI" % cig_length
-                                elif(cig_type == 2): # deletion
-                                    cigar += "%dD" % cig_length
-                                elif(cig_type == 3): # skip
-                                    cigar += "%dN" % cig_length
-                                elif(cig_type == 4): # soft clipping
-                                    cigar += "%dS" % cig_length
-                                elif(cig_type == 5): # hard clipping
-                                    cigar += "%dH" % cig_length
-                                elif(cig_type == 6): # padding
-                                    cigar += "%dP" % cig_length
+        for read in bamFP:
+            if( not( read.is_unmapped ) ):
+                cig_line = read.cigar;
+                for (cig_type,cig_length) in cig_line:
+                    while z < 10:
+                        try:
+                            if(cig_type == 0): # match
+                                cigar += "%dM" % cig_length
+                            elif(cig_type == 1): # insertions
+                                cigar += "%dI" % cig_length
+                            elif(cig_type == 2): # deletion
+                                cigar += "%dD" % cig_length
+                            elif(cig_type == 3): # skip
+                                cigar += "%dN" % cig_length
+                            elif(cig_type == 4): # soft clipping
+                                cigar += "%dS" % cig_length
+                            elif(cig_type == 5): # hard clipping
+                                cigar += "%dH" % cig_length
+                            elif(cig_type == 6): # padding
+                                cigar += "%dP" % cig_length
+                            else:
+                                print "Falsche Cigar-Nummer!";
+                                sys.exit(1);
+                            for s in out_split:
+                                c += 1
+                                if c%2 == 0:
+                                    seq2 = str(s)
                                 else:
-                                    print "Falsche Cigar-Nummer!";
-                                    sys.exit(1);
-                                print "cigar",cigar 
-                                print "z:",z
-                                for s in out_split:
-                                    c += 1
-                                    if c%2 == 0:
-                                        seq2 = str(s)
-                                    else:
-                                        seq1 = str(s)
-                                    alignment = cig_to_align(seq1,seq2,cigar)
-                                    tp = print_intervals(seq1,seq2,alignment,delta)
-                                    print "Trace Points:",tp.vvalue
-                            except:
-                                print "Fehlerhafter Cigar-String";
-                            z += 1"""
+                                    seq1 = str(s)
+                                alignment = cig_to_align(seq1,seq2,cigar)
+                                tp = print_intervals(seq1,seq2,alignment,delta)
+                                print "Trace Points:",tp.vvalue
+                        except:
+                            print "Fehlerhafter Cigar-String";
 
     # TODO SAM-File
     elif args.sam:
