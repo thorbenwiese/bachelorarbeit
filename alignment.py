@@ -275,7 +275,7 @@ def rebuild_intervals(tp, seq1, seq2, delta, score, verbose):
 
 
 # print Intervalle
-def print_intervals(seq1, seq2, alignment, delta, verbose):
+def print_intervals(seq1, seq2, alignment, delta, verbose, rebuild_only):
     m = 0
     v_id = 0
     start_seq1 = 0
@@ -366,7 +366,8 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
     tp = TracePoint(0, v_tp)
     print "\nTrace Points:", tp.vvalue, "\n"
     if check_alignment(alignment, alignment_new):
-        rebuild_intervals(tp, seq1, seq2, delta, score, verbose)
+        if not rebuild_only:
+            rebuild_intervals(tp, seq1, seq2, delta, score, verbose)
     else:
         sys.stderr.write("Falsche Berechnung der Subsequenzen!")
         sys.exit(1);
@@ -406,7 +407,7 @@ def main(argv):
     group1.add_argument("-s", "--sam", help="Input SAM-File")
     group1.add_argument("-r", "--random", help="Zufällige Sequenzen generieren mit <Anzahl> <Länge> <Fehlerrate>",
                         nargs=3)
-    group2.add_argument("-e", "--encode", help="Alignment nur mit TracePoints codieren", action="store_true")
+    group2.add_argument("-e", "--encode", help="Alignment nur mit TracePoints codieren", default=False, action="store_true")
     group2.add_argument("-x", "--extract", help="Aus TracePoints neues Alignment konstruieren", default=False, action="store_true")
     parser.add_argument("-v", "--verbose", help="Ausführlicher Output", action="store_true")
     args = parser.parse_args()
@@ -416,10 +417,12 @@ def main(argv):
     cigar = args.cigar
     delta = args.delta
     verbose = args.verbose
+    rebuild_only = args.encode
 
     if args.verbose:
         verbose = True
 
+    # Mit CIGAR
     if args.seq1 and args.seq2 and args.delta and args.cigar:
         print '\nSequenz 1:', seq1
         print 'Sequenz 2:', seq2
@@ -427,23 +430,41 @@ def main(argv):
         print 'Delta:', delta
         print ""
         alignment = cig_to_align(seq1, seq2, cigar)
-        tp = print_intervals(seq1, seq2, alignment, delta, verbose)
+        tp = print_intervals(seq1, seq2, alignment, delta, verbose,rebuild_only)
 
+    # Ohne CIGAR
     elif args.seq1 and args.seq2 and args.delta and not args.cigar:
-        print '\nSequenz 1:', seq1
-        print 'Sequenz 2:', seq2
-        print 'Delta:', delta
-        print ""
-        alignment = calculate_alignment(seq1,seq2)
+        # Nur Trace Points berechnen und speichern
+        if rebuild_only:
+            alignment = calculate_alignment(seq1,seq2)
+            if verbose:
+                print '\nSequenz 1:', seq1
+                print 'Sequenz 2:', seq2
+                print 'Delta:', delta
+                print ""
+                print numbers(alignment.s1)
+                print alignment.s1
+                print calculate_middle(alignment.s1,alignment.s2)
+                print alignment.s2
+                print numbers(alignment.s2)
+                print ""
+            tp = print_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)
+        else:
+            print '\nSequenz 1:', seq1
+            print 'Sequenz 2:', seq2
+            print 'Delta:', delta
+            print ""
+            alignment = calculate_alignment(seq1,seq2)
 
-        print "Gesamtalignment:\n"
-        print numbers(alignment.s1)
-        print alignment.s1
-        print calculate_middle(alignment.s1,alignment.s2)
-        print alignment.s2
-        print numbers(alignment.s2)
-        print ""
-        tp = print_intervals(seq1,seq2,alignment,delta,verbose)
+            print "Gesamtalignment:\n"
+            print numbers(alignment.s1)
+            print alignment.s1
+            print calculate_middle(alignment.s1,alignment.s2)
+            print alignment.s2
+            print numbers(alignment.s2)
+            print ""
+            tp = print_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)        
+
 
     # TODO BAM-File noch nicht vollständig
     elif args.bam:
@@ -462,7 +483,7 @@ def main(argv):
             else:
                 seq1 = str(s)
             alignment = cig_to_align(seq1,seq2,cigar)
-            tp = print_intervals(seq1,seq2,alignment,delta)
+            tp = print_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)
             print "Trace Points:",tp.vvalue
 
         for read in bamFP:
@@ -495,7 +516,7 @@ def main(argv):
                                 else:
                                     seq1 = str(s)
                                 alignment = cig_to_align(seq1,seq2,cigar)
-                                tp = print_intervals(seq1,seq2,alignment,delta)
+                                tp = print_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)
                                 print "Trace Points:",tp.vvalue
                         except:
                             print "Fehlerhafter Cigar-String";
@@ -521,7 +542,7 @@ def main(argv):
                 print ""
             score = aln.score
 
-            tp = print_intervals(random_seq_list[i],random_seq_list[i+1],aln,delta,verbose)
+            tp = print_intervals(random_seq_list[i],random_seq_list[i+1],aln,delta,verbose,rebuild_only)
     else:
         sys.stderr.write("Falsche Eingabe der Argumente!")
         sys.exit(1);
