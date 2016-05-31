@@ -13,14 +13,6 @@ from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
 from Bio.SubsMat import MatrixInfo as matlist
 
-
-# Gegeben
-# TODO Tests mit einfügen? Boolean togglen oder so
-# seq1 = "gagcatgttgcctggtcctttgctaggtactgtagaga"
-# seq2 = "gaccaagtaggcgtggaccttgctcggtctgtaagaga"
-# cigar = "10M1I8M1D9M1D5M1I4M"
-
-
 # Alignment Struktur
 class Alignment(object):
     def __init__(self, s1, mid, s2, score):
@@ -80,6 +72,7 @@ def cig_to_align(seq1, seq2, cig):
 
     # Speicher Alignment in Alignment Struktur
     alignment = Alignment(seq1_align, middle, seq2_align,0)
+
     print "Gesamtalignment:\n"
     print numbers(alignment.s1)
     print alignment.s1
@@ -163,7 +156,6 @@ def random_sequences(amount, random_length, error_rate):
 
 # Berechne Striche für Alignment
 def calculate_middle(seq1, seq2):
-
     middle = ""
     c = 0
     add = 0
@@ -298,8 +290,6 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
 
     # dynamische Berechnung von p für Intervallgröße
     p = 1
-
-    # TODO start_seq1 / delta und Bereich überprüfen?!
     while (p * delta) < start_seq1:
         p += 1
 
@@ -367,6 +357,7 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
             start2 = start_seq1 - v_id
             end = m - 1 - v_id
     alignment_new = Alignment(seq1_new, middle_new, seq2_new,0)
+
     # check_alignment(alignment, alignment_new)
     tp = TracePoint(0, v_tp)
     print ""
@@ -380,7 +371,6 @@ def print_intervals(seq1, seq2, alignment, delta, verbose):
 
 
 # Vergleich von Input und konkateniertem Output
-# TODO mit Kostenfunktion
 def check_alignment(alignment, alignment_new):
     if alignment_new.s1 == alignment.s1 and alignment_new.s2 == alignment.s2:
         print "\nDie Konkatenation der Teilalignments ergibt das oben genannte Gesamtalignment.\n"
@@ -535,21 +525,9 @@ def main(argv):
             score = aln.score
 
             tp = print_intervals(random_seq_list[i],random_seq_list[i+1],aln,delta,verbose)
-
-            # build Alignment of i and i+1
-            # check edist of Alignments
-            # print result
     else:
         sys.stderr.write("Falsche Eingabe der Argumente!")
         sys.exit(1);
-
-        # TODO mal gucken...
-        """
-        alignments = pairwise2.align.globalxx(seq1, seq2)
-        # identical characters are given 2 points, 1 point is deducted for each non-identical character
-        # 0.5 points are deducted when opening a gap, and 0.1 points are deducted when extending it
-        for a in pairwise2.align.localms(seq1, seq2, 2, -1, -.5, -.1):
-            print(format_alignment(*a))"""
 
 if __name__ == "__main__":
     main(sys.argv[1:])
