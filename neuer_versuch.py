@@ -61,6 +61,41 @@ class TracePointAlignment(object):
         indel_letter_count.append(indel_count)
         return indel_letter_count
 
+    # Aus Cigar und Sequenzen Alignment bauen
+    def cigar_to_alignment(self, seq1, seq2, cigar):
+        # Zeilen für Alignment
+        seq1_align = ""
+        seq2_align = ""
+        # tmp 1 und 2 für die Erweiterung der Sequenzen mit '-' für InDels
+        tmp1 = 0
+        tmp2 = 0
+        # Anzahl der Edit-Operationen im Cigar-String
+        cig_count = 0
+        # neues Pattern für Cigar-Strings im Format: Zahl + 1 Buchstabe aus {M,I,D,N,S,H,P}
+        cigar_pattern = re.compile(r"\d+[MIDNSHP=j]{1}")
+        # Suche in cig nach Pattern
+        for j in cigar_pattern.findall(cigar):
+            tmp1 += cig_count
+            tmp2 += cig_count
+            cig_count = int(j[:-1])
+            cig_symbol = j[-1]
+            if cig_symbol == 'M':
+                seq1_align += str(seq1[tmp1:tmp1 + cig_count])
+                seq2_align += str(seq2[tmp2:tmp2 + cig_count])
+            if cig_symbol == 'I':
+                seq1_align += str(seq1[tmp1:tmp1 + cig_count])
+                seq2_align += str("-" * cig_count)
+                tmp2 -= cig_count
+            if cig_symbol == 'D':
+                seq1_align += str("-" * cig_count)
+                seq2_align += str(seq2[tmp2:tmp2 + cig_count])
+                tmp1 -= cig_count
+
+        # Speicher Alignment in Alignment Struktur
+        alignment = TracePointAlignment(seq1_align, seq2_align, self.delta, self.score)
+
+        return alignment
+
     # 0en und 5en für das Pretty Print Alignment
     def print_sequence_positions(self, seq):
 
@@ -410,12 +445,12 @@ def main(argv):
         print 'Cigar-String:', cigar
         print 'Delta:', delta
         print ""
-        alignment = Alignment(seq1,seq2,delta,cigar)
-        alignment1 = alignment.cigar_to_alignment()
+        alignment = TracePointAlignment(seq1,seq2,delta)
+        alignment1 = alignment.cigar_to_alignment(alignment.seq1, alignment.seq2, cigar)
         print "Gesamtalignment:\n"
         print alignment1.pretty_print_alignment(alignment1.seq1, alignment1.seq2)
         print ""
-        tp = alignment.calculate_intervals(alignment1, verbose, rebuild_only)
+        tp = alignment1.calculate_intervals(alignment1, verbose, rebuild_only)
 
     # Ohne CIGAR
     elif args.seq1 and args.seq2 and args.delta and not args.cigar:
