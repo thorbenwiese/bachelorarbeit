@@ -139,7 +139,7 @@ class TracePointAlignment(object):
         return pretty_print
 
     # berechne Intervalle
-    def calculate_intervals(self, alignment, verbose=False, rebuild_only=False):
+    def calculate_intervals(self, alignment, verbose=False):
         m = 0
         v_id = 0
         start_seq1 = self.start_seq1
@@ -207,8 +207,6 @@ class TracePointAlignment(object):
 
             else:
                 # first delta letters in seq1_align
-                # TODO wenn seq2 bis 21 geht und seq1 nur bis 8, geht seq1 trotzdem "leer" bis 21...
-                # andersherum nicht...
                 while self.count_indels_letters(seq1_align[start_seq1:m])[0] != self.delta:
                         # Abbruchbedingung, falls am Ende nur noch Gaps sind
                         if self.count_indels_letters(seq1_align[m:end_seq1])[0] == 0:
@@ -236,6 +234,7 @@ class TracePointAlignment(object):
         # Test auf Korrektheit der Sequenzen
         if self.check_alignment(alignment, TP_alignment):
             if verbose:
+                print "\nKonkateniertes Alignment:"
                 self.show_TracePointAlignment(TP_alignment)
             return TP_alignment
 
@@ -243,7 +242,6 @@ class TracePointAlignment(object):
     # Ausgabe des TracePointAlignments
     def show_TracePointAlignment(self, tp_alignment):
 
-        print "Alignment:"
         print self.pretty_print_alignment(tp_alignment.seq1,tp_alignment.seq2)
 
     # Vergleich von Input und konkateniertem Output
@@ -263,29 +261,27 @@ class TracePointAlignment(object):
 
     # mit den TracePoints, Sequenzen und Delta die Intervalle rekonstruieren
     def rebuild_intervals(self, tp_alignment, seq1, seq2, delta, score, verbose):
-        tp_count = int(math.ceil(float(len(seq1)) / delta)) - 1
+        tp_count = len(tp_alignment.tp)
         start_seq1 = start_seq2 = 0
         end_seq1 = start_seq1 + len(seq1) - 1
         end_seq2 = start_seq2 + len(seq2) - 1
         count = 1
-        check_seq1 = ""
-        check_seq2 = ""
+        check_seq1 = check_seq2 = aln1 = aln2 = ""
         score_new = 0
-        aln1 = ""
-        aln2 = ""
 
-        print "Berechnung der Intervalle anhand der Trace Points:\n"
+        # Anzahl der Intervalle
+        letters_in_seq1 = self.count_indels_letters(seq1)[0]
+        letters_in_seq2 = self.count_indels_letters(seq2)[0]
+
+        if verbose:
+            print "\nBerechnung der Intervalle anhand der Trace Points:\n"
 
         alignment = TracePointAlignment(seq1,seq2,delta,score)
-        print alignment.tp
-        tp_alignment = alignment.calculate_alignment(seq1,seq2)
-        print tp_alignment.tp
 
         for i in tp_alignment.tp:
             if i == tp_alignment.tp[0]:
-                check_seq1 += str(aln.seq1[start_seq1:delta])
-                check_seq2 += str(aln.seq2[start_seq2:i + 1])
-                print "CHECK", check_seq1,check_seq2
+                check_seq1 += str(seq1[start_seq1:delta])
+                check_seq2 += str(seq2[start_seq2:i + 1])
                 aln = alignment.calculate_alignment(seq1[start_seq1:delta],seq2[start_seq2:i + 1])
                 aln1 += str(aln.seq1)
                 aln2 += str(aln.seq2)
@@ -299,7 +295,6 @@ class TracePointAlignment(object):
             elif i == tp_alignment.tp[-1]:
                 check_seq1 += str(seq1[count * delta:count * delta + delta])
                 check_seq2 += str(seq2[tp_alignment.tp[count - 1] + 1:i + 1])
-                print "CHECK", check_seq1,check_seq2
                 aln = alignment.calculate_alignment(seq1[count * delta:count * delta + delta],seq2[tp_alignment.tp[count - 1] + 1:i + 1])
                 aln1 += str(aln.seq1)
                 aln2 += str(aln.seq2)
@@ -313,21 +308,20 @@ class TracePointAlignment(object):
                 count += 1
                 check_seq1 += str(seq1[tp_count * delta:end_seq1 + 1])
                 check_seq2 += str(seq2[tp_alignment.tp[count - 1] + 1:end_seq2 + 1])
-                print "CHECK", check_seq1,check_seq2
                 aln = alignment.calculate_alignment(seq1[tp_count * delta:end_seq1 + 1],seq2[tp_alignment.tp[count - 1] + 1:end_seq2 + 1])
                 aln1 += str(aln.seq1)
                 aln2 += str(aln.seq2)
                 if aln.score != None:
                     score_new += aln.score
                 if verbose:
-                    print "seq1[%d...%d] aligniert mit seq2[%d...%d]" % (tp_count * delta, end_seq1, tp_alignment.tp[count - 1] + 1, end_seq2)
+                    print "seq1[%d...%d] aligniert mit seq2[%d...%d]" % (tp_count * delta, letters_in_seq1 - 1, tp_alignment.tp[count - 1] + 1, letters_in_seq2 - 1)
                     print alignment.pretty_print_alignment(aln.seq1, aln.seq2)
                     print "Score:",aln.score
                     print ""
 
             else:
                 check_seq1 += str(seq1[count * delta:count * delta + delta])
-                check_seq2 += str(seq2[tp[count - 1] + 1:i + 1])
+                check_seq2 += str(seq2[tp_alignment.tp[count - 1] + 1:i + 1])
                 aln = alignment.calculate_alignment(seq1[count * delta:count * delta + delta],seq2[tp_alignment.tp[count - 1] + 1:i + 1])
                 aln1 += str(aln.seq1)
                 aln2 += str(aln.seq2)
@@ -341,20 +335,22 @@ class TracePointAlignment(object):
                 count += 1
 
         if check_seq1 == seq1 and check_seq2 == seq2:
-            print "Die Konkatenation der Teilalignments ergibt das oben genannte Gesamtalignment!\n"
-            print alignment.pretty_print_alignment(aln1,aln2)
-            print ""
-            if score_new != None and score != None:
-                if score == score_new:
-                    print "Der Score des neuen Alignments (%.1f) ist so groß wie der des ursprünglichen Alignments (%.1f)" % (score_new, score)
-                elif score < score_new:
-                    print "Der Score des neuen Alignments (%.1f) ist größer als der des ursprünglichen Alignments (%.1f)" % (score_new, score)
+            if verbose:
+                print "Die Konkatenation der Teilalignments ergibt das oben genannte Gesamtalignment!\n"
+                print alignment.pretty_print_alignment(aln1,aln2)
+                print ""
+                if score_new != None and score != None:
+                    if score == score_new:
+                        print "Der Score des neuen Alignments (%.1f) ist so groß wie der des ursprünglichen Alignments (%.1f)" % (score_new, score)
+                    elif score < score_new:
+                        print "Der Score des neuen Alignments (%.1f) ist größer als der des ursprünglichen Alignments (%.1f)" % (score_new, score)
+                    else:
+                        print "Der Score des neuen Alignments (%.1f) ist kleiner als der des ursprünglichen Alignments (%.1f)" % (score_new, score)
                 else:
-                    print "Der Score des neuen Alignments (%.1f) ist kleiner als der des ursprünglichen Alignments (%.1f)" % (score_new, score)
-            else:
-                print "Es konnte kein neuer Score berechnet werden."
+                    print "Es konnte kein neuer Score berechnet werden."
         else:
             sys.stderr.write("Falsche Rekonstruktion des Alignments!\n")
+            # für Debugging
             if verbose:
                 print seq1
                 print check_seq1
@@ -424,8 +420,8 @@ def main(argv):
     group1.add_argument("-r", "--random", help="Zufällige Sequenzen generieren mit <Anzahl> <Länge> <Fehlerrate> <Alphabet>",
                         nargs=4)
     group2.add_argument("-e", "--encode", help="Alignment nur mit TracePoints codieren", default=False, action="store_true")
-    group2.add_argument("-x", "--extract", help="Aus TracePoints neues Alignment konstruieren", default=False, action="store_true")
-    parser.add_argument("-v", "--verbose", help="Ausführlicher Output", action="store_true")
+    group2.add_argument("-x", "--decode", help="Aus TracePoints neues Alignment konstruieren", default=False, action="store_true")
+    parser.add_argument("-v", "--verbose", help="Ausführlicher Output", default=False, action="store_true")
     args = parser.parse_args()
 
     seq1 = args.seq1
@@ -433,10 +429,7 @@ def main(argv):
     cigar = args.cigar
     delta = args.delta
     verbose = args.verbose
-    rebuild_only = args.encode
-
-    if args.verbose:
-        verbose = True
+    decode = args.decode
 
     # Mit CIGAR
     if args.seq1 and args.seq2 and args.delta and args.cigar:
@@ -450,12 +443,15 @@ def main(argv):
         print "Gesamtalignment:\n"
         print alignment1.pretty_print_alignment(alignment1.seq1, alignment1.seq2)
         print ""
-        tp = alignment1.calculate_intervals(alignment1, verbose, rebuild_only)
+        tp = alignment1.calculate_intervals(alignment1, verbose)
+
+        if decode:
+            tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
 
     # Ohne CIGAR
     elif args.seq1 and args.seq2 and args.delta and not args.cigar:
         # Nur Trace Points berechnen und speichern
-        if rebuild_only:
+        if decode:
             alignment = alignment1.calculate_alignment(seq1,seq2)
             if verbose:
                 print '\nSequenz 1:', seq1
@@ -464,7 +460,7 @@ def main(argv):
                 print ""
                 print alignment1.pretty_print_alignment(alignment1.seq1, alignment1.seq2)
                 print ""
-            tp = alignment1.calculate_intervals(alignment,verbose,rebuild_only)
+            tp = alignment1.calculate_intervals(alignment,verbose)
         else:
             print '\nSequenz 1:', seq1
             print 'Sequenz 2:', seq2
@@ -479,11 +475,11 @@ def main(argv):
             print alignment.pretty_print_alignment(alignment.seq1, alignment.seq2)
             print ""
 
-            tp = alignment.calculate_intervals(alignment,verbose,rebuild_only) # Alignment mit TracePoints
+            tp = alignment.calculate_intervals(alignment,verbose) # Alignment mit TracePoints
 
             print "TP",tp.tp
 
-            if not rebuild_only:
+            if decode:
                 tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
 
 
@@ -505,7 +501,7 @@ def main(argv):
             else:
                 seq1 = str(s)
             alignment = Alignment.cigar_to_alignment(seq1,seq2,cigar)
-            tp = Alignment.calculate_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)
+            tp = Alignment.calculate_intervals(seq1,seq2,alignment,delta,verbose)
             print "Trace Points:"
 
         for read in bamFP:
@@ -538,7 +534,7 @@ def main(argv):
                                 else:
                                     seq1 = str(s)
                                 alignment = Alignment.cigar_to_alignment(seq1,seq2,cigar)
-                                tp = Alignment.calculate_intervals(seq1,seq2,alignment,delta,verbose,rebuild_only)
+                                tp = Alignment.calculate_intervals(seq1,seq2,alignment,delta,verbose)
                                 print "Trace Points:"
                         except:
                             print "Fehlerhafter Cigar-String";
@@ -558,11 +554,15 @@ def main(argv):
         for i in range(0,int(args.random[0])*2,2):
             aln = alignment.calculate_alignment(random_seq_list[i],random_seq_list[i+1])
             if verbose:
+                print "\nAlignment zufälliger Sequenzen:"
                 print aln.pretty_print_alignment(aln.seq1, aln.seq2)
                 print "Score:", aln.score
                 print ""
             alignment = TracePointAlignment(random_seq_list[i],random_seq_list[i+1],delta,cigar,aln.score)
-            tp = alignment.calculate_intervals(aln,verbose,rebuild_only)
+            tp = alignment.calculate_intervals(aln,verbose)
+
+            if decode:
+                tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
     else:
         sys.stderr.write("Falsche Eingabe der Argumente!")
         sys.exit(1);
