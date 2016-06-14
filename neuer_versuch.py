@@ -1,6 +1,10 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
+# Pfad für lokale Submodule
+sys.path.append("biopython/")
+sys.path.append("pysam/")
+
 import math
 import re
 import sys
@@ -13,9 +17,6 @@ import string, random
 from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
 from Bio.SubsMat import MatrixInfo as matlist
-
-sys.path.append("biopython/")
-sys.path.append("pysam/")
 
 # Alignment Struktur
 class TracePointAlignment(object):
