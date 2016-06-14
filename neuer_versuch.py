@@ -14,6 +14,9 @@ from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
 from Bio.SubsMat import MatrixInfo as matlist
 
+sys.path.append("biopython/")
+sys.path.append("pysam/")
+
 # Alignment Struktur
 class TracePointAlignment(object):
 
