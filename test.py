@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import alignment2
-import neuer_versuch
+import alignment_v2
 import argparse
 
 def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose, decode):
 
-	rseqs = neuer_versuch.random_sequences(amount,random_length,error_rate,alphabet)
-	tpa = neuer_versuch.TracePointAlignment(rseqs[0],rseqs[1],delta)
+	rseqs = alignment_v2.random_sequences(amount,random_length,error_rate,alphabet)
+	tpa = alignment_v2.TracePointAlignment(rseqs[0],rseqs[1],delta)
 	for i in range(0,amount*2,2):
             aln = tpa.calculate_alignment(rseqs[i],rseqs[i+1])
-            alignment = neuer_versuch.TracePointAlignment(rseqs[i],rseqs[i+1],delta,aln.score)
+            alignment = alignment_v2.TracePointAlignment(rseqs[i],rseqs[i+1],delta,aln.score)
             tp = alignment.calculate_intervals(aln,verbose)
 
 	if decode:
@@ -20,7 +19,7 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
-	aln = neuer_versuch.TracePointAlignment(seq1, seq2, delta)
+	aln = alignment_v2.TracePointAlignment(seq1, seq2, delta)
 	test = aln.calculate_alignment(seq1,seq2)
 	tp = test.calculate_intervals(test,verbose)
 
@@ -30,7 +29,7 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
-	alignment = neuer_versuch.TracePointAlignment(seq1,seq2,delta)
+	alignment = alignment_v2.TracePointAlignment(seq1,seq2,delta)
 	alignment1 = alignment.cigar_to_alignment(alignment.seq1, alignment.seq2, cigar)
 	tp = alignment1.calculate_intervals(alignment1,verbose)
 
