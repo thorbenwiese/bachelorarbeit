@@ -15,6 +15,7 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose
 
 	if decode:
 		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+
 	return "OK"
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
@@ -25,6 +26,7 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
 	if decode:
 		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+
 	return "OK"
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
@@ -35,6 +37,7 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
 	if decode:
 		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+
 	return "OK"
 
 def test_random(verbose, decode):
@@ -95,9 +98,6 @@ def test_rebuild(verbose, decode):
 	return True
 
 def main():
-
-	# TODO bisher nur Positiv-Tests
-	# TODO BAM/SAM Tests
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-a", "--all", help="Alle Tests durchführen", action="store_true")
