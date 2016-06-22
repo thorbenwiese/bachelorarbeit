@@ -1,44 +1,61 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import alignment_v2
+import Alignment
+import TracePoint
+import Cigar
+
 import argparse
 
 def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose, decode):
 
-	rseqs = alignment_v2.random_sequences(amount,random_length,error_rate,alphabet)
-	tpa = alignment_v2.TracePointAlignment(rseqs[0],rseqs[1],delta)
+	rseqs = Alignment.random_sequences(amount,random_length,error_rate,alphabet)
+	tpa = TracePoint.TracePointAlignment(rseqs[0],rseqs[1],delta)
 	for i in range(0,amount*2,2):
             aln = tpa.calculate_alignment(rseqs[i],rseqs[i+1])
-            alignment = alignment_v2.TracePointAlignment(rseqs[i],rseqs[i+1],delta,aln.score)
+            alignment = TracePoint.TracePointAlignment(rseqs[i],rseqs[i+1],delta,aln.score)
             tp = alignment.calculate_intervals(aln,verbose)
 
 	if decode:
-		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+		tp.rebuild_intervals(tp, verbose)
 
-	return "OK"
+	if verbose:
+		return True
+	else:
+		return "OK"
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
-	aln = alignment_v2.TracePointAlignment(seq1, seq2, delta)
-	test = aln.calculate_alignment(seq1,seq2)
-	tp = test.calculate_intervals(test,verbose)
+	aln = TracePoint.TracePointAlignment(seq1, seq2, delta)
+	no_cig = aln.calculate_alignment(seq1,seq2)
+	tp = no_cig.calculate_intervals(no_cig,verbose)
 
 	if decode:
-		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+		tp.rebuild_intervals(tp, verbose)
 
-	return "OK"
+	if verbose:
+		return True
+	else:
+		return "OK"
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
-	alignment = alignment_v2.TracePointAlignment(seq1,seq2,delta)
-	alignment1 = alignment.cigar_to_alignment(alignment.seq1, alignment.seq2, cigar)
-	tp = alignment1.calculate_intervals(alignment1,verbose)
+	cigar_alignment = Cigar.CigarAlignment(seq1,seq2,delta,cigar)
+
+	cig_aln = cigar_alignment.cigar_to_alignment(seq1,seq2,cigar)
+	if verbose:
+		print "Cigar-Alignment:"
+		cigar_alignment.pretty_print_cigar_alignment(cig_aln)
+	tp_alignment = TracePoint.TracePointAlignment(cig_aln.seq1, cig_aln.seq2, delta)
+	tp = tp_alignment.create_tp_aln(tp_alignment, verbose)
 
 	if decode:
-		tp.rebuild_intervals(tp, tp.seq1, tp.seq2, tp.delta, tp.score, verbose)
+		tp.rebuild_intervals(tp, verbose)
 
-	return "OK"
+	if verbose:
+		return True
+	else:
+		return "OK"
 
 def test_random(verbose, decode):
 
