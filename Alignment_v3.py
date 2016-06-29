@@ -310,7 +310,10 @@ def main(argv):
 
   if args.cigar:
     cig_aln = Cigar_v3.CigarAlignment(seq1, seq2, delta, cigar, start_seq1, start_seq2)
-    cig_aln.cigar_to_tp()
+    tp_aln = cig_aln.cigar_to_tp(verbose)
+
+    if decode:
+      tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp)
 
   elif args.random:
     random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), float(args.random[2]), args.random[3])

@@ -18,30 +18,21 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose
       print Alignment_v3.show_aln(aln.seq1, aln.seq2)
     tp_aln = Alignment_v3.alignment_to_tp(aln,verbose=verbose)
 
-    tp_aln.tp_to_alignment(rseqs[i], rseqs[i + 1], delta, tp_aln.tp, verbose=verbose)
+    if decode:
+      tp_aln.tp_to_alignment(rseqs[i], rseqs[i + 1], delta, tp_aln.tp, verbose=verbose)
 
-
-
-    """
-    aln = Alignment_v3.calculate_alignment(rseqs[i],rseqs[i+1],delta)
-    alignment = TracePoint_v3.TracePointAlignment(rseqs[i],rseqs[i+1],delta,aln.score)
-    tp = Alignment.alignment_to_tp(aln)
-
-  if decode:
-    tp.rebuild_intervals(tp, verbose)
-  """
   if not verbose:
     return "OK"
   else:
     return True
+
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
-  aln = TracePoint_v3.TracePointAlignment(seq1, seq2, delta)
-  no_cig = Alignment_v3.calculate_alignment(seq1,seq2,delta)
-  tp = Alignment.alignment_to_tp(no_cig)
-
+  aln = Alignment_v3.calculate_alignment(seq1,seq2,delta)
+  tp_aln = Alignment_v3.alignment_to_tp(aln,verbose=verbose)
+  
   if decode:
-    tp.rebuild_intervals(tp, verbose)
+    tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp,verbose=verbose)
 
   if verbose:
     return True
@@ -50,17 +41,11 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
-  cigar_alignment = Cigar_v3.CigarAlignment(seq1,seq2,delta,cigar)
-
-  cig_aln = cigar_alignment.cigar_to_alignment(seq1,seq2,cigar)
-  if verbose:
-    print "# Cigar-Alignment:"
-    cigar_alignment.pretty_print_cigar_alignment(cig_aln)
-  tp_alignment = TracePoint_v3.TracePointAlignment(cig_aln.seq1, cig_aln.seq2, delta)
-  tp = tp_alignment.create_tp_aln(tp_alignment, verbose)
+  cig_aln = Cigar_v3.CigarAlignment(seq1, seq2, delta, cigar)
+  tp_aln = cig_aln.cigar_to_tp(verbose)
 
   if decode:
-    tp.rebuild_intervals(tp, verbose)
+    tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp,verbose=verbose)
 
   if verbose:
     return True

@@ -18,7 +18,7 @@ class CigarAlignment(object):
     self.start_seq2 = start_seq2
 
   # extract TracePoints from CIGAR-String
-  def cigar_to_tp(self):
+  def cigar_to_tp(self,verbose):
 
     count = count1 = count2 = cig_count = 0
 
@@ -69,8 +69,9 @@ class CigarAlignment(object):
         if count1 == intervals[count][1] + 1 and count1 != len(self.seq1):
           tp.append(count2 - 1)
           count += 1
-
-    print "TP", tp
+   
+    if verbose:
+      print "Trace Points:", tp
 
     # TODO store seq1, seq2, start_seq1, start_seq2 to file 1; tp + delta to file 2
     tp_aln = TracePoint_v3.TracePointAlignment(self.seq1, self.seq2, self.delta, tp=tp, start_seq1=self.start_seq1, start_seq2=self.start_seq2)
