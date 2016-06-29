@@ -34,7 +34,7 @@ def calculate_alignment(sequence1, sequence2, delta):
 
     alignment = TracePoint_v3.TracePointAlignment(aln1.lower(),aln2.lower(),delta,score)
   else:
-    sys.stderr.write("# No alignment could be calculated.\n")
+    sys.stderr.write("# No alignment could be calculated.\n# One sequence is probably empty.\n")
     sys.exit(1)
 
   return alignment
@@ -106,14 +106,14 @@ def count_indels_letters(seq):
 # extract TracePoints from alignment
 def alignment_to_tp(alignment,verbose=True):
   
-  v_id = count = interval_count = 0
+  indels_in_seq2 = all_chars_in_seq1 = interval_count = 0
 
   # number of chars in sequences
   letters_in_seq1 = count_indels_letters(alignment.seq1)[0]
   letters_in_seq2 = count_indels_letters(alignment.seq2)[0]
 
+  # Trace Point Array
   tp = []
-  seq1_new = seq1_new = ""  
 
   end_seq1 = alignment.start_seq1 + letters_in_seq1 - 1
   end_seq2 = alignment.start_seq2 + letters_in_seq2 - 1
@@ -146,62 +146,35 @@ def alignment_to_tp(alignment,verbose=True):
   start2 = start_seq2
   for i in range(0,len(intervals)):
     
+    # ignore last interval
     if i == len(intervals) - 2:
       break
     else:
 
       # Anzahl der Buchstaben an den Enden der Sequenzen
-      rest1 = count_indels_letters(alignment.seq1[count:end_seq1])[0]
-      rest2 = count_indels_letters(alignment.seq2[count:end_seq2])[0]
+      rest1 = count_indels_letters(alignment.seq1[all_chars_in_seq1:end_seq1])[0]
+      rest2 = count_indels_letters(alignment.seq2[all_chars_in_seq1:end_seq2])[0]
 
-      # Abbruchbedingung
+      # break condition
       if rest1 != 0 and rest2 != 0:
         # first delta letters in alignment.seq1
-        while count_indels_letters(alignment.seq1[start_seq1:count])[0] != alignment.delta:
-          count += 1
+        while count_indels_letters(alignment.seq1[start_seq1:all_chars_in_seq1])[0] != alignment.delta:
+          all_chars_in_seq1 += 1
 
-      indel_count = count_indels_letters(alignment.seq2[start_seq1:count])[1]
-      v_id += indel_count
-      tp.append(count - 1 - v_id)
-      end = count - 1 - v_id
-      start_seq1 = count
-      count = start_seq1
+      # count gaps in seq2
+      indel_count = count_indels_letters(alignment.seq2[start_seq1:all_chars_in_seq1])[1]
+      indels_in_seq2 += indel_count
+      # calculate Trace Point
+      tp.append(all_chars_in_seq1 - indels_in_seq2 - 1)
+      end = all_chars_in_seq1 - indels_in_seq2 - 1
+      start_seq1 = all_chars_in_seq1
+      all_chars_in_seq1 = start_seq1
       start1 = intervals[i][1] + 1
-      start2 = start_seq1 - v_id
-      end = count - 1 - v_id
+      start2 = start_seq1 - indels_in_seq2
+      end = all_chars_in_seq1 - indels_in_seq2 - 1
   
   TP_alignment = TracePoint_v3.TracePointAlignment(alignment.seq1, alignment.seq2, alignment.delta, tp=tp)
 
-  # TODO improve
-  """
-  start = end = 0
-  c = 0
-
-  for i in intervals:
-
-    # number of remaining chars in sequences
-    rest1 = count_indels_letters(alignment.seq1[end:end_seq1])[0]
-    rest2 = count_indels_letters(alignment.seq2[end:end_seq2])[0]
-    print "REST", rest1, rest2 
-    # all but the last interval with break condition
-    if i != intervals[-1] and rest1 != 0 and rest2 != 0:
-      c+=1
-
-      end = count_indels_letters(alignment.seq1[start:c * alignment.delta])[0]+count_indels_letters(alignment.seq1[start:c * alignment.delta])[1]
-      print alignment.seq1[start:end]
-      print alignment.seq2[start:end]
-      print ""
-      start = end + 1
-      print "START", start, "END", end
-      
-      while alignment.delta != count_indels_letters(alignment.seq1[start:end])[0] and end != 30:
-        print count_indels_letters(alignment.seq1[start:end])[0]
-        end += 1
-      tp.append(end)
-      print "TPP", tp
-      start = end + 1
-      
-  """     
   if verbose:
     print "# Trace Points:", tp, "\n"
   
@@ -248,34 +221,6 @@ def show_aln(seq1, seq2):
 
   return pretty_print
 
-# calculation with random sequence generator
-def random_calc(random_seq_list, delta, verbose, decode):
-  for i in range(0, len(random_seq_list), 2):
-    tp_alignment = TracePoint_v3.TracePointAlignment(random_seq_list[i], random_seq_list[i + 1], delta)
-    tp = tp_alignment.create_tp_aln(tp_alignment, verbose)
-
-    # Output to file
-
-    output = []
-    output.extend((tp.seq1, tp.seq2, delta, tp.start_seq1, tp.start_seq2, (tp.tp)))
-
-    if i == 0:
-      # create and write new file
-      tp.store_aln(output, 'w')
-    elif i == -1:
-      # append last output and rebuild if 'decode' flag is set
-      tp.store_aln(output, 'a')
-      if decode:
-        tp.rebuild_intervals(tp, verbose)
-
-      # TODO noch nicht sinnvoll eingebunden
-      # read from file
-      tp.read_and_create_aln("alignment_compressed.txt", verbose)
-    else:
-      # append other output to existing file
-      tp.store_aln(output, 'a')
-
-
 def main(argv):
   seq1 = seq2 = cigar = output = ""
   delta = 0
@@ -308,6 +253,7 @@ def main(argv):
   delta = args.delta
   verbose = args.verbose
 
+  # with CIGAR
   if args.cigar:
     cig_aln = Cigar_v3.CigarAlignment(seq1, seq2, delta, cigar, start_seq1, start_seq2)
     tp_aln = cig_aln.cigar_to_tp(verbose)
@@ -315,6 +261,7 @@ def main(argv):
     if decode:
       tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp)
 
+  # Random
   elif args.random:
     random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), float(args.random[2]), args.random[3])
     for i in range(0, len(random_seq_list), 2):
@@ -326,6 +273,7 @@ def main(argv):
 
       tp_aln.tp_to_alignment(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp)
 
+  # without CIGAR
   else:
     aln = calculate_alignment(seq1, seq2, delta)
     if verbose:

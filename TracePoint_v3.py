@@ -41,11 +41,14 @@ class TracePointAlignment(object):
         new_seq1 += str(aln.seq1)
         new_seq2 += str(aln.seq2)
         count += 1
+
     if verbose:
       print "# Konkateniertes Alignment:"
       print Alignment_v3.show_aln(new_seq1, new_seq2)
+    
     return True
   
+  # TODO implementation not finished yet
   # store TracePointAlignment to file
     def store_aln(self, output, mode):
   

@@ -54,7 +54,7 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
 def test_random(verbose, decode):
 
-  print "# Testing random_sequences 1/4...", test_random_sequences(100,50,0.15,"acgt",5,verbose, decode)
+  print "# Testing random_sequences 1/4...", test_random_sequences(80,50,0.15,"acgt",10,verbose, decode)
   print "# Testing random_sequences 2/4...", test_random_sequences(10,200,0.30,"acgt",20,verbose, decode)
   print "# Testing random_sequences 3/4...", test_random_sequences(30,100,0.10,"acgt",15,verbose, decode)
   print "# Testing random_sequences 4/4...", test_random_sequences(10,50,0.15,"ac",5,verbose, decode)
