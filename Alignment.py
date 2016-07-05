@@ -14,13 +14,13 @@ from Bio.SubsMat import MatrixInfo as matlist
 class Alignment(object):
 
   # constructor
-  def __init__(self, seq1, seq2,  start_seq1, start_seq2):
+  def __init__(self, seq1, seq2, start_seq1, start_seq2):
     self.seq1 = seq1
     self.seq2 = seq2
     self.start_seq1 = start_seq1
     self.start_seq2 = start_seq2
 
-  def calculate_alignment(sequence1, sequence2):
+  def calculate_alignment(self, sequence1, sequence2):
 
     # x = No parameters.  Identical characters have score of 1, otherwise 0.
     # x = No gap penalties.
@@ -31,19 +31,22 @@ class Alignment(object):
 
       aln1, aln2, score, begin, end = top_aln
 
-     # kein TPAln..
-     # alignment = TracePoint_v3.TracePointAlignment(aln1.lower(),aln2.lower())
+      self.seq1 = aln1.lower()
+      self.seq2 = aln2.lower()
+
     else:
       sys.stderr.write("# No alignment could be calculated.\n# One sequence is probably empty.\n")
+      print "SEQ1:", sequence1
+      print "SEQ2:", sequence2
       sys.exit(1)
 
-    return alignment
 
   # 0s and 5s for the pretty_print_alignment
-  def print_sequence_positions(seq):
+  def print_sequence_positions(self, seq):
 
     positions = ""
     count = False
+
     for i in range(0, len(seq), 5):
       if not count:
         positions += "0" + " " * 4
@@ -54,28 +57,28 @@ class Alignment(object):
 
     return positions
 
-
   # pretty_print of an alignment with positions and '|'s
-  def show_aln(seq1, seq2):
+  def show_aln(self, seq1, seq2):
 
     middle = pretty_print= ""
-    count = add = 0
+    extend = 0
 
     if len(seq1) < len(seq2):
-      add = len(seq2) - len(seq1)
+      extend = len(seq2) - len(seq1)
     else:
-      add = len(seq1) - len(seq2)
+      extend = len(seq1) - len(seq2)
 
-    seq2 += " " * add
-    for i in seq1:
-      if i == seq2[count]:
+    # TODO warum?
+    seq2 += " " * extend
+
+    for i in range(0,len(seq1)):
+      if seq1[i] == seq2[i]:
         middle += '|'
       else:
         middle += ' '
-      count += 1
 
-    pos1 = print_sequence_positions(seq1)
-    pos2 = print_sequence_positions(seq2)
+    pos1 = self.print_sequence_positions(seq1)
+    pos2 = self.print_sequence_positions(seq2)
     pretty_print = "\n" + pos1 + "\n" + seq1 + "\n" + middle + "\n" + seq2 + "\n" + pos2 + "\n"
 
     return pretty_print

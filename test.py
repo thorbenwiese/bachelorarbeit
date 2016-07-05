@@ -1,41 +1,60 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import tp_calc
 import Alignment
 import TracePoint
-import Cigar
 
 import argparse
 
+# only for tests
+start_seq1 = start_seq2 = 0
+
 def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose, decode):
 
-  rseqs = Alignment_v3.random_sequences(amount,random_length,error_rate,alphabet)
-  tpa = TracePoint_v3.TracePointAlignment(rseqs[0],rseqs[1],delta)
-  for i in range(0,amount*2,2):
-    aln = Alignment_v3.calculate_alignment(rseqs[i], rseqs[i + 1], delta)
+  random_seq_list = tp_calc.random_sequences(amount,random_length,error_rate,alphabet)
+
+  for i in range(0, len(random_seq_list), 2):
+    aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], start_seq1, start_seq2)
+    aln.calculate_alignment(random_seq_list[i], random_seq_list[i + 1])
+
     if verbose:
       print "# Alignment:"
-      print Alignment_v3.show_aln(aln.seq1, aln.seq2)
-    tp_aln = Alignment_v3.alignment_to_tp(aln,verbose=verbose)
+      print aln.show_aln(aln.seq1, aln.seq2)
+
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
+    tp_aln.encode()
 
     if decode:
-      tp_aln.tp_to_alignment(rseqs[i], rseqs[i + 1], delta, tp_aln.tp, verbose=verbose)
+      tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, start_seq1, start_seq2)
+
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
-  aln = Alignment_v3.calculate_alignment(seq1,seq2,delta)
-  tp_aln = Alignment_v3.alignment_to_tp(aln,verbose=verbose)
-  
+  aln = Alignment.Alignment(seq1, seq2, start_seq1, start_seq2)
+  aln.calculate_alignment(seq1, seq2)
+
+  if verbose:
+    print "# Alignment:"
+    print aln.show_aln(aln.seq1, aln.seq2)
+
+  tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
+  tp_aln.encode()
+
   if decode:
-    tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp,verbose=verbose)
+    # new alignment from TracePoints
+    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
-  cig_aln = Cigar_v3.CigarAlignment(seq1, seq2, delta, cigar)
-  tp_aln = cig_aln.cigar_to_tp(verbose)
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, start_seq2)
+  tp_aln.encode_cigar(cigar)
+
+  if verbose:
+    print "TP aus CIGAR:", tp_aln.tp
 
   if decode:
-    tp_aln.tp_to_alignment(seq1,seq2,delta,tp_aln.tp,verbose=verbose)
+    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
 
 def test_random(verbose, decode):
 
@@ -98,7 +117,7 @@ def main():
   parser.add_argument("-s", "--sam", help="Test mit SAM-File", action="store_true")
   parser.add_argument("-r", "--random", help="Test mit zufälligen Sequenzen", action="store_true")
   parser.add_argument("-v", "--verbose", help="Ausführlicher Output",default=False, action="store_true")
-  parser.add_argument("-x", "--decode",help="Aus Trace Points neues Alignment konstruieren", default=False, action="store_true" )
+  parser.add_argument("-d", "--decode",help="Aus Trace Points neues Alignment konstruieren", default=False, action="store_true" )
 
   args = parser.parse_args()
 
@@ -109,9 +128,8 @@ def main():
     test_random(verbose, decode)
     test_no_cigar(verbose, decode)
     test_cigar(verbose, decode)
-    test_bam(verbose, decode)
-    test_sam(verbose, decode)
-    test_rebuild(verbose, decode)
+    # test_bam(verbose, decode)
+    # test_sam(verbose, decode)
   elif args.nocigar:
     test_no_cigar(verbose, decode)
   elif args.cigar:
