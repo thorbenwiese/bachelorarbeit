@@ -72,7 +72,6 @@ class TracePointAlignment(object):
 
     print "Trace Points:", tp
     self.tp = tp
-    print "TEST TP Self:", self.tp
 
   #number of chars and '-'s in sequence  
   def count_indels_letters(self, seq):
@@ -162,46 +161,27 @@ class TracePointAlignment(object):
 
     new_seq1 = new_seq2 = ""
     
-    if seq1 != seq1.replace("-",""):
-      print "#"*60,"\n",seq1,"\n",seq1.replace("-",""),"\n","#"*60
-      sys.exit(1)
-    elif seq2 != seq2.replace("-",""):
-      print "#"*60,"\n",seq2,"\n",seq2.replace("-",""),"\n","#"*60
-      sys.exit(1)
     aln = Alignment.Alignment(seq1, seq2, start_seq1, start_seq2)
 
     for i in range(0,len(tp)):
       
       if i == 0:
-        print start_seq1,"...",start_seq1+delta,"\n",start_seq2,"...",start_seq2+tp[i]+1
-        print seq1[0:delta]
         new_seq1 += str(seq1[0:delta])
-        print seq2[:tp[i] + 1] 
         new_seq2 += str(seq2[0:tp[i] + 1])
       
       elif i == len(tp) - 1:
 
-        print start_seq1+i*delta,"...",start_seq1+(i+1)*delta,"\n",start_seq2+tp[i-1]+1,"...",start_seq2+tp[i]+1
-        print seq1[i*delta:(i+1)*delta]
         new_seq1 += str(seq1[i*delta:(i+1)*delta])
-        print seq2[tp[i-1]+1:tp[i]+1] 
         new_seq2 += str(seq2[tp[i-1]+1:tp[i]+1])
  
-        print start_seq1+(i+1)*delta,"...",start_seq1+len(seq1),"\n",start_seq2+tp[i]+1,"...",start_seq2+len(seq2)
-        print seq1[(i+1)*delta:len(seq1)]
         new_seq1 += str(seq1[(i+1)*delta:len(seq1)])
-        print seq2[tp[i]+1:len(seq2)] 
         new_seq2 += str(seq2[tp[i]+1:len(seq2)])
 
       else:
         
-        print start_seq1+i*delta,"...",start_seq1+(i+1)*delta,"\n",start_seq2+tp[i-1]+1,"...",start_seq2+tp[i]+1
-        print seq1[i*delta:(i+1)*delta]
         new_seq1 += str(seq1[i*delta:(i+1)*delta])
-        print seq2[tp[i-1]+1:tp[i] + 1] 
         new_seq2 += str(seq2[tp[i-1]+1:tp[i] + 1])
 
-    print "ERGEBNIS:"
     # seq1 und seq2 sollten ohne Gaps sein!!
     if seq1.replace("-","") == new_seq1.replace("-","") and new_seq2.replace("-","") == new_seq2.replace("-",""):
       print "Sequenzen sind gleich, läuft doch!"
