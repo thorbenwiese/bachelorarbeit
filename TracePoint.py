@@ -124,7 +124,7 @@ class TracePointAlignment(object):
       else:
         intervals[i] = (dynamic + i - 1) * self.delta, (dynamic + i) * self.delta - 1
 
-    start1 = start2 = tmp = 0
+    start  = tmp = 0
 
     for i in range(0,len(intervals)):
     
@@ -140,15 +140,15 @@ class TracePointAlignment(object):
         # break condition
         if rest1 != 0 and rest2 != 0:
           # first delta letters in alignment.seq1
-          while self.count_indels_letters(self.seq1[start1:all_chars_in_seq1])[0] != self.delta:
+          while self.count_indels_letters(self.seq1[start:all_chars_in_seq1])[0] != self.delta:
             all_chars_in_seq1 += 1
 
         # count gaps in seq2
-        indel_count = self.count_indels_letters(self.seq2[start1:all_chars_in_seq1])[1]
+        indel_count = self.count_indels_letters(self.seq2[start:all_chars_in_seq1])[1]
         indels_in_seq2 += indel_count
         tp.append(all_chars_in_seq1 - indels_in_seq2 - 1)
-        tmp = start1
-        start1 = all_chars_in_seq1
+        tmp = start
+        start = all_chars_in_seq1
         all_chars_in_seq1 = tmp
 
 
