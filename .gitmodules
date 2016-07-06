@@ -1,6 +1,3 @@
-[submodule "pysam"]
-	path = pysam
-	url = https://github.com/pysam-developers/pysam.git
 [submodule "biopython"]
 	path = biopython
 	url = https://github.com/biopython/biopython.git
