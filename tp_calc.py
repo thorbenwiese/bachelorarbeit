@@ -6,9 +6,6 @@ import Alignment
 
 import sys
 import math
-
-# used for subprocesses in console
-import subprocess
 import argparse
 import string, random
 import os
@@ -70,7 +67,9 @@ def random_sequences(amount, random_length, error_rate, alphabet):
 
 # store sequences to file
 def store_sequences(seq_list):
+
   for i in range(0,len(seq_list)):
+
     with open('seq_file.txt', 'a') as file_:
       # without gaps from random sequences
       file_.write("%s\n" % seq_list[i].replace("-",""))
@@ -119,7 +118,6 @@ def main(argv):
   seq1 = seq2 = cigar = output = ""
   delta = 0
 
-  # Arguments
   parser = argparse.ArgumentParser()
 
   group1 = parser.add_mutually_exclusive_group()
@@ -156,6 +154,7 @@ def main(argv):
 
   decode = args.decode
 
+  # show specific alignment from input files
   if args.input_seq and args.input_tp and args.id:
     show_enc_aln(args.input_seq, args.input_tp, args.id)
     sys.exit(1)

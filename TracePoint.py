@@ -14,17 +14,16 @@ class TracePointAlignment(object):
     self.delta = delta
     self.start_seq1 = start_seq1
     self.start_seq2 = start_seq2
+    # is set by encode function
     self.tp = None
 
   # extract TracePoints from CIGAR-String
   def encode_cigar(self, cigar):
 
-    count = count1 = count2 = cig_count = 0
+    count = count1 = count2 = cig_count = interval_count = 0
 
     end_seq1 = self.start_seq1 + len(self.seq1) - 1
     end_seq2 = self.start_seq2 + len(self.seq2) - 1
-
-    interval_count = 0
 
     # dynamic calculation of interval size
     dynamic = max(1,int(math.ceil(self.start_seq1/self.delta)))
@@ -108,7 +107,6 @@ class TracePointAlignment(object):
     interval_count = min(int(math.ceil(float(len(self.seq1)) / self.delta)), int(math.ceil(float(len(self.seq2)) / self.delta)))
 
     # intervals
-    # initialized with 0s
     intervals = [0] * interval_count
 
     for i in range(0, interval_count):
@@ -163,6 +161,7 @@ class TracePointAlignment(object):
     for i in range(0,len(tp)):
       
       if i == 0:
+
         new_seq1 += str(seq1[0:delta])
         new_seq2 += str(seq2[0:tp[i] + 1])
       
