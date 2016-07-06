@@ -18,32 +18,29 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,verbose
     aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], start_seq1, start_seq2)
     aln.calculate_alignment(random_seq_list[i], random_seq_list[i + 1])
 
-    if verbose:
-      print "# Alignment:"
-      print aln.show_aln(aln.seq1, aln.seq2)
-
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
     tp_aln.encode()
 
     if decode:
       tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, start_seq1, start_seq2)
 
+    if verbose:
+      print "# TracePoints:", tp_aln.tp
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
   aln = Alignment.Alignment(seq1, seq2, start_seq1, start_seq2)
   aln.calculate_alignment(seq1, seq2)
 
-  if verbose:
-    print "# Alignment:"
-    print aln.show_aln(aln.seq1, aln.seq2)
-
   tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
   tp_aln.encode()
 
   if decode:
-    # new alignment from TracePoints
     tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
+
+  if verbose:
+    print "# TracePoints:", tp_aln.tp
+
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
@@ -51,7 +48,7 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
   tp_aln.encode_cigar(cigar)
 
   if verbose:
-    print "TP aus CIGAR:", tp_aln.tp
+    print "# TracePoints:", tp_aln.tp
 
   if decode:
     tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)

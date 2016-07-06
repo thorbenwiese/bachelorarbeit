@@ -35,9 +35,7 @@ class Alignment(object):
       self.seq2 = aln2.lower()
 
     else:
-      sys.stderr.write("# No alignment could be calculated.\n# One sequence is probably empty.\n")
-      print "SEQ1:", sequence1
-      print "SEQ2:", sequence2
+      sys.stderr.write("# No alignment could be calculated.\n")
       sys.exit(1)
 
 
@@ -68,7 +66,6 @@ class Alignment(object):
     else:
       extend = len(seq1) - len(seq2)
 
-    # TODO warum?
     seq2 += " " * extend
 
     for i in range(0,len(seq1)):

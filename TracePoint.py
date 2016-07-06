@@ -67,10 +67,9 @@ class TracePointAlignment(object):
 
         # count until the end but ignore end of last interval as TracePoint
         if count1 == intervals[count][1] + 1 and count1 != len(self.seq1):
-          tp.append(count2 - 1)
+          tp.append(count2 - 1 + self.start_seq2)
           count += 1
 
-    print "Trace Points:", tp
     self.tp = tp
 
   #number of chars and '-'s in sequence  
@@ -145,16 +144,14 @@ class TracePointAlignment(object):
         # count gaps in seq2
         indel_count = self.count_indels_letters(self.seq2[start:all_chars_in_seq1])[1]
         indels_in_seq2 += indel_count
-        tp.append(all_chars_in_seq1 - indels_in_seq2 - 1)
+        tp.append(all_chars_in_seq1 - indels_in_seq2 - 1 + self.start_seq2)
         tmp = start
         start = all_chars_in_seq1
         all_chars_in_seq1 = tmp
 
-
-    print "# Trace Points:", tp, "\n"
     self.tp = tp
 
-    self.store_tp_aln('a')
+    self.store_tp_aln()
 
   # create new intervals from TracePoints and calculate new alignment
   def decode(self, seq1, seq2, delta, tp, start_seq1, start_seq2):
@@ -182,31 +179,10 @@ class TracePointAlignment(object):
         new_seq1 += str(seq1[i*delta:(i+1)*delta])
         new_seq2 += str(seq2[tp[i-1]+1:tp[i] + 1])
 
-    # seq1 und seq2 sollten ohne Gaps sein!!
-    if seq1.replace("-","") == new_seq1.replace("-","") and new_seq2.replace("-","") == new_seq2.replace("-",""):
-      print "Sequenzen sind gleich, läuft doch!"
-    else:
-      print "Läuft nicht!"
-      print seq1
-      print new_seq1.replace("-","")
-      print seq2
-      print new_seq2.replace("-","")
-    
-    print "# Konkateniertes Alignment:"
-    print aln.show_aln(new_seq1, new_seq2)
-    
-
-  # TODO implementation not finished yet
   # store TracePointAlignment to file
-  def store_tp_aln(self, mode):
+  def store_tp_aln(self):
   
-    with open('alignment_compressed.txt', mode) as file_:
+    with open('aln_file.txt', 'a') as file_:
       
-      file_.write("%d;%s\n" % (self.delta, self.tp))
-
-      """
-      # ';' for easy splitting
-      for item in output:
-        file_.write("%s;" % item)
-      """
+      file_.write("%d;%d;%d;%s\n" % (self.delta, self.start_seq1, self.start_seq2, self.tp))
 
