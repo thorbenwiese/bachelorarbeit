@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import Alignment
 
 import re
@@ -16,6 +14,145 @@ class TracePointAlignment(object):
     self.start_seq2 = start_seq2
     # is set by encode function
     self.tp = None
+
+  # TODO in one loop without raw_cigar -> less memory
+  # calculate CIGAR-String from two aln_seq
+  def calc_cigar(self, aln_seq1, aln_seq2):
+    
+    if len(aln_seq1) < len(aln_seq2):
+      seqlen = len(aln_seq1)
+    else:
+      seqlen = len(aln_seq2)
+
+    cigar = ""
+    count = 0
+    match = False
+    ins = False
+    dele = False
+
+    for i in range(0, seqlen):
+
+      # match
+      if aln_seq1[i] == aln_seq2[i]:
+        match = True
+        if ins:
+          ins = False
+          cigar += "%d%s" % (count, 'I')
+          count = 1
+        elif dele:
+          dele = False
+          cigar += "%d%s" % (count, 'D')
+          count = 1
+        else:
+          count += 1
+
+      # deletion
+      elif aln_seq1[i] == '-':
+
+        dele = True
+        if ins:
+          ins = False
+          cigar += "%d%s" % (count, 'I')
+          count = 1
+        elif match:
+          match = False
+          cigar += "%d%s" % (count, 'M')
+          count = 1
+        else:
+          count += 1
+
+      # insertion
+      elif aln_seq2[i] == '-':
+
+        ins = True
+        if match:
+          match = False
+          cigar += "%d%s" % (count, 'M')
+          count = 1
+        elif dele:
+          dele = False
+          cigar += "%d%s" % (count, 'D')
+          count = 1
+        else:
+          count += 1
+    
+    # last operation
+    if match:
+      cigar += "%d%s" % (count, 'M')
+    elif dele:
+      cigar += "%d%s" % (count, 'D')
+    elif ins:
+      cigar += "%d%s" % (count, 'I')
+
+
+
+    """  
+      # deletion 
+      if aln_seq1[i] == '-':
+        while aln_seq1[i] == '-':
+          if i == seqlen:
+            break;
+          else:
+            i += 1
+        count = i - count
+        cigar += "%d%s" % (count+1, 'D')
+        print "COUNT", count, "I", i, "CIGAR", cigar
+      # insertion
+      elif aln_seq2[i] == '-':
+        while aln_seq2[i] == '-':
+          if i == seqlen:
+            break;
+          else:
+            i += 1
+        count = i - count
+        cigar += "%d%s" % (count+1, 'I')
+        print "COUNT", count, "I", i, "CIGAR", cigar
+      # match
+      elif aln_seq1[i] == aln_seq2[i] or aln_seq1[i] != aln_seq2[i]:
+        while aln_seq1[i] == aln_seq2[i] or aln_seq1[i] != aln_seq2[i]:
+          if i == seqlen:
+            break;
+          else:
+            i += 1
+          print "IIIII:    ",i
+        count = i - count
+        cigar += "%d%s" % (count+1, 'M')
+        print "COUNT", count, "I", i, "CIGAR", cigar
+    print "CIGAR:", cigar
+    ###  
+      if aln_seq1[i+1] == aln_seq2[i+1]:
+          count += 1
+      elif aln_seq1[i] == '-':
+        raw_cigar += 'D'
+      elif aln_seq2[i] == '-':
+        raw_cigar += 'I'
+
+    ####
+
+    raw_cigar = ""
+    for i in range(0, seqlen):
+      if aln_seq1[i] == aln_seq2[i]:
+        raw_cigar += 'M'
+      elif aln_seq1[i] == '-':
+        raw_cigar += 'D'
+      elif aln_seq2[i] == '-':
+        raw_cigar += 'I'
+
+    cigar = ""
+
+    count = 1
+    for j in range(0, len(raw_cigar)):
+
+      if j == len(raw_cigar)-1:
+        cigar += "%d%s" % (count, raw_cigar[j-1])
+        break
+      elif raw_cigar[j] == raw_cigar[j+1]:
+        count += 1
+      else:
+        cigar += "%d%s" % (count, raw_cigar[j])
+        count = 1
+    """
+    return cigar
 
   # extract TracePoints from CIGAR-String
   def encode_cigar(self, cigar):
@@ -151,6 +288,7 @@ class TracePointAlignment(object):
 
     self.store_tp_aln()
 
+  # TODO macht gar nichts :D
   # create new intervals from TracePoints and calculate new alignment
   def decode(self, seq1, seq2, delta, tp, start_seq1, start_seq2):
 

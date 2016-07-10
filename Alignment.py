@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sys
 
 # path for local submodule
@@ -8,7 +6,6 @@ sys.path.append("biopython/")
 import string, random
 from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
-from Bio.SubsMat import MatrixInfo as matlist
 
 # Alignment structure with CIGAR-String
 class Alignment(object):

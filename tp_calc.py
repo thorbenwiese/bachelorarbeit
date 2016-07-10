@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import TracePoint
 import Alignment
@@ -164,6 +163,12 @@ def main(argv):
     tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, start_seq2)
     tp_aln.encode_cigar(cigar)
 
+    # test
+    cig = tp_aln.calc_cigar(tp_aln.seq1, tp_aln.seq2)
+    print tp_aln.seq1
+    print tp_aln.seq2
+    print "CIG 1:", cigar
+    print "CIG 2:", cig
     if decode:
       tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
 
@@ -178,6 +183,9 @@ def main(argv):
 
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
       tp_aln.encode()
+
+      cig = tp_aln.calc_cigar(tp_aln.seq1, tp_aln.seq2)
+      print "CIGAR:", cig
 
       if decode:
         tp_aln.decode(random_seq_list[i].replace("-",""), random_seq_list[i + 1].replace("-",""), delta, tp_aln.tp, start_seq1, start_seq2)
