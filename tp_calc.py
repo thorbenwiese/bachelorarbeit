@@ -98,19 +98,24 @@ def show_enc_aln(seq_file, aln_file, id):
 
   seq1 = input[0][id*2-2]
   seq2 = input[0][id*2-1]
-  
+
   data = input[1][id-1].split(";")
 
   delta = data[0]
   start_seq1 = data[1]
   start_seq2 = data[2]
-  tp = data[3]
+  end_seq1 = data[3]
+  end_seq2 = data[4]
+  tp = data[5]
 
-  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, start_seq2)
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1,end_seq1,start_seq2,end_seq2)
   tp_aln.tp = tp
 
-  print "# Seq1:", seq1
-  print "# Seq2:", seq2
+  aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2)
+  aln_seq1, aln_seq2 = aln.calculate(seq1, seq2)
+  print aln.show_aln(aln_seq1.replace("\n",""), aln_seq2.replace("\n",""))
+
+  # TODO TracePoints sind doch jetzt unwichtig?!
   print "# TracePoints:", tp_aln.tp
 
 def main(argv):
@@ -124,8 +129,10 @@ def main(argv):
 
   parser.add_argument("-seq1", "--seq1", help="The first sequence")
   parser.add_argument("-start1", help="Starting position of the first sequence", type=int)
+  parser.add_argument("-end1", help="End position of the first sequence", type=int)
   parser.add_argument("-seq2", "--seq2", help="The second sequence")
   parser.add_argument("-start2", help="Starting position of the second sequence", type=int)
+  parser.add_argument("-end2", help="End position of the second sequence", type=int)
   parser.add_argument("-d", "--delta", help="Delta", type=int)
   parser.add_argument("-iseq", "--input_seq", help="Input file with sequences")
   parser.add_argument("-itp", "--input_tp", help="Input file with TracePoints")
@@ -146,8 +153,10 @@ def main(argv):
 
   seq1 = args.seq1
   start_seq1 = args.start1
+  end_seq1 = args.end1
   seq2 = args.seq2
   start_seq2 = args.start2
+  end_seq2 = args.end2
   cigar = args.cigar
   delta = args.delta
 
@@ -160,7 +169,8 @@ def main(argv):
 
   # with CIGAR
   if args.cigar:
-    tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, start_seq2)
+    tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, end_seq1, 
+                                            start_seq2, end_seq1)
     tp_aln.encode_cigar(cigar)
 
     # test
@@ -170,7 +180,8 @@ def main(argv):
     print "CIG 1:", cigar
     print "CIG 2:", cig
     if decode:
-      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
+      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1,end_seq1,
+                    start_seq2,end_seq2)
 
   # Random
   elif args.random:
@@ -178,28 +189,36 @@ def main(argv):
     random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), float(args.random[2]), args.random[3])
     
     for i in range(0, len(random_seq_list), 2):
-      aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], start_seq1, start_seq2)
-      aln.calculate_alignment(random_seq_list[i], random_seq_list[i + 1])
+      aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], start_seq1, 
+                                end_seq1, start_seq2, end_seq1)
 
-      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
-      tp_aln.encode()
+      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, 
+                                              end_seq1, start_seq2, end_seq2)
+      aln_seq1, aln_seq2 = aln.calculate(random_seq_list[i], random_seq_list[i + 1])
+      cig = tp_aln.calc_cigar(aln_seq1, aln_seq2)
+      tp_aln.encode(cig)
 
-      cig = tp_aln.calc_cigar(tp_aln.seq1, tp_aln.seq2)
       print "CIGAR:", cig
+      print "TracePoints aus CIGAR:", tp_aln.tp
+     
+      tp_aln.store_tp_aln()
 
       if decode:
-        tp_aln.decode(random_seq_list[i].replace("-",""), random_seq_list[i + 1].replace("-",""), delta, tp_aln.tp, start_seq1, start_seq2)
+        tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, 
+                      start_seq1, end_seq1, start_seq2, end_seq2)
 
   # without CIGAR
   else:
-    aln = Alignment.Alignment(seq1, seq2, start_seq1, start_seq2)
+    aln = Alignment.Alignment(seq1, seq2, start_seq1,end_seq1, start_seq2,end_seq2)
     aln.calculate_alignment(seq1, seq2)
 
-    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1, start_seq2)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, start_seq1,
+                                            end_seq1, start_seq2,end_seq2)
     tp_aln.encode()
    
     if decode:
-      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
+      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1,end_seq1, 
+                    start_seq2,end_seq2)
 
 if __name__ == "__main__":
   main(sys.argv[1:])

@@ -11,25 +11,29 @@ from Bio.pairwise2 import format_alignment
 class Alignment(object):
 
   # constructor
-  def __init__(self, seq1, seq2, start_seq1, start_seq2):
+  def __init__(self, seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2):
     self.seq1 = seq1
     self.seq2 = seq2
     self.start_seq1 = start_seq1
     self.start_seq2 = start_seq2
+    self.end_seq1 = end_seq1
+    self.end_seq2 = end_seq2
 
-  def calculate_alignment(self, sequence1, sequence2):
+  # calculate alignment with BioPython
+  def calculate(self, sequence1, sequence2):
 
     # x = No parameters.  Identical characters have score of 1, otherwise 0.
     # x = No gap penalties.
     alns = pairwise2.align.globalxx(sequence1.upper(), sequence2.upper())
-    alignment = ""
     if len(alns) > 0:
       top_aln = alns[0]
 
       aln1, aln2, score, begin, end = top_aln
 
-      self.seq1 = aln1.lower()
-      self.seq2 = aln2.lower()
+      #self.seq1 = aln1.lower()
+      #self.seq2 = aln2.lower()
+
+      return [aln1.lower(), aln2.lower()]
 
     else:
       sys.stderr.write("# No alignment could be calculated.\n")
@@ -73,7 +77,7 @@ class Alignment(object):
 
     pos1 = self.print_sequence_positions(seq1)
     pos2 = self.print_sequence_positions(seq2)
-    pretty_print = "\n" + pos1 + "\n" + seq1 + "\n" + middle + "\n" + seq2 + "\n" + pos2 + "\n"
+    pretty_print = pos1 + "\n" + seq1 + "\n" + middle + "\n" + seq2 + "\n" + pos2
 
     return pretty_print
 
