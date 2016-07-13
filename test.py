@@ -16,32 +16,35 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                     alphabet)
 
   for i in range(0, len(random_seq_list), 2):
+    end_seq1 = len(random_seq_list[i])
+    end_seq2 = len(random_seq_list[i+1]) 
     aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
-                    start_seq1, start_seq2)
-    aln.calculate_alignment(random_seq_list[i], random_seq_list[i + 1])
+                    start_seq1, end_seq1, start_seq2, end_seq2)
 
-    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, 
-                                            start_seq1, start_seq2)
-    tp_aln.encode()
+    aln_seq1, aln_seq2 = aln.calculate(aln.seq1, aln.seq2)
+    cigar = aln.calc_cigar(aln_seq1, aln_seq2)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, cigar, 
+                                            start_seq1, end_seq1, start_seq2, end_seq2)
 
     if decode:
       tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, 
-                    start_seq1, start_seq2)
-
+                    start_seq1, end_seq1, start_seq2,end_seq2)
     if verbose:
       print "# TracePoints:", tp_aln.tp
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
-  aln = Alignment.Alignment(seq1, seq2, start_seq1, start_seq2)
-  aln.calculate_alignment(seq1, seq2)
+  end_seq1 = len(seq1)
+  end_seq2 = len(seq2)
+  aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1,start_seq2, end_seq2)
+  aln_seq1, aln_seq2 = aln.calculate(seq1, seq2)
 
-  tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, 
-                                          start_seq1, start_seq2)
-  tp_aln.encode()
+  cigar = aln.calc_cigar(aln_seq1, aln_seq2)
+  tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta,cigar, 
+                                          start_seq1, end_seq1, start_seq2,end_seq2)
 
   if decode:
-    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
+    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, end_seq1, start_seq2,end_seq2)
 
   if verbose:
     print "# TracePoints:", tp_aln.tp
@@ -49,15 +52,15 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
 def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
-  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, start_seq1, 
-                                          start_seq2)
-  tp_aln.encode_cigar(cigar)
-
+  end_seq1 = len(seq1)
+  end_seq2 = len(seq2)
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, cigar,start_seq1, 
+                                          end_seq1, start_seq2,end_seq2)
   if verbose:
     print "# TracePoints:", tp_aln.tp
 
   if decode:
-    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, start_seq2)
+    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, end_seq1, start_seq2,end_seq2)
 
 def test_random(verbose, decode):
 
@@ -115,12 +118,6 @@ def test_cigar(verbose, decode):
   print "# Testing sequences with CIGAR 4/4...", test_with_cigar(seq1,seq2,cigar,3,
                                                                  verbose, decode)
 	
-def test_bam(verbose, decode):
-  print "TODO BAM"
-
-def test_sam(verbose, decode):
-  print "TODO SAM"
-
 def main():
 
   parser = argparse.ArgumentParser()
@@ -129,8 +126,6 @@ def main():
                       action="store_true")
   parser.add_argument("-c", "--cigar", help="Test with CIGAR-String",
                       action="store_true")
-  parser.add_argument("-b", "--bam", help="Test BAM-File", action="store_true")
-  parser.add_argument("-s", "--sam", help="Test SAM-File", action="store_true")
   parser.add_argument("-r", "--random", help="Test random sequences",
                       action="store_true")
   parser.add_argument("-v", "--verbose", help="Verbose output",default=False,
@@ -147,18 +142,12 @@ def main():
     test_random(verbose, decode)
     test_no_cigar(verbose, decode)
     test_cigar(verbose, decode)
-    # test_bam(verbose, decode)
-    # test_sam(verbose, decode)
   elif args.nocigar:
     test_no_cigar(verbose, decode)
   elif args.cigar:
     test_cigar(verbose, decode)
   elif args.random:
     test_random(verbose, decode)
-  elif args.bam:
-    test_bam(verbose, decode)
-  elif args.sam:
-    test_sam(verbose, decode)
   else:
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);

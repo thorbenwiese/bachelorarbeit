@@ -30,15 +30,81 @@ class Alignment(object):
 
       aln1, aln2, score, begin, end = top_aln
 
-      #self.seq1 = aln1.lower()
-      #self.seq2 = aln2.lower()
-
       return [aln1.lower(), aln2.lower()]
 
     else:
       sys.stderr.write("# No alignment could be calculated.\n")
       sys.exit(1)
 
+  # calculate CIGAR-String from two aln_seq
+  def calc_cigar(self, aln_seq1, aln_seq2):
+
+    if len(aln_seq1) < len(aln_seq2):
+      seqlen = len(aln_seq1)
+    else:
+      seqlen = len(aln_seq2)
+
+    cigar = ""
+    count = 0
+    match = False
+    ins = False
+    dele = False
+
+    for i in range(0, seqlen):
+
+      # match
+      if aln_seq1[i] == aln_seq2[i]:
+        match = True
+        if ins:
+          ins = False
+          cigar += "%d%s" % (count, 'I')
+          count = 1
+        elif dele:
+          dele = False
+          cigar += "%d%s" % (count, 'D')
+          count = 1
+        else:
+          count += 1
+
+      # deletion
+      elif aln_seq1[i] == '-':
+
+        dele = True
+        if ins:
+          ins = False
+          cigar += "%d%s" % (count, 'I')
+          count = 1
+        elif match:
+          match = False
+          cigar += "%d%s" % (count, 'M')
+          count = 1
+        else:
+          count += 1
+
+      # insertion
+      elif aln_seq2[i] == '-':
+
+        ins = True
+        if match:
+          match = False
+          cigar += "%d%s" % (count, 'M')
+          count = 1
+        elif dele:
+          dele = False
+          cigar += "%d%s" % (count, 'D')
+          count = 1
+        else:
+          count += 1
+
+    # last operation
+    if match:
+      cigar += "%d%s" % (count, 'M')
+    elif dele:
+      cigar += "%d%s" % (count, 'D')
+    elif ins:
+      cigar += "%d%s" % (count, 'I')
+
+    return cigar
 
   # 0s and 5s for the pretty_print_alignment
   def print_sequence_positions(self, seq):
@@ -75,9 +141,6 @@ class Alignment(object):
       else:
         middle += ' '
 
-    pos1 = self.print_sequence_positions(seq1)
-    pos2 = self.print_sequence_positions(seq2)
-    pretty_print = pos1 + "\n" + seq1 + "\n" + middle + "\n" + seq2 + "\n" + pos2
-
-    return pretty_print
+    print self.print_sequence_positions(seq1), "\n", seq1, "\n", middle, "\n", \
+          seq2, "\n", self.print_sequence_positions(seq2)
 
