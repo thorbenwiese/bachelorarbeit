@@ -6,7 +6,7 @@ import sys
 
 class TracePointAlignment(object):
 
-  def __init__(self, seq1, seq2, delta, cigar, start_seq1, end_seq1, start_seq2, end_seq2):
+  def __init__(self, seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2, delta, cigar = None):
     self.seq1 = seq1
     self.seq2 = seq2
     self.delta = delta
@@ -15,7 +15,7 @@ class TracePointAlignment(object):
     self.end_seq1 = end_seq1
     self.end_seq2 = end_seq2
     self.cigar = cigar
-    if len(cigar) > 0:
+    if cigar != None:
       self.tp = self.encode()
 
   # extract TracePoints from CIGAR-String
@@ -69,40 +69,83 @@ class TracePointAlignment(object):
           if count != len(intervals)-1:
             count += 1
 
+    assert tp, "TracePoint Array from encode function is empty."
+
     return tp
 
   # create new intervals from TracePoints and calculate new alignment
-  def decode(self, seq1, seq2, delta, tp, start_seq1, end_seq1, start_seq2, end_seq2):
+  def decode(self, tp):
+
+    assert self.seq1, "First sequence for decode function is empty."
+    assert self.seq2, "Second sequence for decode function is empty."
+    assert self.delta > 0, "Delta for decode function is <= 0."
+    assert tp, "TracePoint Array for decode function is empty."
+    assert self.start_seq1 >= 0, "Starting position for first sequence in decode function is < 0."
+    assert self.start_seq2 >= 0, "Starting position for second sequence in decode function is < 0."
+    assert self.end_seq1 > 0, "End position for first sequence in decode function is <= 0."
+    assert self.end_seq2 > 0, "End position for second sequence in decode function is <= 0."
 
     # calculate CIGAR of intervals
     cigar = ""
     
-    aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, start_seq2,end_seq2)
+    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1, self.end_seq1, 
+                              self.start_seq2,self.end_seq2)
 
     for i in range(0,len(tp)):
       
       if i == 0:
 
-        aln_seq1, aln_seq2 = aln.calculate(seq1[0:delta],seq2[0:tp[i]+1])
-        cigar += aln.calc_cigar(aln_seq1, aln_seq2)
+        aln1, aln2 = aln.calculate(self.seq1[0:self.delta],self.seq2[0:tp[i]+1])
+        cigar += aln.calc_cigar(aln1, aln2)
       
       elif i == len(tp) - 1:
  
-        aln_seq1, aln_seq2 = aln.calculate(seq1[i*delta:len(seq1)],seq2[tp[i-1]+1:len(seq2)])
-        cigar += aln.calc_cigar(aln_seq1, aln_seq2)
+        aln1, aln2 = aln.calculate(self.seq1[i*self.delta:len(self.seq1)],
+                                   self.seq2[tp[i-1]+1:len(self.seq2)])
+        cigar += aln.calc_cigar(aln1, aln2)
 
       else:
         
-        aln_seq1, aln_seq2 = aln.calculate(seq1[i*delta:(i+1)*delta],seq2[tp[i-1]+1:tp[i] + 1])
-        cigar += aln.calc_cigar(aln_seq1, aln_seq2)
+        aln1, aln2 = aln.calculate(self.seq1[i*self.delta:(i+1)*self.delta],
+                                   self.seq2[tp[i-1]+1:tp[i] + 1])
+        cigar += aln.calc_cigar(aln1, aln2)
+
+    ###
+    #print "CIGAR from Decode:", cigar
    
     # calculate aln_seq with CIGAR
 
     cig_count = tmp1 = tmp2 = count = 0
-    aln_seq1 = aln_seq2 = ""
+    aln1 = aln2 = ""
 
     #neues Pattern fuer Cigar String im Format Zahl + 1 Buchstabe aus {M,I,D,N,S,H,P}
     cigar_pattern = re.compile(r"\d+[MIDNSHP=X]{1}")
+
+    # TODO Cigar komprimieren, indem gleiche cig_symbol zusammengefasst werden
+    ####
+    """
+    first = True
+    cig = ""
+    for i in cigar_pattern.findall(cigar):
+
+      cig_count = int(i[:-1])
+      cig_symbol = i[-1]
+
+      if not first:
+        if cig_symbol == previous_cig_symbol:
+          cig += "%d%s" % (cig_count + previous_cig_count, cig_symbol)
+          
+        else:
+          cig += "%d%s" % (cig_count, cig_symbol)
+      previous_cig_count = cig_count
+      previous_cig_symbol = cig_symbol
+      first = False
+    
+    print cigar, "Cigar"
+    print cig, "Cig"    
+    """
+    ####
+
     #in cigar nach pattern suchen
     for element in cigar_pattern.findall(cigar):
       count+=1
@@ -113,20 +156,20 @@ class TracePointAlignment(object):
       cig_symbol = element[-1]
 
       if cig_symbol == 'M':
-        aln_seq1 += str(seq1[tmp1:tmp1+cig_count])
-        aln_seq2 += str(seq2[tmp2:tmp2+cig_count])
+        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
+        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
 
       elif cig_symbol == 'I':
-        aln_seq1 += str(seq1[tmp1:tmp1+cig_count])
-        aln_seq2 += str("-"*cig_count)
+        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
+        aln2 += str("-" * cig_count)
         tmp2-=cig_count
 
       elif cig_symbol == 'D':
-        aln_seq1 += str("-"*cig_count)
-        aln_seq2 += str(seq2[tmp2:tmp2+cig_count])
+        aln1 += str("-" * cig_count)
+        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
         tmp1 -= cig_count
 
-    aln.show_aln(aln_seq1, aln_seq2)
+    aln.show_aln(aln1, aln2)
 
   # store TracePointAlignment to file
   def store_tp_aln(self,mode):

@@ -8,55 +8,63 @@ import math
 import argparse
 import string, random
 import os
+import time
 
 # random sequence generator
 def random_sequences(amount, random_length, error_rate, alphabet):
-  seq = ""
+
+  assert (amount > 0), "Amount of random sequences should be > 0."
+  assert (random_length > 0), "Length of random sequences should be > 0."
+  assert (error_rate >= 0), "Error rate should not be negative."
+  assert alphabet, "Alphabet must be set."
+
   random_seqs = []
 
   for i in range(0, amount):
     seq = ''.join(random.choice(alphabet) for j in range(random_length))
-    r_seq1 = list(seq)
-    r_seq2 = list(seq)
+    aln1 = list(seq)
+    aln2 = list(seq)
         
     position = 0
 
-    for i in range(0, len(r_seq1)):
+    for i in range(0, len(aln1)):
       # random number between 0 and 1
       r_num = random.random()
       if r_num <= error_rate:
         r_choice = random.random()
         if 0 <= r_choice < 0.1:
           # Insertion
-          r_seq2[position] = ''
+          aln2[position] = ''
         elif 0.1 < r_choice < 0.2:
           # Deletion
-          r_seq1[position] = ''
+          aln1[position] = ''
         elif 0.2 < r_choice < 0.4:
           # a
-          if r_seq2[position] == 'a':
+          if aln2[position] == 'a':
             continue
-          r_seq2[position] = 'a'
+          aln2[position] = 'a'
         elif 0.4 < r_choice < 0.6:
           # c
-          if r_seq2[position] == 'c':
+          if aln2[position] == 'c':
             continue
-          r_seq2[position] = 'c'
+          aln2[position] = 'c'
         elif 0.6 < r_choice < 0.8:
           # g
-          if r_seq2[position] == 'g':
+          if aln2[position] == 'g':
             continue
-          r_seq2[position] = 'g'
+          aln2[position] = 'g'
         elif 0.8 < r_choice <= 1.0:
           # t
-          if r_seq2[position] == 't':
+          if aln2[position] == 't':
             continue
-          r_seq2[position] = 't'
+          aln2[position] = 't'
       position += 1
-    seq_new1 = "".join(r_seq1)
-    seq_new2 = "".join(r_seq2)
-    random_seqs.append(seq_new1)
-    random_seqs.append(seq_new2)
+    aln1 = "".join(aln1)
+    aln2 = "".join(aln2)
+    random_seqs.append(aln1)
+    random_seqs.append(aln2)
+
+  assert random_seqs, "Random sequences are empty."
 
   # store sequences
   for i in range(0,len(random_seqs)):
@@ -90,15 +98,14 @@ def read_files(sequence_file, aln_file, id):
   seq1 = sequences[id*2-2]
   seq2 = sequences[id*2-1]
 
+  # TODO tp wird als String gelesen und nicht als Liste
   delta, start_seq1, end_seq1, start_seq2, end_seq2, tp = coded_aln[id-1].split(";")
 
-  aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2)
-  aln_seq1, aln_seq2 = aln.calculate(aln.seq1, aln.seq2)
-  aln.show_aln(aln_seq1.replace("\n",""), aln_seq2.replace("\n",""))
-
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, start_seq2, 
+                                          end_seq2, delta)
+  tp_aln.decode(tp)
+  
 def main(argv):
-  seq1 = seq2 = cigar = output = ""
-  delta = 0
 
   parser = argparse.ArgumentParser()
 
@@ -129,6 +136,7 @@ def main(argv):
   
   args = parser.parse_args()
 
+  t = time.time()
 
   start_seq1 = args.start1
   end_seq1 = args.end1
@@ -144,21 +152,19 @@ def main(argv):
   # show specific alignment from input files
   if args.input_seq and args.input_aln and args.id:
     read_files(args.input_seq, args.input_aln, args.id)
-    sys.exit(1)
 
-  if not args.random:
+  elif not args.random:
     seq1 = seq1[start_seq1:end_seq1]
     seq2 = seq2[start_seq2:end_seq2]
 
   # with CIGAR
-  if args.cigar:
+  elif args.cigar:
 
-    tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, cigar, start_seq1, end_seq1, 
-                                            start_seq2, end_seq2)
+    tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, 
+                                            start_seq2, end_seq2, delta, cigar)
     tp_aln.store_tp_aln('cigar_seq_file.txt','w')
     if decode:
-      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1,end_seq1,
-                    start_seq2,end_seq2)
+      tp_aln.decode(tp_aln.tp)
 
   # Random
   elif args.random:
@@ -170,11 +176,10 @@ def main(argv):
       aln = Alignment.Alignment(random_seq_list[i][start_seq1:end_seq1], random_seq_list[i + 1][start_seq2:end_seq2], 
                                 start_seq1,end_seq1, start_seq2, end_seq2)
 
-      aln_seq1, aln_seq2 = aln.calculate(aln.seq1, aln.seq2)
-      cigar = aln.calc_cigar(aln_seq1, aln_seq2)
-      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, cigar, start_seq1, 
-                                              end_seq1, start_seq2, end_seq2)
-      print "# TracePoints:", tp_aln.tp
+      aln1, aln2 = aln.calculate(aln.seq1, aln.seq2)
+      cigar = aln.calc_cigar(aln1, aln2)
+      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
+                                              start_seq2, end_seq2, delta, cigar)
 
       if i == 0:
         tp_aln.store_tp_aln('w')
@@ -182,21 +187,21 @@ def main(argv):
         tp_aln.store_tp_aln('a')
 
       if decode:
-        tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, 
-                      start_seq1, end_seq1, start_seq2, end_seq2)
+        tp_aln.decode(tp_aln.tp)
 
-  # without CIGAR
-  else:
+  else: # args.cigar == false
     aln = Alignment.Alignment(seq1, seq2, start_seq1,end_seq1, start_seq2,end_seq2)
     aln_seq1, aln_seq2 = aln.calculate(seq1, seq2)
     cigar = aln.calc_cigar(aln_seq1, aln_seq2)
 
-    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, cigar, start_seq1,
-                                            end_seq1, start_seq2,end_seq2)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
+                                            start_seq2,end_seq2, delta, cigar)
    
     if decode:
-      tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1,end_seq1, 
-                    start_seq2,end_seq2)
+      tp_aln.decode(tp_aln.tp)
 
+  print "Calculation complete.\nTime: %.2f seconds" % (time.time() - t)
+
+ 
 if __name__ == "__main__":
   main(sys.argv[1:])

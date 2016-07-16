@@ -3,6 +3,7 @@
 import tp_calc
 import Alignment
 import TracePoint
+import time
 
 import argparse
 
@@ -23,12 +24,11 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
 
     aln_seq1, aln_seq2 = aln.calculate(aln.seq1, aln.seq2)
     cigar = aln.calc_cigar(aln_seq1, aln_seq2)
-    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta, cigar, 
-                                            start_seq1, end_seq1, start_seq2, end_seq2)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
+                                            start_seq2, end_seq2, delta, cigar)
 
     if decode:
-      tp_aln.decode(random_seq_list[i], random_seq_list[i + 1], delta, tp_aln.tp, 
-                    start_seq1, end_seq1, start_seq2,end_seq2)
+      tp_aln.decode(tp_aln.tp)
     if verbose:
       print "# TracePoints:", tp_aln.tp
 
@@ -40,11 +40,11 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
   aln_seq1, aln_seq2 = aln.calculate(seq1, seq2)
 
   cigar = aln.calc_cigar(aln_seq1, aln_seq2)
-  tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, delta,cigar, 
-                                          start_seq1, end_seq1, start_seq2,end_seq2)
+  tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
+                                          start_seq2,end_seq2, delta, cigar)
 
   if decode:
-    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, end_seq1, start_seq2,end_seq2)
+    tp_aln.decode(tp_aln.tp)
 
   if verbose:
     print "# TracePoints:", tp_aln.tp
@@ -54,23 +54,23 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
 
   end_seq1 = len(seq1)
   end_seq2 = len(seq2)
-  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, delta, cigar,start_seq1, 
-                                          end_seq1, start_seq2,end_seq2)
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2,start_seq1, end_seq1,
+                                          start_seq2,end_seq2, delta, cigar)
   if verbose:
     print "# TracePoints:", tp_aln.tp
 
   if decode:
-    tp_aln.decode(seq1, seq2, delta, tp_aln.tp, start_seq1, end_seq1, start_seq2,end_seq2)
+    tp_aln.decode(tp_aln.tp)
 
 def test_random(verbose, decode):
 
-  print "# Testing random_sequences 1/4...", test_random_sequences(80,50,0.15,"acgt",
+  print "# Testing random_sequences 1/4...\n", test_random_sequences(80,50,0.15,"acgt",
                                                                    10,verbose, decode)
-  print "# Testing random_sequences 2/4...", test_random_sequences(10,200,0.30,"acgt",
+  print "# Testing random_sequences 2/4...\n", test_random_sequences(10,200,0.30,"acgt",
                                                                    20,verbose, decode)
-  print "# Testing random_sequences 3/4...", test_random_sequences(30,100,0.10,"acgt",
+  print "# Testing random_sequences 3/4...\n", test_random_sequences(30,100,0.10,"acgt",
                                                                    15,verbose, decode)
-  print "# Testing random_sequences 4/4...", test_random_sequences(10,50,0.15,"ac",
+  print "# Testing random_sequences 4/4...\n", test_random_sequences(10,50,0.15,"ac",
                                                                    5,verbose, decode)
   print ""
 
@@ -78,17 +78,17 @@ def test_no_cigar(verbose, decode):
 	
   seq1 = "gagcatgttgcctggtcctttgctaggtactgtagaga"
   seq2 = "gaccaagtaggcgtggaccttgctcggtctgtaagaga"
-  print "# Testing sequences without CIGAR 1/3...", test_without_cigar(seq1,seq2,15,
+  print "# Testing sequences without CIGAR 1/3...\n", test_without_cigar(seq1,seq2,15,
                                                                        verbose, decode)
 	
   seq1 = "acgtgtggc"
   seq2 = "aaacgggcacgccgtggcccct"
-  print "# Testing sequences without CIGAR 2/3...", test_without_cigar(seq1,seq2,3,
+  print "# Testing sequences without CIGAR 2/3...\n", test_without_cigar(seq1,seq2,3,
                                                                        verbose,decode)
 	
   seq1 = "acggacgttgacagtgtgacgtacgagacgtgtttgacagtgaccaagaatgttagag"
   seq2 = "aggctcggacgtacgagacgtgtttggctcgagagc"
-  print "# Testing sequences without CIGAR 3/3...", test_without_cigar(seq1,seq2,15,
+  print "# Testing sequences without CIGAR 3/3...\n", test_without_cigar(seq1,seq2,15,
                                                                        verbose, decode)
   print ""
 	
@@ -97,25 +97,25 @@ def test_cigar(verbose, decode):
   seq1 = "gagcatgttgcctggtcctttgctaggtactgtagaga" 
   seq2 = "gaccaagtaggcgtggaccttgctcggtctgtaagaga" 
   cigar = "5M5M1I3M5M1D9M1D5M1I2M2M"
-  print "# Testing sequences with CIGAR 1/4...", test_with_cigar(seq1,seq2,cigar,10,
+  print "# Testing sequences with CIGAR 1/4...\n", test_with_cigar(seq1,seq2,cigar,10,
                                                                  verbose, decode)
 	
   seq1 = "acccccggtggct"
   seq2 = "acgcaccgtcgcg"
   cigar = "13M"
-  print "# Testing sequences with CIGAR 2/4...", test_with_cigar(seq1,seq2,cigar,3,
+  print "# Testing sequences with CIGAR 2/4...\n", test_with_cigar(seq1,seq2,cigar,3,
                                                                  verbose, decode)
 	
   seq1 = "actgaactgact"
   seq2 = "actagaatggct"
   cigar = "3M1D3M1I5M"
-  print "# Testing sequences with CIGAR 3/4...", test_with_cigar(seq1,seq2,cigar,3,
+  print "# Testing sequences with CIGAR 3/4...\n", test_with_cigar(seq1,seq2,cigar,3,
                                                                  verbose, decode)
 	
   seq1 = "gtgtcgcccgtctagcatacgc"
   seq2 = "gggtgtaaccgactaggggg"
   cigar = "11M1D10M"
-  print "# Testing sequences with CIGAR 4/4...", test_with_cigar(seq1,seq2,cigar,3,
+  print "# Testing sequences with CIGAR 4/4...\n", test_with_cigar(seq1,seq2,cigar,3,
                                                                  verbose, decode)
 	
 def main():
@@ -138,6 +138,8 @@ def main():
   verbose = args.verbose
   decode = args.decode
 
+  t = time.time()
+
   if args.all:
     test_random(verbose, decode)
     test_no_cigar(verbose, decode)
@@ -151,6 +153,8 @@ def main():
   else:
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);
+
+  print "Test complete.\nTime: %.2f seconds" % (time.time() - t)
 
 if __name__ == "__main__":
   main()

@@ -5,7 +5,6 @@ sys.path.append("biopython/")
 
 import string, random
 from Bio import pairwise2
-from Bio.pairwise2 import format_alignment
 
 # Alignment structure with CIGAR-String
 class Alignment(object):
@@ -22,92 +21,79 @@ class Alignment(object):
   # calculate alignment with BioPython
   def calculate(self, sequence1, sequence2):
 
-    # x = No parameters.  Identical characters have score of 1, otherwise 0.
-    # x = No gap penalties.
-    alns = pairwise2.align.globalxx(sequence1.upper(), sequence2.upper())
-    if len(alns) > 0:
-      top_aln = alns[0]
+    assert sequence1, "First sequence for calculating the alignment is empty!"
+    assert sequence2, "Second sequence for calculating the alignment is empty!"
 
-      aln1, aln2, score, begin, end = top_aln
+    # m = A match score is the score of identical chars, otherwise mismatch score.
+    # s = Same open and extend gap penalties for both sequences.
+    alns = pairwise2.align.globalms(sequence1.upper(), sequence2.upper(),
+                                    2, -1, -2, -1)
+    assert (len(alns) > 0), "No alignment could be calculated.\n"
+    top_aln = alns[0]
 
-      return [aln1.lower(), aln2.lower()]
+    aln1, aln2, score, begin, end = top_aln
+    
+    assert (len(aln1) == len(aln2)), "Alignment sequences do not have the same size!"
 
-    else:
-      sys.stderr.write("# No alignment could be calculated.\n")
-      sys.exit(1)
+    return [aln1.lower(), aln2.lower()]
 
   # calculate CIGAR-String from two aln_seq
-  def calc_cigar(self, aln_seq1, aln_seq2):
+  def calc_cigar(self, aln1, aln2):
 
-    if len(aln_seq1) < len(aln_seq2):
-      seqlen = len(aln_seq1)
-    else:
-      seqlen = len(aln_seq2)
+    assert aln1, "First alignment sequence for calculating CIGAR-String is empty."
+    assert aln2, "Second alignment sequence for calculating CIGAR-String is empty."
 
     cigar = ""
-    count = 0
-    match = False
-    ins = False
-    dele = False
+    count = 1
+    prev_match = False
+    prev_ins = False
+    prev_dele = False
 
-    for i in range(0, seqlen):
+    if aln1[0] == '-':
+      previous_op  = 'D'
+    elif aln2[0] == '-':
+      previous_op  = 'I'
+    else:
+      previous_op = 'M'
 
-      # match
-      if aln_seq1[i] == aln_seq2[i]:
-        match = True
-        if ins:
-          ins = False
-          cigar += "%d%s" % (count, 'I')
-          count = 1
-        elif dele:
-          dele = False
-          cigar += "%d%s" % (count, 'D')
-          count = 1
-        else:
-          count += 1
+    for i in range(1, len(aln1)):
 
       # deletion
-      elif aln_seq1[i] == '-':
-
-        dele = True
-        if ins:
-          ins = False
-          cigar += "%d%s" % (count, 'I')
+      if aln1[i] == '-':
+        if previous_op != 'D':
+          cigar += "%d%s" % (count, previous_op)
           count = 1
-        elif match:
-          match = False
-          cigar += "%d%s" % (count, 'M')
-          count = 1
+          previous_op = 'D'
         else:
           count += 1
 
       # insertion
-      elif aln_seq2[i] == '-':
+      elif aln2[i] == '-':
+        if previous_op != 'I':
+          cigar += "%d%s" % (count, previous_op)
+          count = 1
+          previous_op = 'I'
+        else:
+          count += 1
 
-        ins = True
-        if match:
-          match = False
-          cigar += "%d%s" % (count, 'M')
+      # match / mismatch
+      else:
+        if previous_op != 'M':
+          cigar += "%d%s" % (count, previous_op)
           count = 1
-        elif dele:
-          dele = False
-          cigar += "%d%s" % (count, 'D')
-          count = 1
+          previous_op = 'M'
         else:
           count += 1
 
     # last operation
-    if match:
-      cigar += "%d%s" % (count, 'M')
-    elif dele:
-      cigar += "%d%s" % (count, 'D')
-    elif ins:
-      cigar += "%d%s" % (count, 'I')
+    cigar += "%d%s" % (count, previous_op)
 
     return cigar
 
   # 0s and 5s for the pretty_print_alignment
   def print_sequence_positions(self, seq):
+
+    assert seq, "Sequence for print_sequence_positions is empty."
 
     positions = ""
     count = False
@@ -123,24 +109,16 @@ class Alignment(object):
     return positions
 
   # pretty_print of an alignment with positions and '|'s
-  def show_aln(self, seq1, seq2):
+  def show_aln(self, aln1, aln2):
+
+    assert aln1, "First sequence for show_aln is empty."
+    assert aln2, "Second sequence for show_aln is empty."
 
     middle = pretty_print= ""
     extend = 0
 
-    if len(seq1) < len(seq2):
-      extend = len(seq2) - len(seq1)
-    else:
-      extend = len(seq1) - len(seq2)
+    for i in range(0,len(aln1)):
+      middle += '|' if aln1[i] == aln2[i] else ' '
 
-    seq2 += " " * extend
-
-    for i in range(0,len(seq1)):
-      if seq1[i] == seq2[i]:
-        middle += '|'
-      else:
-        middle += ' '
-
-    print self.print_sequence_positions(seq1), "\n", seq1, "\n", middle, "\n", \
-          seq2, "\n", self.print_sequence_positions(seq2)
-
+    print self.print_sequence_positions(aln1), "\n", aln1, "\n", middle, "\n", \
+          aln2, "\n", self.print_sequence_positions(aln2)
