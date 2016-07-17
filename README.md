@@ -1,3 +1,3 @@
 # Bachelorarbeit
 "Speichereffiziente Repräsentation von paarweisen Sequenzalignments"
-!(UML.png?raw=true "Aufbau des Programms")
+![UML](https://raw.github.com/{thorbenwiese}/{bachelorarbeit-wiese}/{master}/{/UML.png})
