@@ -110,18 +110,17 @@ class TracePointAlignment(object):
                                    self.seq2[tp[i-1]+1:tp[i] + 1])
         cigar += aln.calc_cigar(aln1, aln2)
 
-    ###
-    #print "CIGAR from Decode:", cigar
    
     # calculate aln_seq with CIGAR
 
     cig_count = tmp1 = tmp2 = count = 0
     aln1 = aln2 = ""
 
-    #neues Pattern fuer Cigar String im Format Zahl + 1 Buchstabe aus {M,I,D,N,S,H,P}
+    #new pattern for CIGAR-String, format: Amount + 1 char from {M,I,D,N,S,H,P}
     cigar_pattern = re.compile(r"\d+[MIDNSHP=X]{1}")
 
     # TODO Cigar komprimieren, indem gleiche cig_symbol zusammengefasst werden
+    # prev aktualisieren
     ####
     """
     first = True
@@ -170,6 +169,7 @@ class TracePointAlignment(object):
         tmp1 -= cig_count
 
     aln.show_aln(aln1, aln2)
+
 
   # store TracePointAlignment to file
   def store_tp_aln(self,mode):

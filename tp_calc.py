@@ -91,16 +91,17 @@ def read_files(sequence_file, aln_file, id):
   with open(aln_file, 'r') as aln_file:
     coded_aln = aln_file.readlines()
 
-  seq1 = seq2 = ""
-  delta = start_seq1 = start_seq2 = 0
-  tp = []
+  seq1 = sequences[id*2-2].replace("\n","")
+  seq2 = sequences[id*2-1].replace("\n","")
 
-  seq1 = sequences[id*2-2]
-  seq2 = sequences[id*2-1]
-
-  # TODO tp wird als String gelesen und nicht als Liste
-  delta, start_seq1, end_seq1, start_seq2, end_seq2, tp = coded_aln[id-1].split(";")
-
+  data = coded_aln[id-1].split(";")
+  delta = int(data[0])
+  start_seq1 = int(data[1])
+  end_seq1 = int(data[2])
+  start_seq2 = int(data[3])
+  end_seq2 = int(data[4])
+  tp = map(int, data[5].replace("[","").replace("]","").split(','))
+  
   tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, start_seq2, 
                                           end_seq2, delta)
   tp_aln.decode(tp)
