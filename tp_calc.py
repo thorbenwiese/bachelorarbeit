@@ -137,8 +137,6 @@ def main(argv):
   
   args = parser.parse_args()
 
-  t = time.time()
-
   start_seq1 = args.start1
   end_seq1 = args.end1
   start_seq2 = args.start2
@@ -149,6 +147,8 @@ def main(argv):
   delta = args.delta
 
   decode = args.decode
+
+  t = time.clock()
 
   # show specific alignment from input files
   if args.input_seq and args.input_aln and args.id:
@@ -201,7 +201,7 @@ def main(argv):
     if decode:
       tp_aln.decode(tp_aln.tp)
 
-  print "Calculation complete.\nTime: %.2f seconds" % (time.time() - t)
+  print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
  
 if __name__ == "__main__":

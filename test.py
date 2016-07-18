@@ -138,7 +138,7 @@ def main():
   verbose = args.verbose
   decode = args.decode
 
-  t = time.time()
+  t = time.clock()
 
   if args.all:
     test_random(verbose, decode)
@@ -154,7 +154,7 @@ def main():
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);
 
-  print "Test complete.\nTime: %.2f seconds" % (time.time() - t)
+  print "Test complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
 if __name__ == "__main__":
   main()
