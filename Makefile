@@ -1,10 +1,4 @@
-test:
-
-	python test.py -a -d
-
-test verbose:
-
-	python test.py -a -d -v
+# for cleaning up .pyc files only
 
 clean:
 
