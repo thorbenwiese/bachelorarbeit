@@ -6,7 +6,8 @@ import sys
 
 class TracePointAlignment(object):
 
-  def __init__(self, seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2, delta, cigar = None):
+  def __init__(self, seq1, seq2, start_seq1, end_seq1, start_seq2, end_seq2, 
+               delta, cigar = None):
     self.seq1 = seq1
     self.seq2 = seq2
     self.delta = delta
@@ -40,10 +41,10 @@ class TracePointAlignment(object):
         intervals[i] = self.start_seq1, dynamic * self.delta - 1
       # last interval
       elif i == interval_count - 1:
-        intervals[i] = (dynamic + interval_count - 2) * self.delta, self.end_seq1-1
+        intervals[i] = (dynamic+interval_count-2) * self.delta, self.end_seq1-1
       # other intervals
       else:
-        intervals[i] = (dynamic + i - 1) * self.delta, (dynamic + i) * self.delta - 1
+        intervals[i] = (dynamic + i-1) * self.delta, (dynamic+i) * self.delta-1
 
     # create pattern for CIGAR-String
     cigar_pattern = re.compile(r"\d+[MIDNSHP=j]{1}")
@@ -88,8 +89,8 @@ class TracePointAlignment(object):
     # calculate CIGAR of intervals
     cigar = ""
     
-    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1, self.end_seq1, 
-                              self.start_seq2,self.end_seq2)
+    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1, 
+                              self.end_seq1,self.start_seq2,self.end_seq2)
 
     for i in range(0,len(tp)):
       
@@ -110,7 +111,6 @@ class TracePointAlignment(object):
                                    self.seq2[tp[i-1]+1:tp[i] + 1])
         cigar += aln.calc_cigar(aln1, aln2)
 
-   
     # calculate aln_seq with CIGAR
 
     cig_count = tmp1 = tmp2 = count = 0
@@ -118,32 +118,6 @@ class TracePointAlignment(object):
 
     #new pattern for CIGAR-String, format: Amount + 1 char from {M,I,D,N,S,H,P}
     cigar_pattern = re.compile(r"\d+[MIDNSHP=X]{1}")
-
-    # TODO Cigar komprimieren, indem gleiche cig_symbol zusammengefasst werden
-    # prev aktualisieren
-    ####
-    """
-    first = True
-    cig = ""
-    for i in cigar_pattern.findall(cigar):
-
-      cig_count = int(i[:-1])
-      cig_symbol = i[-1]
-
-      if not first:
-        if cig_symbol == previous_cig_symbol:
-          cig += "%d%s" % (cig_count + previous_cig_count, cig_symbol)
-          
-        else:
-          cig += "%d%s" % (cig_count, cig_symbol)
-      previous_cig_count = cig_count
-      previous_cig_symbol = cig_symbol
-      first = False
-    
-    print cigar, "Cigar"
-    print cig, "Cig"    
-    """
-    ####
 
     #in cigar nach pattern suchen
     for element in cigar_pattern.findall(cigar):

@@ -100,10 +100,13 @@ def read_files(sequence_file, aln_file, id):
   end_seq1 = int(data[2])
   start_seq2 = int(data[3])
   end_seq2 = int(data[4])
+  
+  # tp is stored as a list converted to a string
+  # it has to be converted to a list of ints again
   tp = map(int, data[5].replace("[","").replace("]","").split(','))
   
-  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, start_seq2, 
-                                          end_seq2, delta)
+  tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, 
+                                          start_seq2, end_seq2, delta)
   tp_aln.decode(tp)
   
 def main(argv):
@@ -114,26 +117,30 @@ def main(argv):
   group2 = parser.add_mutually_exclusive_group()
 
   parser.add_argument("-seq1", "--seq1", help="The first sequence")
-  parser.add_argument("-start1", help="Starting position of the first sequence", type=int)
-  parser.add_argument("-end1", help="End position of the first sequence", type=int)
+  parser.add_argument("-start1", help="Starting position of the first sequence", 
+                      type=int)
+  parser.add_argument("-end1", help="End position of the first sequence", 
+                      type=int)
   parser.add_argument("-seq2", "--seq2", help="The second sequence")
-  parser.add_argument("-start2", help="Starting position of the second sequence", type=int)
-  parser.add_argument("-end2", help="End position of the second sequence", type=int)
+  parser.add_argument("-start2", help="Starting position of the second sequence", 
+                      type=int)
+  parser.add_argument("-end2", help="End position of the second sequence", 
+                      type=int)
   parser.add_argument("-d", "--delta", help="Delta", type=int)
   parser.add_argument("-iseq", "--input_seq", help="Input file with sequences")
   parser.add_argument("-ialn", "--input_aln", help="Input file with TracePoints")
-  parser.add_argument("-id", "--id", help="Show specific alignment from Input files", type=int)
+  parser.add_argument("-id", "--id", help="Show specific alignment from Input files", 
+                      type=int)
 
   group1.add_argument("-c", "--cigar", help="CIGAR-String")
   group1.add_argument("-b", "--bam", help="Input BAM-File")
   group1.add_argument("-s", "--sam", help="Input SAM-File")
   group1.add_argument("-r", "--random",
-                        help="Random sequences generated with <Amount> <Length> <Error Rate> <Alphabet>",
-                        nargs=4)
+  help="Random sequences generated with <Amount> <Length> <Error Rate> <Alphabet>",nargs=4)
 
   # only while Input/Output files are not yet embedded
-  group2.add_argument("-x", "--decode", help="Calculate alignment from TracePoint represantation", default=False,
-                        action="store_true")
+  group2.add_argument("-x", "--decode", 
+  help="Calculate alignment from TracePoint represantation", default=False,action="store_true")
   
   args = parser.parse_args()
 
@@ -170,11 +177,13 @@ def main(argv):
   # Random
   elif args.random:
 
-    random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), float(args.random[2]), args.random[3])
+    random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), 
+                      float(args.random[2]), args.random[3])
 
     for i in range(0, len(random_seq_list), 2):
 
-      aln = Alignment.Alignment(random_seq_list[i][start_seq1:end_seq1], random_seq_list[i + 1][start_seq2:end_seq2], 
+      aln = Alignment.Alignment(random_seq_list[i][start_seq1:end_seq1], 
+                                random_seq_list[i + 1][start_seq2:end_seq2], 
                                 start_seq1,end_seq1, start_seq2, end_seq2)
 
       aln1, aln2 = aln.calculate(aln.seq1, aln.seq2)
