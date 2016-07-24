@@ -186,9 +186,9 @@ def main(argv):
                                 random_seq_list[i + 1][start_seq2:end_seq2], 
                                 start_seq1,end_seq1, start_seq2, end_seq2)
 
-      aln1, aln2 = aln.calculate(aln.seq1, aln.seq2)
-      cigar = aln.calc_cigar(aln1, aln2)
-      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
+      cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+      old_cost = aln.cigar_cost(cigar)
+      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,end_seq1,
                                               start_seq2, end_seq2, delta, cigar)
 
       if i == 0:
@@ -197,12 +197,15 @@ def main(argv):
         tp_aln.store_tp_aln('a')
 
       if decode:
-        tp_aln.decode(tp_aln.tp)
+        new_cigar = tp_aln.decode(tp_aln.tp)
+        new_cost = aln.cigar_cost(new_cigar)
+        if old_cost > new_cost:
+          print "#######################################################"
+          print old_cost, new_cost
 
   else: # args.cigar == false
     aln = Alignment.Alignment(seq1, seq2, start_seq1,end_seq1, start_seq2,end_seq2)
-    aln_seq1, aln_seq2 = aln.calculate(seq1, seq2)
-    cigar = aln.calc_cigar(aln_seq1, aln_seq2)
+    cigar = aln.calc_cigar(seq1, seq2)
 
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
                                             start_seq2,end_seq2, delta, cigar)

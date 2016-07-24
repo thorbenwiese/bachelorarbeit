@@ -22,8 +22,7 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
     aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
                     start_seq1, end_seq1, start_seq2, end_seq2)
 
-    aln1, aln2 = aln.calculate(aln.seq1, aln.seq2)
-    cigar = aln.calc_cigar(aln1, aln2)
+    cigar = aln.calc_cigar(aln.seq1, aln.seq2)
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
                                             start_seq2, end_seq2, delta, cigar)
 
@@ -31,7 +30,6 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
       tp_aln.decode(tp_aln.tp)
 
     if verbose:
-      aln.show_aln(aln1,aln2)
       print "# TracePoints:", tp_aln.tp
 
 def test_without_cigar(seq1,seq2,delta,verbose, decode):
@@ -39,9 +37,8 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
   end_seq1 = len(seq1)
   end_seq2 = len(seq2)
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1,start_seq2, end_seq2)
-  aln1, aln2 = aln.calculate(aln.seq1, aln.seq2)
+  cigar = aln.calc_cigar(aln.seq1, aln.seq2)
 
-  cigar = aln.calc_cigar(aln1, aln2)
   tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
                                           start_seq2,end_seq2, delta, cigar)
 
@@ -49,7 +46,6 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
     tp_aln.decode(tp_aln.tp)
 
   if verbose:
-    aln.show_aln(aln1,aln2)
     print "# TracePoints:", tp_aln.tp
 
 
