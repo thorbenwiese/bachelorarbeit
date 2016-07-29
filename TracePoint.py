@@ -56,10 +56,10 @@ class TracePointAlignment(object):
     # search cigar for pattern
     tp = []
     for j in cigar_pattern.findall(self.cigar):
-      # TODO
-      # assert len(j) == 2 and j[1] != NSHP
+
       cig_count = int(j[:-1])
       cig_symbol = j[1]
+      assert cig_symbol not in ['N','S','H','P'], "CIGAR-Symbol is not in ['M','I','D']"
    
       for i in range(0,cig_count):
         if cig_symbol == 'I':

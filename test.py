@@ -23,11 +23,17 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                     start_seq1, end_seq1, start_seq2, end_seq2)
 
     cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+    old_cost = aln.cigar_cost(cigar)
+
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
                                             start_seq2, end_seq2, delta, cigar)
 
     if decode:
       cig = tp_aln.decode(tp_aln.tp)
+      new_cost = aln.cigar_cost(cig)
+
+      if new_cost > old_cost:
+        print old_cost,"<",new_cost
 
       if verbose:
         aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
@@ -41,12 +47,17 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
   end_seq2 = len(seq2)
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1,start_seq2, end_seq2)
   cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+  old_cost = aln.cigar_cost(cigar)
 
   tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1, 
                                           start_seq2,end_seq2, delta, cigar)
 
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
+    new_cost = aln.cigar_cost(cig)
+
+    if new_cost > old_cost:
+      print old_cost,"<",new_cost
 
     if verbose:
       aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
@@ -63,8 +74,15 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
                                           start_seq2,end_seq2, delta, cigar)
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
+
+  old_cost = aln.cigar_cost(cigar)
+
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
+    new_cost = aln.cigar_cost(cig)
+
+    if new_cost > old_cost:
+      print old_cost,"<",new_cost
 
     if verbose:
       aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
@@ -132,11 +150,12 @@ def test_cigar(verbose, decode):
   test_with_cigar(seq1,seq2,cigar,3,verbose, decode)
 	
   seq1 = "gtgtcgcccgtctagcatacgc"
-  seq2 = "gggtgtaaccgactaggggg"
-  cigar = "11M1D10M"
+  seq2 = "ggtgcgccgtcttagcata"
+  cigar = "1M1I2M1D4M1I3M1D7M3I"
 
   print "# Testing sequences with CIGAR 4/4..."
   test_with_cigar(seq1,seq2,cigar,3,verbose,decode)
+
 	
 def main():
 
@@ -152,6 +171,8 @@ def main():
                       action="store_true")
   parser.add_argument("-d", "--decode",help="Test creating new alignment " \
                       "from TracePoints",default=False, action="store_true")
+  parser.add_argument("-i", "--intense",help="Test with a lot of random " \
+                      "sequences", action="store_true")
 
   args = parser.parse_args()
 
@@ -170,6 +191,8 @@ def main():
     test_cigar(verbose, decode)
   elif args.random:
     test_random(verbose, decode)
+  elif args.intense:
+    test_random_sequences(10000,200,0.15,"acgt",10,verbose,decode)
   else:
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);

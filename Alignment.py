@@ -34,10 +34,9 @@ class Alignment(object):
     assert (len(alns) > 0), "No alignment could be calculated.\n"
     top_aln = alns[0]
 
-    # TODO score begin end weglassen??
-    aln1, aln2, score, begin, end = top_aln
+    aln1, aln2, = top_aln[0], top_aln[1]
     
-    assert (len(aln1) == len(aln2)), "Alignment sequences do not have the same size!"
+    assert (len(aln1) == len(aln2)), "Alignment sequences do not have the same length!"
 
     # calculate CIGAR-String from two aln_seq
 
