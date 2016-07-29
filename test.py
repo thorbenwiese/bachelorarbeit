@@ -27,7 +27,10 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                                             start_seq2, end_seq2, delta, cigar)
 
     if decode:
-      tp_aln.decode(tp_aln.tp)
+      cig = tp_aln.decode(tp_aln.tp)
+
+      if verbose:
+        aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
 
     if verbose:
       print "# TracePoints:", tp_aln.tp
@@ -43,7 +46,10 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
                                           start_seq2,end_seq2, delta, cigar)
 
   if decode:
-    tp_aln.decode(tp_aln.tp)
+    cig = tp_aln.decode(tp_aln.tp)
+
+    if verbose:
+      aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
 
   if verbose:
     print "# TracePoints:", tp_aln.tp
@@ -55,11 +61,16 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
   end_seq2 = len(seq2)
   tp_aln = TracePoint.TracePointAlignment(seq1, seq2,start_seq1, end_seq1,
                                           start_seq2,end_seq2, delta, cigar)
+  aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
+                            start_seq2, end_seq2)
+  if decode:
+    cig = tp_aln.decode(tp_aln.tp)
+
+    if verbose:
+      aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
+
   if verbose:
     print "# TracePoints:", tp_aln.tp
-
-  if decode:
-    tp_aln.decode(tp_aln.tp)
 
 def test_random(verbose, decode):
 

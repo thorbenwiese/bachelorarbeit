@@ -56,6 +56,7 @@ class TracePointAlignment(object):
     # search cigar for pattern
     tp = []
     for j in cigar_pattern.findall(self.cigar):
+      # TODO
       # assert len(j) == 2 and j[1] != NSHP
       cig_count = int(j[:-1])
       cig_symbol = j[1]
@@ -144,38 +145,6 @@ class TracePointAlignment(object):
         cig += "%d%s" % (tmp + ccount, csymbol) 
  
     return cig
-
-  def cigar_to_aln(self, cigar):
-
-    # calculate aln_seq with CIGAR
-
-    cig_count = tmp1 = tmp2 = count = 0
-    aln1 = aln2 = ""
-
-    # der folgende Teil geh"ort nicht zum decode, Ergebnis von decode
-    # sollte ein cigar string sein, der im Kontext des Debugging
-    # naturlich in einen Alignment-String verwandelt werden kann.
-    for element in cigar_pattern.findall(cigar):
-      count+=1
-
-      tmp1 += cig_count
-      tmp2 += cig_count
-      cig_count = int(element[:-1])
-      cig_symbol = element[-1]
-
-      if cig_symbol == 'M':
-        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
-        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
-
-      elif cig_symbol == 'I':
-        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
-        aln2 += str("-" * cig_count)
-        tmp2-=cig_count
-
-      elif cig_symbol == 'D':
-        aln1 += str("-" * cig_count)
-        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
-        tmp1 -= cig_count
 
   # store TracePointAlignment to file
   def store_tp_aln(self,mode):

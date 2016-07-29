@@ -107,7 +107,12 @@ def read_files(sequence_file, aln_file, id):
   
   tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, 
                                           start_seq2, end_seq2, delta)
-  tp_aln.decode(tp)
+
+  # reconstruct CIGAR-String from TracePoints and sequences
+  cigar = tp_aln.decode(tp)
+  aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
+                            start_seq2, end_seq2)
+  aln.show_aln(seq1, seq2, cigar)
   
 def main(argv):
 
@@ -138,10 +143,6 @@ def main(argv):
   group1.add_argument("-r", "--random",
   help="Random sequences generated with <Amount> <Length> <Error Rate> <Alphabet>",nargs=4)
 
-  # only while Input/Output files are not yet embedded
-  group2.add_argument("-x", "--decode", 
-  help="Calculate alignment from TracePoint represantation", default=False,action="store_true")
-  
   args = parser.parse_args()
 
   start_seq1 = args.start1
@@ -153,7 +154,6 @@ def main(argv):
   cigar = args.cigar
   delta = args.delta
 
-  decode = args.decode
 
   t = time.clock()
 
@@ -171,8 +171,6 @@ def main(argv):
     tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, 
                                             start_seq2, end_seq2, delta, cigar)
     tp_aln.store_tp_aln('cigar_seq_file.txt','w')
-    if decode:
-      tp_aln.decode(tp_aln.tp)
 
   # Random
   elif args.random:
@@ -196,22 +194,12 @@ def main(argv):
       else:
         tp_aln.store_tp_aln('a')
 
-      if decode:
-        new_cigar = tp_aln.decode(tp_aln.tp)
-        new_cost = aln.cigar_cost(new_cigar)
-        if old_cost > new_cost:
-          print "#######################################################"
-          print old_cost, new_cost
-
   else: # args.cigar == false
     aln = Alignment.Alignment(seq1, seq2, start_seq1,end_seq1, start_seq2,end_seq2)
     cigar = aln.calc_cigar(seq1, seq2)
 
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
                                             start_seq2,end_seq2, delta, cigar)
-   
-    if decode:
-      tp_aln.decode(tp_aln.tp)
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
