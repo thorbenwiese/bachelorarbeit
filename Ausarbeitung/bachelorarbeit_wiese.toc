@@ -14,8 +14,6 @@
 \contentsline {subsection}{\numberline {5.0.1}Aufbau}{9}{subsection.5.0.1}
 \contentsline {subsection}{\numberline {5.0.2}Funktionalit\"at}{9}{subsection.5.0.2}
 \contentsline {subsection}{\numberline {5.0.3}Grafiken Geschwindigkeit, Speicher}{9}{subsection.5.0.3}
-\contentsline {chapter}{\numberline {6}Fazit}{11}{chapter.6}
-\contentsline {chapter}{\numberline {A}Anhang}{13}{appendix.A}
-\contentsline {section}{\numberline {A.1}\"Uberschrift zweiter Ordnung}{13}{section.A.1}
+\contentsline {chapter}{\numberline {6}Fazit}{13}{chapter.6}
 \contentsline {chapter}{Literaturverzeichnis}{15}{section*.5}
-\contentsline {chapter}{Eidesstattliche Erkl\"arung}{17}{appendix*.7}
+\contentsline {chapter}{Eidesstattliche Erkl\"arung}{17}{chapter*.7}
