@@ -23,6 +23,11 @@
   \usepackage{xspace}
   \usepackage{algpseudocode}
   \usepackage{amsmath}
+  
+  \usepackage{forest}
+  \tikzset{el style/.style={midway, font=\scriptsize, inner sep=+1pt, auto=right}}
+  \forestset{angled/.style={
+  		content/.expanded={\noexpand\textless\forestov{content}\noexpand\textgreater}}}
 
 	% Beliebige Farben definieren (bei Bedarf auskommentieren und selbst benennen und festlegen)
 %	\definecolor{hellblau}{RGB}{238,242,247}

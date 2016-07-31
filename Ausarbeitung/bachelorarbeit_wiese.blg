@@ -9,55 +9,54 @@ A level-1 auxiliary file: chapters/04_Optimierung.aux
 A level-1 auxiliary file: chapters/05_Programm.aux
 A level-1 auxiliary file: chapters/pseudocode/encode_decode.aux
 A level-1 auxiliary file: chapters/06_Fazit.aux
-A level-1 auxiliary file: chapters/anhang.aux
 The style file: natdin.bst
 A level-1 auxiliary file: _eidversicherung.aux
-I found no \citation commands---while reading file bachelorarbeit_wiese.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: bibliography/literatur.bib
-You've used 0 entries,
+Warning--empty year in gsa-skript
+You've used 4 entries,
             4728 wiz_defined-function locations,
-            892 strings with 6588 characters,
-and the built_in function-call counts, 48 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 13
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
-chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+            909 strings with 7032 characters,
+and the built_in function-call counts, 1938 in all, are:
+= -- 183
+> -- 50
+< -- 39
++ -- 49
+- -- 15
+* -- 121
+:= -- 351
+add.period$ -- 5
+call.type$ -- 4
+change.case$ -- 17
+chr.to.int$ -- 4
+cite$ -- 5
+duplicate$ -- 65
+empty$ -- 145
+format.name$ -- 31
+if$ -- 382
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 0
-newline$ -- 15
-num.names$ -- 0
-pop$ -- 0
+missing$ -- 20
+newline$ -- 37
+num.names$ -- 16
+pop$ -- 32
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 25
 quote$ -- 0
-skip$ -- 1
+skip$ -- 108
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 82
+swap$ -- 11
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
-warning$ -- 0
-while$ -- 0
+type$ -- 51
+warning$ -- 1
+while$ -- 17
 width$ -- 0
-write$ -- 12
-(There was 1 error message)
+write$ -- 64
+(There was 1 warning)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.28)  29 JUL 2016 15:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.28)  31 JUL 2016 17:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -415,9 +415,419 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
+(/usr/local/texlive/2015/texmf-dist/tex/latex/forest/forest.sty
+Package: forest 2015/05/04 v1.06 Drawing (linguistic) trees
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
+x
+\pgfutil@everybye=\toks30
+\pgfutil@tempdima=\dimen125
+\pgfutil@tempdimb=\dimen126
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-li
+sts.tex))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box36
+(/usr/local/texlive/2015/texmf-dist/tex/latex/ms/everyshi.sty
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+Package: pgfrcs 2013/12/20 v3.0.0 (rcs-revision 1.28)
+))
+Package: pgf 2013/12/18 v3.0.0 (rcs-revision 1.14)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2013/11/30 v3.0.0 (rcs-revision 1.47)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks31
+\pgfkeys@temptoks=\toks32
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.c
+ode.tex
+\pgfkeys@tmptoks=\toks33
+))
+\pgf@x=\dimen127
+\pgf@y=\dimen128
+\pgf@xa=\dimen129
+\pgf@ya=\dimen130
+\pgf@xb=\dimen131
+\pgf@yb=\dimen132
+\pgf@xc=\dimen133
+\pgf@yc=\dimen134
+\w@pgf@writea=\write3
+\r@pgf@reada=\read1
+\c@pgf@counta=\count128
+\c@pgf@countb=\count129
+\c@pgf@countc=\count130
+\c@pgf@countd=\count131
+\t@pgf@toka=\toks34
+\t@pgf@tokb=\toks35
+\t@pgf@tokc=\toks36
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.d
+ef
+File: pgfsys-pdftex.def 2013/07/18  (rcs-revision 1.33)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-p
+df.def
+File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
+code.tex
+File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
+\pgfsyssoftpath@smallbuffer@items=\count132
+\pgfsyssoftpath@bigbuffer@items=\count133
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
+code.tex
+File: pgfsysprotocol.code.tex 2006/10/16  (rcs-revision 1.4)
+)) (/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+LaTeX Info: Redefining \color on input line 702.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2010/04/11 v3.0.0 (rcs-revision 1.7)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen135
+\pgfmath@count=\count134
+\pgfmath@box=\box37
+\pgfmath@toks=\toks37
+\pgfmath@stack@operand=\toks38
+\pgfmath@stack@operation=\toks39
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.
+tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic
+.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigo
+nometric.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.rando
+m.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.compa
+rison.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.
+code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round
+.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.
+code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
+erarithmetics.code.tex)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count135
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
+de.tex
+File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
+\pgf@picminx=\dimen136
+\pgf@picmaxx=\dimen137
+\pgf@picminy=\dimen138
+\pgf@picmaxy=\dimen139
+\pgf@pathminx=\dimen140
+\pgf@pathmaxx=\dimen141
+\pgf@pathminy=\dimen142
+\pgf@pathmaxy=\dimen143
+\pgf@xx=\dimen144
+\pgf@xy=\dimen145
+\pgf@yx=\dimen146
+\pgf@yy=\dimen147
+\pgf@zx=\dimen148
+\pgf@zy=\dimen149
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconst
+ruct.code.tex
+File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
+\pgf@path@lastx=\dimen150
+\pgf@path@lasty=\dimen151
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage
+.code.tex
+File: pgfcorepathusage.code.tex 2013/12/13  (rcs-revision 1.23)
+\pgf@shorten@end@additional=\dimen152
+\pgf@shorten@start@additional=\dimen153
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.co
+de.tex
+File: pgfcorescopes.code.tex 2013/10/09  (rcs-revision 1.44)
+\pgfpic=\box38
+\pgf@hbox=\box39
+\pgf@layerbox@main=\box40
+\pgf@picture@serial@count=\count136
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
+ate.code.tex
+File: pgfcoregraphicstate.code.tex 2013/09/19  (rcs-revision 1.11)
+\pgflinewidth=\dimen154
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransform
+ations.code.tex
+File: pgfcoretransformations.code.tex 2013/10/10  (rcs-revision 1.17)
+\pgf@pt@x=\dimen155
+\pgf@pt@y=\dimen156
+\pgf@pt@temp=\dimen157
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.cod
+e.tex
+File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.c
+ode.tex
+File: pgfcoreobjects.code.tex 2006/10/11  (rcs-revision 1.2)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathproce
+ssing.code.tex
+File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.co
+de.tex
+File: pgfcorearrows.code.tex 2013/11/07  (rcs-revision 1.40)
+\pgfarrowsep=\dimen158
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.cod
+e.tex
+File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
+\pgf@max=\dimen159
+\pgf@sys@shading@range@num=\count137
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
+e.tex
+File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.
+code.tex
+File: pgfcoreexternal.code.tex 2013/07/15  (rcs-revision 1.20)
+\pgfexternal@startupbox=\box41
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.co
+de.tex
+File: pgfcorelayers.code.tex 2013/07/18  (rcs-revision 1.7)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretranspare
+ncy.code.tex
+File: pgfcoretransparency.code.tex 2013/09/30  (rcs-revision 1.5)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.
+code.tex
+File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.cod
+e.tex
+File: pgfmoduleshapes.code.tex 2013/10/31  (rcs-revision 1.34)
+\pgfnodeparttextbox=\box42
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.
+tex
+File: pgfmoduleplot.code.tex 2013/07/31  (rcs-revision 1.12)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-0-65.sty
+Package: pgfcomp-version-0-65 2007/07/03 v3.0.0 (rcs-revision 1.7)
+\pgf@nodesepstart=\dimen160
+\pgf@nodesepend=\dimen161
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-1-18.sty
+Package: pgfcomp-version-1-18 2007/07/23 v3.0.0 (rcs-revision 1.1)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)
+) (/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2013/12/13 v3.0.0 (rcs-revision 1.25)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
+\pgffor@iter=\dimen162
+\pgffor@skip=\dimen163
+\pgffor@stack=\toks40
+\pgffor@toks=\toks41
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.cod
+e.tex
+Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
+dlers.code.tex
+File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
+\pgf@plot@mark@count=\count138
+\pgfplotmarksize=\dimen164
+)
+\tikz@lastx=\dimen165
+\tikz@lasty=\dimen166
+\tikz@lastxsaved=\dimen167
+\tikz@lastysaved=\dimen168
+\tikzleveldistance=\dimen169
+\tikzsiblingdistance=\dimen170
+\tikz@figbox=\box43
+\tikz@figbox@bg=\box44
+\tikz@tempbox=\box45
+\tikz@tempbox@bg=\box46
+\tikztreelevel=\count139
+\tikznumberofchildren=\count140
+\tikznumberofcurrentchild=\count141
+\tikz@fig@count=\count142
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
+e.tex
+File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
+\pgfmatrixcurrentrow=\count143
+\pgfmatrixcurrentcolumn=\count144
+\pgf@matrix@numberofcolumns=\count145
+)
+\tikz@expandcount=\count146
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.0 (rcs-revision 1.2)
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2008/06/26 v3.0.0 (rcs-revision 1.1)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2013/07/18 v3.0.0 (rcs-revision 1.5)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2013/09/11 v3.0.0 (rcs-revision 1.6)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2008/06/26 v3.0.0 (rcs-revision 1.1)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.callouts.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.callouts.code.tex))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2010/01/07 v3.0.0 (rcs-revision 1.2)
+\pgfnodepartlowerbox=\box47
+\pgfnodeparttwobox=\box48
+\pgfnodepartthreebox=\box49
+\pgfnodepartfourbox=\box50
+\pgfnodeparttwentybox=\box51
+\pgfnodepartnineteenbox=\box52
+\pgfnodeparteighteenbox=\box53
+\pgfnodepartseventeenbox=\box54
+\pgfnodepartsixteenbox=\box55
+\pgfnodepartfifteenbox=\box56
+\pgfnodepartfourteenbox=\box57
+\pgfnodepartthirteenbox=\box58
+\pgfnodeparttwelvebox=\box59
+\pgfnodepartelevenbox=\box60
+\pgfnodeparttenbox=\box61
+\pgfnodepartninebox=\box62
+\pgfnodeparteightbox=\box63
+\pgfnodepartsevenbox=\box64
+\pgfnodepartsixbox=\box65
+\pgfnodepartfivebox=\box66
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.5)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2013/07/15 v3.0.0 (rcs-revision 1.9)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryinterse
+ctions.code.tex
+\pgf@intersect@solutions=\count147
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgfopts/pgfopts.sty
+Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
+\pgfopts@list@add@a@toks=\toks42
+\pgfopts@list@add@b@toks=\toks43
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/etex-pkg/etex.sty
+Package: etex 2015/03/02 v2.1 eTeX basic definition package (PEB,DPC)
+\et@xins=\count148
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+\forest@temp@dimen=\dimen171
+\forest@temp@count=\count149
+\forest@n=\count150
+\forest@temp@global@count=\count151
+\forest@sort@m=\count152
+\forest@sort@k=\count153
+\forest@sort@p=\count154
+\bracket@content=\toks44
+\bracket@afterthought=\toks45
+\forest@node@maxid=\count155
+\forest@temp@toks=\toks46
+\forest@repeat@key@depth=\count156
+\forest@do@dynamics=\toks47
+\forest@box=\box67
+\forest@xg=\dimen172
+\forest@yg=\dimen173
+\forest@xs=\dimen174
+\forest@ys=\dimen175
+\forest@externalize@max@outer@n=\count157
+\forest@externalize@inner@n=\count158
+)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
-\everycr=\toks30
+\everycr=\toks48
 \minrowclearance=\skip57
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/tools/longtable.sty
@@ -426,28 +836,28 @@ Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
 \LTright=\skip59
 \LTpre=\skip60
 \LTpost=\skip61
-\LTchunksize=\count128
-\LTcapwidth=\dimen125
-\LT@head=\box36
-\LT@firsthead=\box37
-\LT@foot=\box38
-\LT@lastfoot=\box39
-\LT@cols=\count129
-\LT@rows=\count130
-\c@LT@tables=\count131
-\c@LT@chunks=\count132
-\LT@p@ftn=\toks31
+\LTchunksize=\count159
+\LTcapwidth=\dimen176
+\LT@head=\box68
+\LT@firsthead=\box69
+\LT@foot=\box70
+\LT@lastfoot=\box71
+\LT@cols=\count160
+\LT@rows=\count161
+\c@LT@tables=\count162
+\c@LT@chunks=\count163
+\LT@p@ftn=\toks49
 )
-Class scrbook Info: longtable captions redefined on input line 34.
+Class scrbook Info: longtable captions redefined on input line 39.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/nomencl/nomencl.sty
 Package: nomencl 2005/09/22 v4.2 Nomenclature package (LN)
-\nomlabelwidth=\dimen126
-\nom@tempdim=\dimen127
+\nomlabelwidth=\dimen177
+\nom@tempdim=\dimen178
 \nomitemsep=\skip62
 )
-\@nomenclaturefile=\write3
-\openout3 = `bachelorarbeit_wiese.nlo'.
+\@nomenclaturefile=\write4
+\openout4 = `bachelorarbeit_wiese.nlo'.
 
 
 Writing nomenclature file bachelorarbeit_wiese.nlo
@@ -456,19 +866,19 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip63
 \bibsep=\skip64
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count133
+\c@NAT@ctr=\count164
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/chngcntr/chngcntr.sty
 Package: chngcntr 2009/09/02 v1.0a change counter resetting
 )
-\c@dfn=\count134
+\c@dfn=\count165
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/palatino.sty
 Package: palatino 2005/04/12 PSNFSS-v9.2a (SPQR) 
 )
 Package scrkbase Info: You've told me to redefine the font selection of the
 (scrkbase)             element `sectioning' that is an alias of element
-(scrkbase)             `disposition' on input line 81.
+(scrkbase)             `disposition' on input line 86.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
@@ -526,14 +936,14 @@ Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
-\@linkdim=\dimen128
-\Hy@linkcounter=\count135
-\Hy@pagecounter=\count136
+\@linkdim=\dimen179
+\Hy@linkcounter=\count166
+\Hy@pagecounter=\count167
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count137
+\Hy@SavedSpaceFactor=\count168
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -547,17 +957,17 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count138
+\c@Hy@tempcnt=\count169
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen129
-\Fld@menulength=\count139
-\Field@Width=\dimen130
-\Fld@charsize=\dimen131
+\XeTeXLinkMargin=\dimen180
+\Fld@menulength=\count170
+\Field@Width=\dimen181
+\Fld@charsize=\dimen182
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -567,17 +977,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count140
-\c@Item=\count141
-\c@Hfootnote=\count142
+\Hy@abspage=\count171
+\c@Item=\count172
+\c@Hfootnote=\count173
 )
 
 Package hyperref Message: Driver: hpdftex.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\Fld@listcount=\count143
-\c@bookmark@seq@number=\count144
+\Fld@listcount=\count174
+\c@bookmark@seq@number=\count175
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
@@ -586,7 +996,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip65
 )
-Package hyperref Info: Option `plainpages' set `false' on input line 101.
+Package hyperref Info: Option `plainpages' set `false' on input line 106.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
@@ -625,17 +1035,17 @@ File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 )
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count145
-\scratchdimen=\dimen132
-\scratchbox=\box40
-\nofMPsegments=\count146
-\nofMParguments=\count147
-\everyMPshowfont=\toks32
-\MPscratchCnt=\count148
-\MPscratchDim=\dimen133
-\MPnumerator=\count149
-\makeMPintoPDFobject=\count150
-\everyMPtoPDFconversion=\toks33
+\scratchcounter=\count176
+\scratchdimen=\dimen183
+\scratchbox=\box72
+\nofMPsegments=\count177
+\nofMParguments=\count178
+\everyMPshowfont=\toks50
+\MPscratchCnt=\count179
+\MPscratchDim=\dimen184
+\MPnumerator=\count180
+\makeMPintoPDFobject=\count181
+\everyMPtoPDFconversion=\toks51
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -651,7 +1061,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count151
+\c@lstlisting=\count182
 
 
 Package scrpage2 Warning: seems you are using a very small headheight.
@@ -664,33 +1074,35 @@ Package scrpage2 Warning: seems you are using a very small headheight.
 
 bibgerm.sty: (n)german.sty 2.5b detected
 
-\AtBeginShipoutBox=\box41
+ABD: EveryShipout initializing macros
+\AtBeginShipoutBox=\box73
 Package hyperref Info: Link coloring ON on input line 7.
+
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count152
+\c@section@level=\count183
 )
 LaTeX Info: Redefining \ref on input line 7.
 LaTeX Info: Redefining \pageref on input line 7.
 LaTeX Info: Redefining \nameref on input line 7.
 
 (./bachelorarbeit_wiese.out) (./bachelorarbeit_wiese.out)
-\@outlinefile=\write4
-\openout4 = `bachelorarbeit_wiese.out'.
+\@outlinefile=\write5
+\openout5 = `bachelorarbeit_wiese.out'.
 
 
 (./chapters/titelseite.tex
-<images/logo_uhh.jpg, id=84, 104.5506pt x 104.5506pt>
+<images/logo_uhh.jpg, id=91, 104.5506pt x 104.5506pt>
 File: images/logo_uhh.jpg Graphic file (type jpg)
 
 <use images/logo_uhh.jpg>
 Package pdftex.def Info: images/logo_uhh.jpg used on input line 13.
 (pdftex.def)             Requested size: 71.13188pt x 71.13335pt.
- <images/greypixel.png, id=86, 1.00375pt x 1.00375pt>
+ <images/greypixel.png, id=93, 1.00375pt x 1.00375pt>
 File: images/greypixel.png Graphic file (type png)
 
 <use images/greypixel.png>
@@ -742,8 +1154,8 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 3.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ))
-\tf@toc=\write5
-\openout5 = `bachelorarbeit_wiese.toc'.
+\tf@toc=\write6
+\openout6 = `bachelorarbeit_wiese.toc'.
 
 
 Underfull \hbox (badness 10000) has occurred while \output is active
@@ -755,79 +1167,6 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 
 
 ] [2
-
-
-] (./bachelorarbeit_wiese.lof)
-\tf@lof=\write6
-\openout6 = `bachelorarbeit_wiese.lof'.
-
-
-Underfull \hbox (badness 10000) has occurred while \output is active
-[]|[]
- []
-
-[3
-
-
-] [4
-
-
-] (./bachelorarbeit_wiese.lot)
-\tf@lot=\write7
-\openout7 = `bachelorarbeit_wiese.lot'.
-
-
-Underfull \hbox (badness 10000) has occurred while \output is active
-[]|[]
- []
-
-[5] [6
-
-
-] (./bachelorarbeit_wiese.nls
-Overfull \hbox (1217.05865pt too wide) in paragraph at lines 5--7
-[]
- []
-
-
-Overfull \hbox (1315.66206pt too wide) in paragraph at lines 5--7
-\T1/ppl/m/n/10.95 Informationstechnik 
- []
-
-
-Overfull \hbox (1217.05865pt too wide) in paragraph at lines 7--9
-[]
- []
-
-
-Overfull \hbox (1247.18192pt too wide) in paragraph at lines 7--9
-\T1/ppl/m/n/10.95 World
- []
-
-
-Overfull \hbox (1234.23912pt too wide) in paragraph at lines 7--9
-\T1/ppl/m/n/10.95 Wi-
- []
-
-
-Overfull \hbox (1228.99405pt too wide) in paragraph at lines 7--9
-\T1/ppl/m/n/10.95 de
- []
-
-
-Overfull \hbox (1238.30153pt too wide) in paragraph at lines 7--9
-\T1/ppl/m/n/10.95 Web 
- []
-
-)
-Underfull \hbox (badness 10000) has occurred while \output is active
-[]|[]
- []
-
-[7
-
-
-] [8
 
 
 ])
@@ -850,7 +1189,15 @@ Class scrbook Warning: \float@addtolists detected!
 (scrbook)              a package that still implements the
 (scrbook)              deprecated \float@addtolist interface .
 
-)
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 11.
+
+Overfull \hbox (4.29292pt too wide) in paragraph at lines 15--16
+[]\T1/ppl/m/n/10.95 Sei $\OMS/cmsy/m/n/10.95 A$ \T1/ppl/m/n/10.95 ei-ne end-li-
+che Men-ge von Buch-sta-ben, die man Al-pha-bet nennt. Für DNA-Sequenzen
+ []
+
+
 Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
@@ -860,50 +1207,152 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 
 
 
-]
-\openout2 = `chapters/02_Cigar.aux'.
-
- (./chapters/02_Cigar.tex [2
-
-
-
-
-]
-Kapitel 2.
-LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 8.
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 8.
-
-)
+])
 Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[3]
-\openout2 = `chapters/03_TracePoint.aux'.
+[2]
+\openout2 = `chapters/02_Cigar.aux'.
 
- (./chapters/03_TracePoint.tex [4
+ (./chapters/02_Cigar.tex
+Kapitel 2.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 9.
+(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 23.
+
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[3
 
 
 
 
 ]
-Kapitel 3.
+Overfull \hbox (2.46819pt too wide) in paragraph at lines 34--35
+\T1/ppl/m/n/10.95 und der da-zu-ge-hö-ri-ge CIGAR-String \T1/pcr/m/n/10.95 4M1D
+1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M
+ []
 
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 7.
 
-)
+Overfull \hbox (83.33546pt too wide) in paragraph at lines 58--99
+[][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[4]
+Overfull \hbox (45.1977pt too wide) in paragraph at lines 122--134
+[][][] 
+ []
+
+
+Overfull \hbox (81.61966pt too wide) in paragraph at lines 135--148
+[][][] 
+ []
+
+
 Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
 [5]
+\forest@temp@box=\box32767 (local)
+\forest@temp@box=\box32766 (local)
+\forest@temp@box=\box32765 (local)
+\forest@temp@box=\box32764 (local)
+\forest@temp@box=\box32763 (local)
+\forest@temp@box=\box32762 (local)
+\forest@temp@box=\box32761 (local)
+\forest@temp@box=\box32760 (local)
+\forest@temp@box=\box32759 (local)
+\forest@temp@box=\box32758 (local)
+\forest@temp@box=\box32757 (local)
+\forest@temp@box=\box32756 (local)
+\forest@temp@box=\box32755 (local)
+\forest@temp@box=\box32754 (local)
+\forest@temp@box=\box32753 (local)
+\forest@temp@box=\box32752 (local)
+\forest@temp@box=\box32751 (local)
+\forest@temp@box=\box32750 (local)
+)
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[6]
+\openout2 = `chapters/03_TracePoint.aux'.
+
+ (./chapters/03_TracePoint.tex
+Kapitel 3.
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[7
+
+
+
+
+]
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[8]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 87.
+
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[9]
+Overfull \hbox (62.81975pt too wide) in paragraph at lines 139--155
+[][][][] 
+ []
+
+\forest@temp@box=\box32767 (local)
+\forest@temp@box=\box32766 (local)
+\forest@temp@box=\box32765 (local)
+\forest@temp@box=\box32764 (local)
+\forest@temp@box=\box32763 (local)
+\forest@temp@box=\box32762 (local)
+\forest@temp@box=\box32761 (local)
+\forest@temp@box=\box32760 (local)
+\forest@temp@box=\box32759 (local)
+\forest@temp@box=\box32758 (local)
+\forest@temp@box=\box32757 (local)
+\forest@temp@box=\box32756 (local)
+\forest@temp@box=\box32755 (local)
+\forest@temp@box=\box32754 (local)
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[10])
+Underfull \hbox (badness 10000) has occurred while \output is active
+[]|[]
+ []
+
+[11]
 \openout2 = `chapters/04_Optimierung.aux'.
 
- (./chapters/04_Optimierung.tex [6
+ (./chapters/04_Optimierung.tex [12
 
 
 
@@ -919,10 +1368,10 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[7]
+[13]
 \openout2 = `chapters/05_Programm.aux'.
 
- (./chapters/05_Programm.tex [8
+ (./chapters/05_Programm.tex [14
 
 
 
@@ -933,7 +1382,7 @@ Kapitel 5.
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
 (hyperref)                than one, level fixed on input line 7.
 
-<images/UML.png, id=190, 1257.69875pt x 458.71375pt>
+<images/UML.png, id=223, 1257.69875pt x 458.71375pt>
 File: images/UML.png Graphic file (type png)
  <use images/UML.png>
 Package pdftex.def Info: images/UML.png used on input line 8.
@@ -948,7 +1397,7 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[9 <./images/UML.png>]
+[15 <./images/UML.png>]
 \openout2 = `chapters/pseudocode/encode_decode.aux'.
 
  (./chapters/pseudocode/encode_decode.tex
@@ -959,7 +1408,7 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[10
+[16
 
 
 ]
@@ -967,10 +1416,10 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[11]
+[17]
 \openout2 = `chapters/06_Fazit.aux'.
 
- (./chapters/06_Fazit.tex [12
+ (./chapters/06_Fazit.tex [18
 
 
 
@@ -982,23 +1431,32 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[13] [14
+[19] [20
 
 
 
 ] (./bachelorarbeit_wiese.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 27--31
+[]\T1/ppl/m/n/10.95 [Myers 2015] \T1/ppl/m/sc/10.95 Myers\T1/ppl/m/n/10.95 , Eu
+-ge-ne:  \T1/ppl/m/it/10.95 Re-cor-ding Ali-gnments with Trace Points\T1/ppl/m/
+n/10.95 .
+ []
 
-Package natbib Warning: Empty `thebibliography' environment on input line 15.
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--31
+[][]$\T1/pcr/m/n/10.95 https : / / dazzlerblog . wordpress . com / 2015 / 11 / 
+05 / trace-[]points/$[][]\T1/ppl/m/n/10.95 .
+ []
 
 )
 Underfull \hbox (badness 10000) has occurred while \output is active
 []|[]
  []
 
-[15
+[21
 
 
-] [16
+] [22
 
 
 ]
@@ -1009,7 +1467,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--6
 
  []
 
-) [17
+) [23
 
 
 
@@ -1024,29 +1482,34 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 45.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 45.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 45.
 Package rerunfilecheck Info: File `bachelorarbeit_wiese.out' has not changed.
-(rerunfilecheck)             Checksum: 2C71CF8889F787B6B1B3BCAC91AECD8A;1233.
+(rerunfilecheck)             Checksum: 183DAE57CCD23DBCCE22996407632B39;1301.
  ) 
 Here is how much of TeX's memory you used:
- 12666 strings out of 493089
- 190467 string characters out of 6134841
- 389357 words of memory out of 5000000
- 15767 multiletter control sequences out of 15000+600000
- 34686 words of font info for 61 fonts, out of 8000000 for 9000
+ 30929 strings out of 493089
+ 647261 string characters out of 6134841
+ 748423 words of memory out of 5000000
+ 33751 multiletter control sequences out of 15000+600000
+ 36657 words of font info for 65 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 45i,14n,56p,882b,457s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 120i,14n,129p,882b,3366s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texli
-ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
-e/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/
-texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2015/texmf-d
-ist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2015/texmf-dist/fon
-ts/type1/urw/palatino/uplri8a.pfb>
-Output written on bachelorarbeit_wiese.pdf (27 pages, 175394 bytes).
+live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
+015/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2015/texm
+f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/
+fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/t
+ype1/urw/palatino/uplr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/ur
+w/palatino/uplri8a.pfb>
+Output written on bachelorarbeit_wiese.pdf (27 pages, 255802 bytes).
 PDF statistics:
- 283 PDF objects out of 1000 (max. 8388607)
- 238 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
- 182 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 329 PDF objects out of 1000 (max. 8388607)
+ 279 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 202 words of extra memory for PDF output out of 10000 (max. 10000000)
 
