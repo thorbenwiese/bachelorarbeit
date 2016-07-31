@@ -14,7 +14,8 @@
 \contentsline {chapter}{\numberline {5}Programm}{15}{chapter.5}
 \contentsline {subsection}{\numberline {5.0.1}Aufbau}{15}{subsection.5.0.1}
 \contentsline {subsection}{\numberline {5.0.2}Funktionalit\"at}{15}{subsection.5.0.2}
+\contentsline {subsubsection}{\nonumberline Informationsverlust bei 'encode()'}{15}{section*.4}
 \contentsline {subsection}{\numberline {5.0.3}Grafiken Geschwindigkeit, Speicher}{15}{subsection.5.0.3}
 \contentsline {chapter}{\numberline {6}Fazit}{19}{chapter.6}
-\contentsline {chapter}{Literaturverzeichnis}{21}{section*.4}
-\contentsline {chapter}{Eidesstattliche Erkl\"arung}{23}{chapter*.6}
+\contentsline {chapter}{Literaturverzeichnis}{21}{section*.5}
+\contentsline {chapter}{Eidesstattliche Erkl\"arung}{23}{chapter*.7}

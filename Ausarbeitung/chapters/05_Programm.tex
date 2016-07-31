@@ -7,5 +7,8 @@
 \subsection{Aufbau}
 \includegraphics[width=\textwidth]{images/UML}
 \subsection{Funktionalität}
+\subsubsection{Informationsverlust bei 'encode()'}
+Die encode-Funktion extrahiert aus dem gegebenen CIGAR-String die Trace Points, welche dann zusammen mit dem $\Delta$-Wert und den Start- und Endpositionen der Sequenzabschnitte gespeichert werden. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren.
+Für die Rückgewinnung dieser Information muss in der 'decode()'-Funktion zunächst ein neues Alignment der jeweiligen Intervall-Paare errechnet werden.
 
 \subsection{Grafiken Geschwindigkeit, Speicher}

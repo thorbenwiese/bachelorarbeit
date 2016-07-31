@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.28)  31 JUL 2016 17:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.28)  31 JUL 2016 20:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1242,7 +1242,7 @@ Overfull \hbox (2.46819pt too wide) in paragraph at lines 34--35
  []
 
 
-Overfull \hbox (83.33546pt too wide) in paragraph at lines 58--99
+Overfull \hbox (46.47183pt too wide) in paragraph at lines 58--99
 [][][][][] 
  []
 
@@ -1257,7 +1257,7 @@ Overfull \hbox (45.1977pt too wide) in paragraph at lines 122--134
  []
 
 
-Overfull \hbox (81.61966pt too wide) in paragraph at lines 135--148
+Overfull \hbox (30.76434pt too wide) in paragraph at lines 135--148
 [][][] 
  []
 
@@ -1321,7 +1321,7 @@ Underfull \hbox (badness 10000) has occurred while \output is active
  []
 
 [9]
-Overfull \hbox (62.81975pt too wide) in paragraph at lines 139--155
+Overfull \hbox (25.95612pt too wide) in paragraph at lines 139--155
 [][][][] 
  []
 
@@ -1382,11 +1382,11 @@ Kapitel 5.
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
 (hyperref)                than one, level fixed on input line 7.
 
-<images/UML.png, id=223, 1257.69875pt x 458.71375pt>
+<images/UML.png, id=223, 1027.84pt x 588.1975pt>
 File: images/UML.png Graphic file (type png)
  <use images/UML.png>
 Package pdftex.def Info: images/UML.png used on input line 8.
-(pdftex.def)             Requested size: 426.79134pt x 155.65964pt.
+(pdftex.def)             Requested size: 426.79134pt x 244.24101pt.
 
 Overfull \hbox (10.88788pt too wide) in paragraph at lines 8--9
 [] 
@@ -1482,11 +1482,11 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 45.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 45.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 45.
 Package rerunfilecheck Info: File `bachelorarbeit_wiese.out' has not changed.
-(rerunfilecheck)             Checksum: 183DAE57CCD23DBCCE22996407632B39;1301.
+(rerunfilecheck)             Checksum: 3C77900950E774A68C2D9C43B6B64BC5;1301.
  ) 
 Here is how much of TeX's memory you used:
- 30929 strings out of 493089
- 647261 string characters out of 6134841
+ 30930 strings out of 493089
+ 647271 string characters out of 6134841
  748423 words of memory out of 5000000
  33751 multiletter control sequences out of 15000+600000
  36657 words of font info for 65 fonts, out of 8000000 for 9000
@@ -1506,10 +1506,10 @@ f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/
 fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/t
 ype1/urw/palatino/uplr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/ur
 w/palatino/uplri8a.pfb>
-Output written on bachelorarbeit_wiese.pdf (27 pages, 255802 bytes).
+Output written on bachelorarbeit_wiese.pdf (27 pages, 237326 bytes).
 PDF statistics:
- 329 PDF objects out of 1000 (max. 8388607)
- 279 compressed objects within 3 object streams
- 59 named destinations out of 1000 (max. 500000)
+ 330 PDF objects out of 1000 (max. 8388607)
+ 280 compressed objects within 3 object streams
+ 60 named destinations out of 1000 (max. 500000)
  202 words of extra memory for PDF output out of 10000 (max. 10000000)
 
