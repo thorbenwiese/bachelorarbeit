@@ -1,0 +1,209 @@
+%
+% Einleitung
+%
+
+\chapter{TracePoint Konzept}
+
+Ein neuer Ansatz der speichereffizienten Repräsentation von Alignments wurde von Gene Myers in \cite{myers} beschrieben und basiert auf dem Konzept der Trace Points.
+
+Sei $A$ ein Alignment von $u[i...j]$ und $v[k...\ell]$ mit $i < j$ und $k < l$ und sei $\Delta \in \mathbb{N}$. Sei $p = \left \lceil\frac{i}{\Delta}\right \rceil$. Man unterteilt $u[i...j]$ in $\tau = \left \lceil\frac{j}{\Delta}\right \rceil - \left \lfloor\frac{i}{\Delta}\right \rfloor$ Substrings $u_0, u_1, ... , u_{\tau -1}$ mit
+\[  
+u_q =
+\begin{cases} 
+u[i...p\cdot\Delta] & \text{falls }q = 0 \\
+u[(p+q-1)\cdot\Delta+1...(p+q)\cdot\Delta] & \text{falls }0<q<\tau -1\\
+u[(p+\tau-2)\cdot\Delta...j] & \text{falls }q = \tau -1
+\end{cases}
+\]
+
+Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings von $v$, der in A mit $u_q$ aligniert. $t_q$ nennt man Trace Point. Für $q = 0$ aligniert $u_0$ mit $v_0 = v[k...t_0]$. Für alle $q$ mit $0<q< \tau -1$ aligniert $u_q$ mit $v_q = v[t_{q-1}+1...t_q]$.
+
+Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$, berechnet hierfür ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
+
+Beispiel 2:
+\begin{verbatim}
+Sequenz 1: gagcatgttgcctggtcctttgctaggtactgtagaga
+Sequenz 2: gaccaagtaggcgtggaccttgctcggtctgtaagaga
+Delta: 15
+
+Gesamtalignment:
+
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0    
+
+seq1[0...14] aligniert mit seq2[0...15]
+gagc-a-t-gttgcc-tgg
+|| | | | |  | | |||
+gaccaagtag--g-cgtgg
+
+seq1[15...29] aligniert mit seq2[16...28]
+tcctttgctaggtac
+|||| ||| ||| |
+acctt-gctcggt-c
+
+seq1[30...37] aligniert mit seq2[29...37]
+tgta-gaga
+|||| ||||
+tgtaagaga
+
+Trace Points: [15, 28] 
+
+
+
+
+
+
+
+Berechnung der Intervalle anhand der Trace Points:
+
+seq1[0...14] aligniert mit seq2[0...15]
+gagc-a-t-gttgcc-tgg
+|| | | | |  | | |||
+gaccaagtag--g-cgtgg
+Score: 11.0
+
+seq1[15...29] aligniert mit seq2[16...28]
+tcctttgctaggtac
+|||| ||| ||| |
+acctt-gctcggt-c
+Score: 11.0
+
+seq1[30...37] aligniert mit seq2[29...37]
+tgta-gaga
+|||| ||||
+tgtaagaga
+Score: 8.0
+
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0    
+\end{verbatim}
+
+\subsection{Komplexität}
+
+ Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment. \cite[S.41-42]{gsa-skript}
+ 
+\subsection{Speicherverbrauch}
+Sei $\Delta = 5$ und das Alignment $\cal{A}$
+\begin{verbatim}
+		0    5    0    5    0    5    0    5    0    
+		gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+		|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+		gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+		0    5    0    5    0    5    0    5    0   
+\end{verbatim}
+
+wie in Abschnitt \ref{Cigar_Speicher} mit den dazugehörigen TracePoints $5, 10, 15, 20, 24, 28$ und 34 gegeben. Es ergibt sich somit das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$.
+
+Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $\left \lceil log_2(7) \right \rceil = 3$ Bit pro Symbol, also $7 \cdot 3 = 21$ Bit insgesamt.
+
+Der Huffman-Algorithmus würde bei dem oben genannten Beispiel der TracePoints wie folgt ablaufen:
+
+Gegeben sei das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$, sowie die relativen Wahrscheinlichkeiten $p(i)$ jeden Symbols aus $\cal{A}$ mit
+
+\(p(2) = \frac{3}{13}\\p(5) = \frac{2}{13}\\p(1) = \frac{2}{13}\\p(0) = \frac{2}{13}\\p(4) = \frac{2}{13}\\p(8) = \frac{1}{13}\\p(3)=\frac{1}{13}\)
+
+Ausführung des Huffman-Algorithmus:
+
+\begin{tabular}{llc}
+	$\frac{3}{13}$ & $c_1 = \lambda$&\\
+	$\frac{2}{13}$ & $c_2 = \lambda$&\\
+	$\frac{2}{13}$ & $c_3 = \lambda$&\\
+	$\frac{2}{13}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{13}$ & $c_5 = \lambda$&\\
+	$\frac{1}{13}$ & $c_6 = \lambda$&\\
+	$\frac{1}{13}$ & $c_7 = \lambda$&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{3}{13}$ & $c_1 = \lambda$&\\
+	$\frac{2}{13}$ & $c_2 = \lambda$&\\
+	$\frac{2}{13}$ & $c_3 = \lambda$&\\
+	$\frac{2}{13}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{13}$ & $c_5 = \lambda$&\\
+	$\frac{2}{13}$ & $c_6 = 0, c_7 = 1$&\\
+	&&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{4}{13}$ & $c_2 = 0, c_3 = 1$&\\
+	$\frac{3}{13}$ & $c_1 = \lambda$&\\
+	$\frac{2}{13}$ & $c_4 = \lambda$&\\
+	$\frac{2}{13}$ & $c_5 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{13}$ & $c_6 = 0, c_7 = 1$&\\
+	&&\\
+	&&
+\end{tabular}
+
+\begin{tabular}{llc}
+	$\frac{4}{13}$ & $c_2 = 0, c_3 = 1$&\\
+	$\frac{4}{13}$ & $c_4 = 0, c_5 = 1$&$\Rightarrow$\\
+	$\frac{3}{13}$ & $c_1 = \lambda$&\\
+	$\frac{2}{13}$ & $c_6 = 0, c_7 = 1$&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{5}{13}$ & $c_1 = 0, c_6 = 10, c_7 = 11$&\\
+	$\frac{4}{13}$ & $c_2 = 0, c_3 = 1$&$\Rightarrow$\\
+	$\frac{4}{13}$ & $c_4 = 0, c_5 = 1$&\\
+	&&
+\end{tabular}\begin{tabular}{ll}
+$\frac{8}{13}$ & $c_2 = 00, c_3 = 01, c_4 = 10, c_5 = 11$\\
+$\frac{5}{13}$ & $c_1 = 0, c_6 = 10, c_7 = 11$\\
+&\\
+&
+\end{tabular}
+
+\begin{tabular}{cllc}
+	$\Rightarrow$&$\frac{13}{13}$  & $c_1 = 10, c_2 = 000, c_3 = 001, c_4 = 010, c_5 = 011, c_6 = 110, c_7 = 111$&
+\end{tabular}
+
+Somit ergibt sich die Menge $C$ der Codewörter mit
+\[C = \{"10", "000", "001", "010", "011", "110", "111"\}\]
+
+und der dazugehörige Huffman-Baum:
+
+\begin{center}
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{13}{13}$
+		[$\frac{5}{13}$, edge label={node[midway,right,font=\scriptsize]{1}} 
+		[$\frac{2}{13}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$c_7$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$c_6$, edge label={node[midway,left,font=\scriptsize]{0}}] ] 
+		[$c_1$, edge label={node[midway,left,font=\scriptsize]{0}}]]
+		[$\frac{8}{13}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+		[$\frac{4}{13}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$c_5$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$c_4$, edge label={node[midway,left,font=\scriptsize]{0}}] ] 
+		[$\frac{4}{13}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+		[$c_3$, edge label={node[midway,right,font=\scriptsize]{1}}] 
+		[$c_2$, edge label={node[midway,left,font=\scriptsize]{0}}] ]]
+		]
+	\end{forest}
+\end{center}
+
+Der gesamte Bitverbraucht dieser Kodierung ist demnach 20 Bit.
+
+Der durchschnittliche Bitverbrauch für ein Symbol beträgt  
+\[\frac{13}{13} +  \frac{8}{13} + \frac{5}{13} + \frac{4}{13} + \frac{4}{13} + \frac{2}{13} \approx 2.77 \text{ Bit.}\]
+
+Die Entropie beträgt 
+\begin{center}
+\begin{tabular}{rcl}
+$H(X)$ &=& $-(\frac{3}{13} \cdot log_2(\frac{3}{13}) + \frac{2}{13} \cdot log_2(\frac{2}{13}) + \frac{2}{13} \cdot log_2(\frac{2}{13}) + \frac{2}{13} \cdot log_2(\frac{2}{13}) + $\\
+&&$\frac{2}{13} \cdot log_2(\frac{2}{13}) + \frac{1}{13} \cdot log_2(\frac{1}{13}) + \frac{1}{13} \cdot log_2(\frac{1}{13}))$\\
+&$\approx$& $ 2.72 \text{ Bit je Symbol}$
+\end{tabular}
+\end{center}
+
+Die Repräsentation des Alignments $\cal{A}$ benötigt als CIGAR-String mit einer naiven binären Kodierung 228 Bit und als Huffman-Kodierung 32 Bit, wobei die Kodierung der Trace Points mit $\Delta = 5$ mit einer naiven binären Kodierung 21 Bit und als Huffman-Kodierung 20 Bit benötigt.
+
+Es ist somit zu erkennen, dass die Kodierung der Trace Points in diesem Fall mit einem relativ klein gewählten $\Delta$ weniger Speicher benötigt, als die Kodierung des CIGAR-Strings. Dennoch hängt der Speicherverbrauch der Trace Points Kodierung von der Wahl des $\Delta$ ab, da bei einem kleinen $\Delta$ mehr Trace Points und somit Symbole gespeichert werden müssen, als bei einem großen $\Delta$ und kann somit bei einer sehr ungünstig gewählten Größe mehr Speicher verbrauchen als ein CIGAR-String.
+
+\subsection{Bewertung}
+Je größer der vorher definierte positive Parameter $\Delta$ ist, desto weniger Trace-Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace-Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
+
+Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
+
+
+\subsection{Grafiken}

@@ -1,0 +1,191 @@
+%
+% Einleitung
+%
+
+\chapter{CIGAR-Strings}
+
+Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten Cigar-String der aus einzelnen Zeichen besteht, die jeweil eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
+
+Beispiel 1: Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignment $A = (a\rightarrow a, c\rightarrow c, t\rightarrow t, ...)$ gegeben.
+\begin{center}
+	\texttt{
+		\begin{tabular}{ccccccccc}
+			a & c & t & - & g & a & a & c & t\\
+			$|$&$|$&$|$&&$|$&$|$&$|$& &$|$\\
+			a&c&t&a&g&a&a& - &t
+		\end{tabular}
+	}
+\end{center}
+Ein Alignment wird üblicherweise in drei Zeilen geschrieben, wobei in der ersten Zeile die Sequenz $u$ und in der dritten Zeile die Sequenz $v$ geschrieben wird. In der mittleren Zeile symbolisiert das Zeichen '$|$' eine Substitution, wobei üblicherweise nur ein Match markiert wird. Außerdem wird ein $\varepsilon$ aus der Edit-Operation in diesem Fall durch das Zeichen '-' dargestellt.
+
+Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. Das Format benötigt wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz \cite{sam}.
+
+\subsection{Komplexität}
+
+\subsection{Speicherverbrauch}\label{Cigar_Speicher}
+Sei das Alignment $\cal{A}$
+\begin{verbatim}
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0   
+\end{verbatim}
+und der dazugehörige CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M} gegeben.
+
+Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
+
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bits pro Symbol beansprucht \cite{coding}.
+
+Der Huffman-Algorithmus würde bei dem oben genannten Beispiel der TracePoints wie folgt ablaufen:
+
+Gegeben sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, sowie die relativen Wahrscheinlichkeiten $p(i)$ jeden Symbols aus $\cal{A}$ mit
+
+\begin{tabular}{lcl}
+$p(1)$&=& $\frac{13}{38}$\\
+$p(M)$ &=& $\frac{10}{38}$\\
+$p(D)$ &=& $\frac{5}{38}$\\
+$p(I)$ &=& $\frac{4}{38}$\\
+$p(4)$ &=& $\frac{2}{38}$\\
+$p(2)$ &=& $\frac{1}{38}$\\
+$p(5)$ &=& $\frac{1}{38}$\\
+$p(7)$ &=& $\frac{1}{38}$\\
+$p(8)$ &=& $\frac{1}{38}$
+\end{tabular}
+
+Ausführung des Huffman-Algorithmus:
+
+\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&\\
+	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{38}$ & $c_5 = \lambda$&\\
+	$\frac{1}{38}$ & $c_6 = \lambda$&\\
+	$\frac{1}{38}$ & $c_7 = \lambda$&\\
+	$\frac{1}{38}$ & $c_8 = \lambda$&\\
+	$\frac{1}{38}$ & $c_9 = \lambda$&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&\\
+	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{38}$ & $c_5 = \lambda$&\\
+	$\frac{2}{38}$ & $c_6 = 0, c_7 = 1$&\\
+	$\frac{1}{38}$ & $c_8 = \lambda$&\\
+	$\frac{1}{38}$ & $c_9 = \lambda$&\\
+	&&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&\\
+	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{2}{38}$ & $c_5 = \lambda$&\\
+	$\frac{2}{38}$ & $c_6 = 0, c_7 = 1$&\\
+	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
+	&&\\
+	&&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&\\
+	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
+	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10, c_7 = 11$&\\
+	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
+	&&\\
+	&&\\
+	&
+\end{tabular}
+
+\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&$\Rightarrow$\\
+	$\frac{4}{38}$ & $c_4 = \lambda$&\\
+	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10, c_7 = 11$&\\
+	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
+	&&\\
+	&&\\
+	&&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{6}{38}$ & $c_4 = 0, c_8 = 10, c_9 = 11$&$\Rightarrow$\\
+	$\frac{5}{38}$ & $c_3 = \lambda$&\\
+	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10, c_7 = 11$&\\
+	&&\\
+	&&\\
+	&&\\
+	&&
+\end{tabular}
+
+\begin{tabular}{llc}
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&\\
+	$\frac{9}{38}$ & $c_3 = 0, c_5 = 10, c_6 = 110, c_7 = 111$&$\Rightarrow$\\
+	$\frac{6}{38}$ & $c_4 = 0, c_8 = 10, c_9 = 11$&
+\end{tabular}\begin{tabular}{llc}
+	$\frac{15}{38}$ & $c_3 = 00, c_5 = 010, c_6 = 0110, c_7 = 0111,$&\\
+	& $c_4 = 10, c_8 = 110, c_9 = 111$&\\
+	$\frac{13}{38}$ & $c_1 = \lambda$&\\
+	$\frac{10}{38}$ & $c_2 = \lambda$&$\Rightarrow$\\
+	&&
+\end{tabular}
+
+\begin{tabular}{llc}
+	$\frac{23}{38}$ & $c_1 = 0, c_2 = 1$&\\
+	$\frac{15}{38}$ & $c_3 = 00, c_5 = 010, c_6 = 0110, c_7 = 0111,$&$\Rightarrow$\\
+	& $c_4 = 10, c_8 = 110, c_9 = 111$&\\
+	&&\\
+	&&
+\end{tabular}\begin{tabular}{ll}
+$\frac{38}{38}$ & $c_1 = 00, c_2 = 01, c_3 = 100,  c_4 = 110, c_5 = 1010,$\\
+ &$ c_6 = 10110, c_7 = 10111, c_8 = 1110, c_9 = 1111$\\
+&\\
+&\\
+&
+\end{tabular}
+
+Somit ergibt sich die Menge $C$ der Codewörter mit
+\[C = "00", "01", "100", "110", "1010", "10110", "10111", "1110", "1111"\]
+und der dazugehörige Huffman-Baum:
+
+\begin{center}
+\begin{forest}
+	for tree={grow'=south}
+	[$\frac{38}{38}$
+	[$\frac{15}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$\frac{6}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$c_9$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$c_8$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[$c_4$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[$\frac{9}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
+	[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$c_7$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$c_6$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[$c_5$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[$c_3$, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
+	[$\frac{23}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+	[$c_2$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$c_1$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	]
+\end{forest}
+\end{center}
+
+Der gesamte Bitverbrauch dieser Kodierung ist demnach 32 Bit.
+
+Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
+\[\frac{38}{38} + \frac{23}{38} + \frac{15}{38} + \frac{9}{38} + \frac{6}{38} + \frac{4}{38} + \frac{2}{38} + \frac{2}{38} \approx 2.61 \text{ Bit.}\]
+
+Die Entropie beträgt
+
+\begin{tabular}{lcl}
+	$H(X)$ &=& $-(\frac{13}{38} \cdot log_2(\frac{13}{38}) + \frac{10}{38} \cdot log_2(\frac{10}{38}) + \frac{5}{38} \cdot log_2(\frac{5}{38}) + $\\
+	&&$\frac{4}{38} \cdot log_2(\frac{4}{38}) + \frac{2}{38} \cdot log_2(\frac{2}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}) + $\\
+	&&$\frac{1}{38} \cdot log_2(\frac{1}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}))$\\
+	&$\approx$& $2.72 \text{ Bit je Symbol}$
+\end{tabular}
+
+\subsection{Grafiken}

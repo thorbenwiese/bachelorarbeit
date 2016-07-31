@@ -1,0 +1,45 @@
+%
+% Einleitung
+%
+
+\chapter{Einleitung}
+
+Ein Sequenzalignment wird in der Bioinformatik dazu verwendet, zwei oder mehrere Sequenzen von zum Beispiel DNA-Strängen oder Proteinsequenzen miteinander zu vergleichen und die Verwandtschaft zu bestimmen. Ein Alignment ist das Ergebnis eines solchen Vergleichs. Bei einem globalen Alignment wird jeweils die gesamte Sequenz betrachtet, bei einem lokalen Alignment lediglich Teilabschnitte der beiden Sequenzen.
+Um die verschiedenen Sequenzen vergleichen zu können, berechnet man einen Score oder die Kosten, um den Aufwand, den man betreiben muss, um die gegebenene Sequenz in die Zielsequenz umzuwandeln, beschreiben zu können. Hierbei wird jeweils das Optimum, also entweder der maximale Score oder die minimalen Kosten gesucht.
+Die verschiedenen Schritte, um die Symbolde der Strings zu verändern, sind bei Gleichheit ein 'match', bei der Substitution ein 'mismatch', bei der Löschung eine 'deletion' und bei der Einfügung eine 'insertion', welche je nach Verfahren unterschiedlich gewichtet werden können. Hierbei haben ähnliche Sequenzen einen hohen Score und geringe Kosten und unterschiedliche Sequenzen analog einen kleinen Score und hohe Kosten.
+
+\subsection*{Die Edit-Operationen}
+
+Die in diesem Dokument eingeführten Begriffe werden in \cite[S. 5-7, 14-16]{gsa-skript} definiert.
+
+Sei $\mathcal{A}$ eine endliche Menge von Buchstaben, die man Alphabet nennt. Für DNA-Sequenzen verwendet man üblicherweise die Menge der Basen, also $\mathcal{A} = \{a, c, g, t\}$. $\mathcal{A}^i$ sei die Menge der Sequenzen der Länge $i$ aus $\mathcal{A}$ und $\varepsilon$ sei die leere Sequenz. Formal ausgedrückt ist eine Edit-Operation ein Tupel 
+\[(\alpha, \beta) \in (\mathcal{A}^1 \cup \{\varepsilon\}) \times (\mathcal{A}^1 \cup \{\varepsilon\}) \backslash \{(\varepsilon, \varepsilon)\},\]
+
+Eine äquivalente Schreibweise von $(\alpha,\beta)$ ist $\alpha \rightarrow \beta$. Es gibt drei verschiedene Edit-Operationen
+\begin{align*}
+a \rightarrow \varepsilon &\indent \text{ist eine Deletion für alle }a \in \mathcal{A}\\
+\varepsilon \rightarrow b &\indent \text{ist eine Insertion für alle }b \in \mathcal{A}\\
+a \rightarrow b &\indent \text{ist eine Substitution für alle }a,b \in \mathcal{A}
+\end{align*}
+Dabei ist zu beachten, dass $\varepsilon \rightarrow \varepsilon$ keine Edit-Operation darstellt.
+
+Ein Alignment von zwei Sequenzen $u$ und $v$ lässt sich nun als eine Sequenz $(\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ von Edit-Operationen definieren, sodass $u = \alpha_1 ... \alpha_h$ und $v = \beta_1 ... \beta_h$ gilt.
+
+\subsection*{Die Edit-Distanz}
+
+Sei eine Kostenfunktion $\delta$ mit $\delta(a\rightarrow b)\geq 0$ für alle Substitutionen $a \rightarrow b$ und $\delta(\alpha \rightarrow \beta)>0$ für alle Einfügungen und Löschungen $\alpha \rightarrow \beta$ gegeben. Die Kosten für ein Alignment $A = (\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ ist die Summe der Kosten aller Edit-Operationen des Alignments.
+\[\delta(A) = \sum_{i=1}^{h}\delta(\alpha_i \rightarrow \beta_i)\]
+Ein Beispiel einer Kostenfunktion ist die Einheitskostenfunktion
+\[
+\delta(\alpha \rightarrow \beta) = 
+\begin{cases} 
+0 ,& \text{wenn } \alpha,\beta \in \mathcal{A} \text{ und } \alpha=\beta \\
+1 , & \text{sonst.}
+\end{cases}
+\]
+Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
+\[edist_\delta(u,v) = \min\{\delta(A) \mid A \text{ ist Alignment von }u \text{ und }v\}\]
+Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
+Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
+
+Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
