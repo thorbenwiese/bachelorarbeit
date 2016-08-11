@@ -1,11 +1,9 @@
 import sys
-import re
 
 import string, random
-from Bio import pairwise2
+import Cigar
 
-# pattern for CIGAR-String
-cigar_pattern = re.compile(r"\d+[MID=j]{1}")
+from Bio import pairwise2
 
 # Alignment structure with CIGAR-String
 class Alignment(object):
@@ -27,7 +25,8 @@ class Alignment(object):
 
     # calculate Alignment sequences with BioPython
 
-    # m = A match score is the score of identical chars, otherwise mismatch score.
+    # m = A match score is the score of identical chars, 
+    #     otherwise mismatch score.
     # s = Same open and extend gap penalties for both sequences.
     alns = pairwise2.align.globalms(sequence1.upper(), sequence2.upper(),
                                     2, -1, -2, -1)
@@ -36,12 +35,15 @@ class Alignment(object):
 
     aln1, aln2, = top_aln[0], top_aln[1]
     
-    assert (len(aln1) == len(aln2)), "Alignment sequences do not have the same length!"
+    assert (len(aln1) == len(aln2)), \
+      "Alignment sequences do not have the same length!"
 
     # calculate CIGAR-String from two aln_seq
 
-    assert aln1, "First alignment sequence for calculating CIGAR-String is empty."
-    assert aln2, "Second alignment sequence for calculating CIGAR-String is empty."
+    assert aln1, \
+      "First alignment sequence for calculating CIGAR-String is empty."
+    assert aln2, \
+      "Second alignment sequence for calculating CIGAR-String is empty."
 
     cigar = ""
     count = 1
@@ -87,21 +89,6 @@ class Alignment(object):
 
     return cigar
 
-  # calculate costs for CIGAR-String
-  def cigar_cost(self, cigar):
-
-    cost = 0
-
-    for element in cigar_pattern.findall(cigar):
-
-      ccount = int(element[:-1])
-      csymbol = element[-1]
-
-      if csymbol == 'I' or csymbol == 'D':
-        cost += 1
-
-    return cost
-
   # 0s and 5s for the pretty_print_alignment
   def print_sequence_positions(self, seq):
 
@@ -129,41 +116,14 @@ class Alignment(object):
 
     middle = pretty_print = ""
 
-    aln1, aln2 = self.cigar_to_aln(cigar)
+    aln1, aln2 = Cigar.cigar_to_aln(seq1, seq2, cigar)
 
-    assert len(aln1)==len(aln2), "Alignment sequences do not have the same length."
+    assert len(aln1)==len(aln2), \
+      "Alignment sequences do not have the same length."
 
     for i in range(0,len(aln1)):
       middle += '|' if aln1[i] == aln2[i] else ' '
 
     print "\n".join((self.print_sequence_positions(aln1),aln1,middle,aln2,
-                     self.print_sequence_positions(aln2),"CIGAR-String: "))+cigar
-
-  def cigar_to_aln(self, cigar):
-
-    cig_count = tmp1 = tmp2 = count = 0
-    aln1 = aln2 = ""
-
-    for element in cigar_pattern.findall(cigar):
-      count+=1
-
-      tmp1 += cig_count
-      tmp2 += cig_count
-      cig_count = int(element[:-1])
-      cig_symbol = element[-1]
-
-      if cig_symbol == 'M':
-        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
-        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
-
-      elif cig_symbol == 'I':
-        aln1 += str(self.seq1[tmp1:tmp1+cig_count])
-        aln2 += str("-" * cig_count)
-        tmp2-=cig_count
-
-      elif cig_symbol == 'D':
-        aln1 += str("-" * cig_count)
-        aln2 += str(self.seq2[tmp2:tmp2+cig_count])
-        tmp1 -= cig_count
-
-    return [aln1, aln2]
+                     self.print_sequence_positions(aln2),
+                     "CIGAR-String: "))+cigar

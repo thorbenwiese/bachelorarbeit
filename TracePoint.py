@@ -1,11 +1,12 @@
 import Alignment
+import Cigar
 
 import re
 import math
 import sys
 
 # pattern for CIGAR-String
-cigar_pattern = re.compile(r"\d+[MID=j]{1}")
+cigar_pattern = re.compile(r"\d+[MID]{1}")
 
 class TracePointAlignment(object):
 
@@ -59,7 +60,8 @@ class TracePointAlignment(object):
 
       cig_count = int(j[:-1])
       cig_symbol = j[1]
-      assert cig_symbol not in ['N','S','H','P'], "CIGAR-Symbol is not in ['M','I','D']"
+      assert cig_symbol not in ['N','S','H','P'], \
+        "CIGAR-Symbol is not in ['M','I','D']"
    
       for i in range(0,cig_count):
         if cig_symbol == 'I':
@@ -86,10 +88,14 @@ class TracePointAlignment(object):
     assert self.seq2, "Second sequence for decode function is empty."
     assert self.delta > 0, "Delta for decode function is <= 0."
     assert tp, "TracePoint Array for decode function is empty."
-    assert self.start_seq1 >= 0, "Starting position for first sequence in decode function is < 0."
-    assert self.start_seq2 >= 0, "Starting position for second sequence in decode function is < 0."
-    assert self.end_seq1 > 0, "End position for first sequence in decode function is <= 0."
-    assert self.end_seq2 > 0, "End position for second sequence in decode function is <= 0."
+    assert self.start_seq1 >= 0, \
+      "Starting position for first sequence in decode function is < 0."
+    assert self.start_seq2 >= 0, \
+      "Starting position for second sequence in decode function is < 0."
+    assert self.end_seq1 > 0, \
+      "End position for first sequence in decode function is <= 0."
+    assert self.end_seq2 > 0, \
+      "End position for second sequence in decode function is <= 0."
 
     # calculate CIGAR of intervals
     cigar = ""
@@ -113,38 +119,9 @@ class TracePointAlignment(object):
         cigar += aln.calc_cigar(self.seq1[i*self.delta:(i+1)*self.delta],
                                       self.seq2[tp[i-1]+1:tp[i] + 1])
 
-    cigar = self. combine_cigar(cigar)
+    cigar = Cigar.combine_cigar(cigar)
 
     return cigar
-
-  #def combine(self, cigar, calc_cigar):
-  def combine_cigar(self, cigar):
-
-    cig = ""
-    pattern = cigar_pattern.findall(cigar)
-
-    tmp = 0 
- 
-    for i in range(1,len(pattern)): 
- 
-      ccount = int(pattern[i][:-1]) 
-      csymbol = pattern[i][-1] 
- 
-      prev_ccount = int(pattern[i-1][:-1]) 
-      prev_csymbol = pattern[i-1][-1] 
- 
-      tmp += prev_ccount 
- 
-      if csymbol != prev_csymbol: 
- 
-        cig += "%d%s" % (tmp, prev_csymbol) 
-        if i < len(pattern): 
-          tmp = 0 
- 
-      if i == len(pattern)-1: 
-        cig += "%d%s" % (tmp + ccount, csymbol) 
- 
-    return cig
 
   # store TracePointAlignment to file
   def store_tp_aln(self,mode):

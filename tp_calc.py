@@ -2,6 +2,7 @@
 
 import TracePoint
 import Alignment
+import Cigar
 
 import sys
 import math
@@ -121,27 +122,30 @@ def main(argv):
   group1 = parser.add_mutually_exclusive_group()
   group2 = parser.add_mutually_exclusive_group()
 
-  parser.add_argument("-seq1", "--seq1", help="The first sequence")
-  parser.add_argument("-start1", help="Starting position of the first sequence", 
+  parser.add_argument("-seq1", "--seq1", help="The 1st sequence")
+  parser.add_argument("-start1", help="Starting position of the 1st sequence", 
                       type=int)
-  parser.add_argument("-end1", help="End position of the first sequence", 
+  parser.add_argument("-end1", help="End position of the 1st sequence", 
                       type=int)
-  parser.add_argument("-seq2", "--seq2", help="The second sequence")
-  parser.add_argument("-start2", help="Starting position of the second sequence", 
+  parser.add_argument("-seq2", "--seq2", help="The 2nd sequence")
+  parser.add_argument("-start2", help="Starting position of the 2nd sequence", 
                       type=int)
-  parser.add_argument("-end2", help="End position of the second sequence", 
+  parser.add_argument("-end2", help="End position of the 2nd sequence", 
                       type=int)
-  parser.add_argument("-d", "--delta", help="Delta", type=int)
+  parser.add_argument("-d", "--delta", help="Delta value", type=int)
   parser.add_argument("-iseq", "--input_seq", help="Input file with sequences")
-  parser.add_argument("-ialn", "--input_aln", help="Input file with TracePoints")
-  parser.add_argument("-id", "--id", help="Show specific alignment from Input files", 
+  parser.add_argument("-ialn", "--input_aln", 
+                      help="Input file with TracePoints")
+  parser.add_argument("-id", "--id", 
+                      help="Show specific alignment from Input files", 
                       type=int)
 
   group1.add_argument("-c", "--cigar", help="CIGAR-String")
   group1.add_argument("-b", "--bam", help="Input BAM-File")
   group1.add_argument("-s", "--sam", help="Input SAM-File")
   group1.add_argument("-r", "--random",
-  help="Random sequences generated with <Amount> <Length> <Error Rate> <Alphabet>",nargs=4)
+    help="Random sequences with <Amount> <Length> <Error Rate> <Alphabet>",
+    nargs=4)
 
   args = parser.parse_args()
 
@@ -185,9 +189,10 @@ def main(argv):
                                 start_seq1,end_seq1, start_seq2, end_seq2)
 
       cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-      old_cost = aln.cigar_cost(cigar)
-      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,end_seq1,
-                                              start_seq2, end_seq2, delta, cigar)
+      old_cost = Cigar.cigar_cost(cigar)
+      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
+                                              end_seq1, start_seq2, end_seq2, 
+                                              delta, cigar)
 
       if i == 0:
         tp_aln.store_tp_aln('w')
@@ -195,11 +200,13 @@ def main(argv):
         tp_aln.store_tp_aln('a')
 
   else: # args.cigar == false
-    aln = Alignment.Alignment(seq1, seq2, start_seq1,end_seq1, start_seq2,end_seq2)
+    aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
+                              start_seq2, end_seq2)
     cigar = aln.calc_cigar(seq1, seq2)
 
-    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, end_seq1,
-                                            start_seq2,end_seq2, delta, cigar)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
+                                            end_seq1, start_seq2, end_seq2, 
+                                            delta, cigar)
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
