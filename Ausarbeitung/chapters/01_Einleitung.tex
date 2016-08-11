@@ -8,7 +8,7 @@ Ein Sequenzalignment wird in der Bioinformatik dazu verwendet, zwei oder mehrere
 Um die verschiedenen Sequenzen vergleichen zu können, berechnet man einen Score oder die Kosten, um den Aufwand, den man betreiben muss, um die gegebenene Sequenz in die Zielsequenz umzuwandeln, beschreiben zu können. Hierbei wird jeweils das Optimum, also entweder der maximale Score oder die minimalen Kosten gesucht.
 Die verschiedenen Schritte, um die Symbolde der Strings zu verändern, sind bei Gleichheit ein 'match', bei der Substitution ein 'mismatch', bei der Löschung eine 'deletion' und bei der Einfügung eine 'insertion', welche je nach Verfahren unterschiedlich gewichtet werden können. Hierbei haben ähnliche Sequenzen einen hohen Score und geringe Kosten und unterschiedliche Sequenzen analog einen kleinen Score und hohe Kosten.
 
-\subsection*{Die Edit-Operationen}
+\section*{Die Edit-Operationen}
 
 Die in diesem Dokument eingeführten Begriffe werden in \cite[S. 5-7, 14-16]{gsa-skript} definiert.
 
@@ -25,7 +25,7 @@ Dabei ist zu beachten, dass $\varepsilon \rightarrow \varepsilon$ keine Edit-Ope
 
 Ein Alignment von zwei Sequenzen $u$ und $v$ lässt sich nun als eine Sequenz $(\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ von Edit-Operationen definieren, sodass $u = \alpha_1 ... \alpha_h$ und $v = \beta_1 ... \beta_h$ gilt.
 
-\subsection*{Die Edit-Distanz}
+\section*{Die Edit-Distanz}
 
 Sei eine Kostenfunktion $\delta$ mit $\delta(a\rightarrow b)\geq 0$ für alle Substitutionen $a \rightarrow b$ und $\delta(\alpha \rightarrow \beta)>0$ für alle Einfügungen und Löschungen $\alpha \rightarrow \beta$ gegeben. Die Kosten für ein Alignment $A = (\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ ist die Summe der Kosten aller Edit-Operationen des Alignments.
 \[\delta(A) = \sum_{i=1}^{h}\delta(\alpha_i \rightarrow \beta_i)\]

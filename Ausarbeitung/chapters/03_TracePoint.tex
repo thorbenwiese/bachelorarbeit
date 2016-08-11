@@ -77,11 +77,11 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 0    5    0    5    0    5    0    5    0    
 \end{verbatim}
 
-\subsection{Komplexität}
+\section{Komplexität}
 
  Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment. \cite[S.41-42]{gsa-skript}
  
-\subsection{Speicherverbrauch}
+\section{Speicherverbrauch}
 Sei $\Delta = 5$ und das Alignment $\cal{A}$
 \begin{verbatim}
 		0    5    0    5    0    5    0    5    0    
@@ -193,10 +193,10 @@ Die Repräsentation des Alignments $\cal{A}$ benötigt als CIGAR-String mit einer 
 
 Es ist somit zu erkennen, dass die Kodierung der Trace Points in diesem Fall mit einem relativ klein gewählten $\Delta$ weniger Speicher benötigt, als die Kodierung des CIGAR-Strings. Dennoch hängt der Speicherverbrauch der Trace Points Kodierung von der Wahl des $\Delta$ ab, da bei einem kleinen $\Delta$ mehr Trace Points und somit Symbole gespeichert werden müssen, als bei einem großen $\Delta$ und kann somit bei einer sehr ungünstig gewählten Größe mehr Speicher verbrauchen als ein CIGAR-String.
 
-\subsection{Bewertung}
+\section{Bewertung}
 Je größer der vorher definierte positive Parameter $\Delta$ ist, desto weniger Trace-Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace-Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
 
 Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
 
 
-\subsection{Grafiken}
+\section{Grafiken}
