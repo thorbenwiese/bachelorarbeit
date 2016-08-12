@@ -119,7 +119,9 @@ class TracePointAlignment(object):
         cigar += aln.calc_cigar(self.seq1[i*self.delta:(i+1)*self.delta],
                                       self.seq2[tp[i-1]+1:tp[i] + 1])
 
+    print "CIGAR:", cigar
     cigar = Cigar.combine_cigar(cigar)
+    print "CIGAR2:", cigar
 
     return cigar
 

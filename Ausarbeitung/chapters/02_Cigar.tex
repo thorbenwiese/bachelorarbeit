@@ -34,7 +34,7 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 \end{verbatim}
 und der dazugehörige CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M} gegeben.
 
-Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
+Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $\log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bits pro Symbol beansprucht \cite{coding}.
 
@@ -183,9 +183,9 @@ Der durchschnittliche Bitverbrauch für ein Symbol beträgt
 Die Entropie beträgt
 
 \begin{tabular}{lcl}
-	$H(X)$ &=& $-(\frac{13}{38} \cdot log_2(\frac{13}{38}) + \frac{10}{38} \cdot log_2(\frac{10}{38}) + \frac{5}{38} \cdot log_2(\frac{5}{38}) + $\\
-	&&$\frac{4}{38} \cdot log_2(\frac{4}{38}) + \frac{2}{38} \cdot log_2(\frac{2}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}) + $\\
-	&&$\frac{1}{38} \cdot log_2(\frac{1}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}) + \frac{1}{38} \cdot log_2(\frac{1}{38}))$\\
+	$H(X)$ &=& $-(\frac{13}{38} \cdot \log_2(\frac{13}{38}) + \frac{10}{38} \cdot \log_2(\frac{10}{38}) + \frac{5}{38} \cdot \log_2(\frac{5}{38}) + $\\
+	&&$\frac{4}{38} \cdot \log_2(\frac{4}{38}) + \frac{2}{38} \cdot \log_2(\frac{2}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}) + $\\
+	&&$\frac{1}{38} \cdot \log_2(\frac{1}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}))$\\
 	&$\approx$& $2.72 \text{ Bit je Symbol}$
 \end{tabular}
 
