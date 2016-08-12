@@ -1,7 +1,7 @@
 import sys
 
 import string, random
-import Cigar
+import Cigar_Pattern
 
 from Bio import pairwise2
 
@@ -134,7 +134,7 @@ class Alignment(object):
     cig_count = offset1 = offset2 = 0                                            
     aln1 = aln2 = ""                                                             
                                                                                   
-    for cig_count,cig_symbol in Cigar.parse_cigar(cigar):
+    for cig_count,cig_symbol in Cigar_Pattern.parse_cigar(cigar):
 
       if cig_symbol == 'M':                                                      
         aln1 += str(self.seq1[offset1:offset1 + cig_count])                      

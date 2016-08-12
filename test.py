@@ -3,8 +3,9 @@
 import tp_calc
 import Alignment
 import TracePoint
-import Cigar
+import Cigar_Pattern
 import time
+import Huffman
 
 import argparse
 
@@ -24,7 +25,8 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                     start_seq1, end_seq1, start_seq2, end_seq2)
 
     cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-    old_cost = Cigar.calc_bits(cigar)
+    print i, Huffman.huffman(cigar)
+    old_cost = Cigar_Pattern.calc_bits(cigar)
 
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                             end_seq1, start_seq2, end_seq2, 
@@ -32,7 +34,7 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
 
     if decode:
       cig = tp_aln.decode(tp_aln.tp)
-      new_cost = Cigar.calc_bits(cig)
+      new_cost = Cigar_Pattern.calc_bits(cig)
 
       if new_cost > old_cost:
         print old_cost,"<",new_cost
@@ -54,7 +56,7 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
                             start_seq2, end_seq2)
 
   cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-  old_cost = Cigar.calc_bits(cigar)
+  old_cost = Cigar_Pattern.calc_bits(cigar)
 
   tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                           end_seq1, start_seq2, end_seq2, 
@@ -62,7 +64,7 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
-    new_cost = Cigar.calc_bits(cig)
+    new_cost = Cigar_Pattern.calc_bits(cig)
 
     if new_cost > old_cost:
       print old_cost,"<",new_cost
@@ -83,11 +85,11 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
 
-  old_cost = Cigar.calc_bits(cigar)
+  old_cost = Cigar_Pattern.calc_bits(cigar)
 
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
-    new_cost = Cigar.calc_bits(cig)
+    new_cost = Cigar_Pattern.calc_bits(cig)
 
     if new_cost > old_cost:
       print old_cost,"<",new_cost
@@ -202,7 +204,7 @@ def main():
   elif args.random:
     test_random(verbose, decode)
   elif args.intense:
-    test_random_sequences(10000,200,0.15,"acgt",10,verbose,decode)
+    test_random_sequences(1000,200,0.15,"acgt",10,verbose,decode)
   else:
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);

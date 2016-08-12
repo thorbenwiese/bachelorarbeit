@@ -2,7 +2,7 @@
 
 import TracePoint
 import Alignment
-import Cigar
+import Cigar_Pattern
 
 import sys
 import math
@@ -189,7 +189,7 @@ def main(argv):
                                 start_seq1,end_seq1, start_seq2, end_seq2)
 
       cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-      old_cost = Cigar.cigar_cost(cigar)
+      old_cost = Cigar_Pattern.calc_bits(cigar)
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
                                               end_seq1, start_seq2, end_seq2, 
                                               delta, cigar)
