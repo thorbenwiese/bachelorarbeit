@@ -26,27 +26,36 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                     start_seq1, end_seq1, start_seq2, end_seq2)
 
     cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-    test = "4M1D1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M"
-    print (i/2)+1, Huffman.huffman(test)
-    #print (i/2)+1, int(math.ceil(math.log(len(cigar),2)))*len(cigar)
-    old_cost = Cigar_Pattern.calc_bits(cigar)
+    # huffman coding for cigar
+    # print Huffman.huffman(cigar)
+
+    # naiive binary coding for cigar
+    # print (i/2)+1, int(math.ceil(math.log(len(cigar),2)))*len(cigar)
+
+    # unary coding
+    # print (i/2)+1, Huffman.unary(cigar)
 
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                             end_seq1, start_seq2, end_seq2, 
                                             delta, cigar)
 
+    
+    # naiive binary coding for TPs
+    # print (i/2)+1, int(math.ceil(math.log(len(tp_aln.tp),2)))*len(tp_aln.tp)
+
+    TP = []
+    for i in range(1,len(tp_aln.tp)):
+      TP.append(tp_aln.tp[i]-tp_aln.tp[i-1])
+    # print TP
+
+    # unary coding
+    print (i/2)+1, Huffman.unary(TP)
+
     if decode:
       cig = tp_aln.decode(tp_aln.tp)
-      new_cost = Cigar_Pattern.calc_bits(cig)
-
-      if new_cost > old_cost:
-        print old_cost,"<",new_cost
 
       if verbose:
         aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
-
-      print "Alter Bitverbrauch:", old_cost
-      print "Neuer Bitverbrauch:", new_cost
 
     if verbose:
       print "# TracePoints:", tp_aln.tp
@@ -59,7 +68,6 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
                             start_seq2, end_seq2)
 
   cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-  old_cost = Cigar_Pattern.calc_bits(cigar)
 
   tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                           end_seq1, start_seq2, end_seq2, 
@@ -67,10 +75,6 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
 
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
-    new_cost = Cigar_Pattern.calc_bits(cig)
-
-    if new_cost > old_cost:
-      print old_cost,"<",new_cost
 
     if verbose:
       aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
@@ -88,14 +92,8 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
 
-  old_cost = Cigar_Pattern.calc_bits(cigar)
-
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
-    new_cost = Cigar_Pattern.calc_bits(cig)
-
-    if new_cost > old_cost:
-      print old_cost,"<",new_cost
 
     if verbose:
       aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)

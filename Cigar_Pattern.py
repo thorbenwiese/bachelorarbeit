@@ -68,24 +68,3 @@ def combine_cigar(cigar):
       cig += "%d%s" % (tmp + ccount, csymbol) 
 
   return cig
-
-# calculate costs for CIGAR-String
-# coding: M -> '0', I -> '10', D -> '11'
-# ==> M 1 Bit, I/D 2 Bit
-def calc_bits(cigar):                                                   
-     
-  bits = 0
-
-  for element in cigar_pattern.findall(cigar):
-
-    ccount = int(element[:-1])                                                 
-    csymbol = element[-1]
-    
-    if csymbol == 'M':
-      bits += ccount
-
-    else:
-      bits += ccount * 2
-                                                                              
-  return bits
-

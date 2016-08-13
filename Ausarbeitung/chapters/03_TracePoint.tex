@@ -95,7 +95,7 @@ Sei $\Delta = 5$ und das Alignment $\cal{A}$
 
 wie in Abschnitt \ref{Cigar_Speicher} mit den dazugehörigen TracePoints $5, 10, 15, 20, 24, 28$ und 34 gegeben. Es ergibt sich somit das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$.
 
-Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $\left \lceil log_2(7) \right \rceil = 3$ Bit pro Symbol, also $7 \cdot 3 = 21$ Bit insgesamt.
+Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $\left \lceil \log_2(7) \right \rceil = 3$ Bit pro Symbol, also $7 \cdot 3 = 21$ Bit insgesamt.
 
 %TODO unäre Kodierung
 
@@ -103,7 +103,11 @@ Die Repräsentation des Alignments $\cal{A}$ benötigt als CIGAR-String mit einer 
 
 Es ist somit zu erkennen, dass die Kodierung der Trace Points in diesem Fall mit einem relativ klein gewählten $\Delta$ weniger Speicher benötigt, als die Kodierung des CIGAR-Strings. Dennoch hängt der Speicherverbrauch der Trace Points Kodierung von der Wahl des $\Delta$ ab, da bei einem kleinen $\Delta$ mehr Trace Points und somit Symbole gespeichert werden müssen, als bei einem großen $\Delta$ und kann somit bei einer sehr ungünstig gewählten Größe mehr Speicher verbrauchen als ein CIGAR-String.
 
+\subsection{Delta-Kodierung}
+
 \subsection{Testläufe}
+
+
 
 \section{Bewertung}
 Je größer der vorher definierte positive Parameter $\Delta$ ist, desto weniger Trace-Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace-Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
