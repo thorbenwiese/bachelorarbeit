@@ -24,6 +24,7 @@ Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. D
 \clearpage
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
+\subsection{Beispiel}
 Sei das Alignment $\cal{A}$
 \begin{verbatim}
 0    5    0    5    0    5    0    5    0    
@@ -38,117 +39,46 @@ Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in 
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bits pro Symbol beansprucht \cite{coding}.
 
-Der Huffman-Algorithmus würde bei dem oben genannten Beispiel der TracePoints wie folgt ablaufen:
+Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
 
-Gegeben sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, sowie die relativen Wahrscheinlichkeiten $p(i)$ jeden Symbols aus $\cal{A}$ mit
+Gegeben sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, sowie die relativen Wahrscheinlichkeiten $p(i)$ jeden Symbols $i \in$ $\cal{A}$ mit
 
-\begin{tabular}{lcl}
-$p(1)$&=& $\frac{13}{38}$\\
-$p(M)$ &=& $\frac{10}{38}$\\
-$p(D)$ &=& $\frac{5}{38}$\\
-$p(I)$ &=& $\frac{4}{38}$\\
-$p(4)$ &=& $\frac{2}{38}$\\
-$p(2)$ &=& $\frac{1}{38}$\\
-$p(5)$ &=& $\frac{1}{38}$\\
-$p(7)$ &=& $\frac{1}{38}$\\
-$p(8)$ &=& $\frac{1}{38}$
-\end{tabular}
+\begin{center}
+	\begin{tabular}{ccc}
+		$i$&Anzahl&$p(i)$\\
+		\hline
+		1 & 13 &$\frac{13}{38}$\\
+		M & 10 & $\frac{10}{38}$\\
+		D & 5 & $\frac{5}{38}$\\
+		I & 4 & $\frac{4}{38}$\\
+		4 & 2 & $\frac{2}{38}$\\
+		2 & 1 & $\frac{1}{38}$\\
+		5 & 1 & $\frac{1}{38}$\\
+		7 & 1 & $\frac{1}{38}$\\
+		8 & 1 & $\frac{1}{38}$
+	\end{tabular}
+\end{center}
 
-Ausführung des Huffman-Algorithmus:
+Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 
-\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&\\
-	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
-	$\frac{2}{38}$ & $c_5 = \lambda$&\\
-	$\frac{1}{38}$ & $c_6 = \lambda$&\\
-	$\frac{1}{38}$ & $c_7 = \lambda$&\\
-	$\frac{1}{38}$ & $c_8 = \lambda$&\\
-	$\frac{1}{38}$ & $c_9 = \lambda$&
-\end{tabular}\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&\\
-	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
-	$\frac{2}{38}$ & $c_5 = \lambda$&\\
-	$\frac{2}{38}$ & $c_6 = 0, c_7 = 1$&\\
-	$\frac{1}{38}$ & $c_8 = \lambda$&\\
-	$\frac{1}{38}$ & $c_9 = \lambda$&\\
-	&&
-\end{tabular}\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&\\
-	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
-	$\frac{2}{38}$ & $c_5 = \lambda$&\\
-	$\frac{2}{38}$ & $c_6 = 0, c_7 = 1$&\\
-	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
-	&&\\
-	&&
-\end{tabular}\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&\\
-	$\frac{4}{38}$ & $c_4 = \lambda$&$\Rightarrow$\\
-	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10,$&\\
-	&$c_7 = 11$&\\
-	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
-	&&\\
-	&&
-\end{tabular}
+\begin{center}
+	\begin{tabular}{crr}
+		Symbol & Kodierung & Anzahl Bits\\
+		\hline
+		1 & 00 & 2\\
+		M & 01 & 2\\
+		D & 100 & 3\\
+		I & 110 & 3\\
+		4 & 1010 & 4\\
+		7 & 1110 & 4\\
+		8 & 1111 & 4\\
+		2 & 10110 & 5\\
+		5 & 10111 & 5\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&32
+	\end{tabular}
+\end{center}
 
-\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&$\Rightarrow$\\
-	$\frac{4}{38}$ & $c_4 = \lambda$&\\
-	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10, c_7 = 11$&\\
-	$\frac{2}{38}$ & $c_8 = 0, c_9 = 1$&\\
-	&&\\
-	&&\\
-	&&
-\end{tabular}\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{6}{38}$ & $c_4 = 0, c_8 = 10, c_9 = 11$&$\Rightarrow$\\
-	$\frac{5}{38}$ & $c_3 = \lambda$&\\
-	$\frac{4}{38}$ & $c_5 = 0, c_6 = 10, c_7 = 11$&\\
-	&&\\
-	&&\\
-	&&\\
-	&&
-\end{tabular}
-
-\begin{tabular}{llc}
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&\\
-	$\frac{9}{38}$ & $c_3 = 0, c_5 = 10, c_6 = 110, c_7 = 111$&$\Rightarrow$\\
-	$\frac{6}{38}$ & $c_4 = 0, c_8 = 10, c_9 = 11$&
-\end{tabular}\begin{tabular}{llc}
-	$\frac{15}{38}$ & $c_3 = 00, c_5 = 010, c_6 = 0110, c_7 = 0111,$&\\
-	& $c_4 = 10, c_8 = 110, c_9 = 111$&\\
-	$\frac{13}{38}$ & $c_1 = \lambda$&\\
-	$\frac{10}{38}$ & $c_2 = \lambda$&$\Rightarrow$\\
-	&&
-\end{tabular}
-
-\begin{tabular}{llc}
-	$\frac{23}{38}$ & $c_1 = 0, c_2 = 1$&\\
-	$\frac{15}{38}$ & $c_3 = 00, c_5 = 010, c_6 = 0110, c_7 = 0111,$&$\Rightarrow$\\
-	& $c_4 = 10, c_8 = 110, c_9 = 111$&\\
-	&&\\
-	&&
-\end{tabular}\begin{tabular}{ll}
-$\frac{38}{38}$ & $c_1 = 00, c_2 = 01, c_3 = 100,  c_4 = 110,$\\
- &$c_5 = 1010, c_6 = 10110, c_7 = 10111,$\\
- &$c_8 = 1110, c_9 = 1111$\\
-&\\
-&
-\end{tabular}
-
-Somit ergibt sich die Menge $C$ der Codewörter mit
-\[C = "00", "01", "100", "110", "1010", "10110", "10111", "1110", "1111"\]
 und der dazugehörige Huffman-Baum:
 
 \begin{center}
@@ -158,19 +88,19 @@ und der dazugehörige Huffman-Baum:
 	[$\frac{15}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
 	[$\frac{6}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
 	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[$c_9$, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[$c_8$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[$c_4$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[8, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[7, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[I, edge label={node[midway,left,font=\scriptsize]{0}}] ]
 	[$\frac{9}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
 	[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
 	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[$c_7$, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[$c_6$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[$c_5$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[$c_3$, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
+	[5, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[2, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[4, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
 	[$\frac{23}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
-	[$c_2$, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[$c_1$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	[M, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[1, edge label={node[midway,left,font=\scriptsize]{0}}] ]
 	]
 \end{forest}
 \end{center}
@@ -178,39 +108,250 @@ und der dazugehörige Huffman-Baum:
 Der gesamte Bitverbrauch dieser Kodierung ist demnach 32 Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{38}{38} + \frac{23}{38} + \frac{15}{38} + \frac{9}{38} + \frac{6}{38} + \frac{4}{38} + \frac{2}{38} + \frac{2}{38} \approx 2.61 \text{ Bit.}\]
+\[\frac{38 + 23 + 15 + 9 + 6 + 4 + 2 + 2}{38} \approx 2.61 \text{ Bit.}\]
 
-Die Entropie beträgt
+\subsection{Testläufe}
 
-\begin{tabular}{lcl}
-	$H(X)$ &=& $-(\frac{13}{38} \cdot \log_2(\frac{13}{38}) + \frac{10}{38} \cdot \log_2(\frac{10}{38}) + \frac{5}{38} \cdot \log_2(\frac{5}{38}) + $\\
-	&&$\frac{4}{38} \cdot \log_2(\frac{4}{38}) + \frac{2}{38} \cdot \log_2(\frac{2}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}) + $\\
-	&&$\frac{1}{38} \cdot \log_2(\frac{1}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}) + \frac{1}{38} \cdot \log_2(\frac{1}{38}))$\\
-	&$\approx$& $2.72 \text{ Bit je Symbol}$
-\end{tabular}
+Alle folgenden Grafiken wurden mit den folgenden Parametern berechnet:
 
-\begin{tikzpicture}
-\begin{axis}[
-	title={Bitverbrauch der Huffman-Kodierung},
+Jeweils 100 zufällig generierte Sequenzpaare mit 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10.
+
+\begin{filecontents*}{cigar_huffman.txt}
+	1 45
+	2 26
+	3 32
+	4 31
+	5 39
+	6 32
+	7 27
+	8 37
+	9 32
+	10 36
+	11 36
+	12 45
+	13 37
+	14 27
+	15 39
+	16 32
+	17 38
+	18 39
+	19 27
+	20 44
+	21 32
+	22 43
+	23 32
+	24 38
+	25 38
+	26 45
+	27 32
+	28 39
+	29 38
+	30 26
+	31 32
+	32 38
+	33 37
+	34 32
+	35 27
+	36 32
+	37 37
+	38 45
+	39 39
+	40 43
+	41 26
+	42 44
+	43 38
+	44 43
+	45 32
+	46 26
+	47 45
+	48 21
+	49 50
+	50 39
+	51 38
+	52 37
+	53 25
+	54 52
+	55 29
+	56 21
+	57 49
+	58 26
+	59 43
+	60 45
+	61 44
+	62 39
+	63 26
+	64 41
+	65 32
+	66 39
+	67 43
+	68 38
+	69 37
+	70 26
+	71 45
+	72 38
+	73 32
+	74 47
+	75 38
+	76 32
+	77 32
+	78 43
+	79 43
+	80 36
+	81 21
+	82 45
+	83 50
+	84 52
+	85 45
+	86 37
+	87 32
+	88 48
+	89 57
+	90 36
+	91 32
+	92 52
+	93 46
+	94 45
+	95 39
+	96 57
+	97 52
+	98 44
+	99 38
+	100 51
+\end{filecontents*}
+
+\begin{filecontents*}{cigar_binary.txt}
+	1 115
+	2 52
+	3 150
+	4 234
+	5 294
+	6 306
+	7 155
+	8 252
+	9 246
+	10 56
+	11 100
+	12 120
+	13 258
+	14 198
+	15 360
+	16 246
+	17 135
+	18 294
+	19 276
+	20 222
+	21 115
+	22 258
+	23 252
+	24 52
+	25 90
+	26 95
+	27 210
+	28 240
+	29 105
+	30 135
+	31 234
+	32 90
+	33 198
+	34 52
+	35 140
+	36 85
+	37 160
+	38 288
+	39 85
+	40 155
+	41 110
+	42 110
+	43 360
+	44 110
+	45 135
+	46 210
+	47 258
+	48 110
+	49 160
+	50 324
+	51 160
+	52 90
+	53 150
+	54 150
+	55 36
+	56 222
+	57 270
+	58 216
+	59 234
+	60 240
+	61 135
+	62 135
+	63 288
+	64 258
+	65 135
+	66 264
+	67 56
+	68 130
+	69 294
+	70 135
+	71 210
+	72 216
+	73 228
+	74 110
+	75 216
+	76 110
+	77 110
+	78 150
+	79 155
+	80 234
+	81 198
+	82 90
+	83 155
+	84 95
+	85 264
+	86 366
+	87 342
+	88 135
+	89 372
+	90 240
+	91 354
+	92 288
+	93 324
+	94 135
+	95 100
+	96 294
+	97 160
+	98 270
+	99 90
+	100 210
+\end{filecontents*}
+
+\begin{center}
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Bitverbrauch der Huffman-Kodierung für CIGAR-Strings},			
 	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	xmin=0, xmax=10000,
-	ymin=0, ymax=80,
-	xtick={0,20,40,60,80,100},
-	ytick={0,10,20,30,40,50,60,70,80},
-	legend pos=north west,
-	ymajorgrids=true,
-	grid style=dashed,
-	]
-	
-	\addplot[
-	color=blue,
-	]
-	coordinates {
-		
-	};
+	ylabel={Anzahl Bits}]
+	\addplot table {cigar_huffman.txt};
+	\end{axis}
+	\end{tikzpicture}
+\end{center}
 
-\end{axis}
-\end{tikzpicture}
+\begin{center}
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Bitverbrauch der naiven binäten Kodierung für CIGAR-Strings},			
+	xlabel={Anzahl Durchläufe},
+	ylabel={Anzahl Bits}]
+	\addplot table {cigar_binary.txt};
+	\end{axis}
+	\end{tikzpicture}
+\end{center}
 
-\section{Grafiken}
+\begin{center}
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Bitverbrauch der beiden Kodierungs-Verfahren für CIGAR-Strings},			
+	xlabel={Anzahl Durchläufe},
+	ylabel={Anzahl Bits}]
+	\addplot table {cigar_huffman.txt};
+	\addplot table {cigar_binary.txt};
+	\end{axis}
+	\end{tikzpicture}
+\end{center}
