@@ -25,7 +25,7 @@ Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. D
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
 \subsection{Beispiel}
-Sei das Alignment $\cal{A}$
+Sei das Alignment $A$
 \begin{verbatim}
 0    5    0    5    0    5    0    5    0    
 gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
@@ -35,7 +35,14 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 \end{verbatim}
 gegeben, welches durch den CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M} repräsentiert werden kann.
 
-Mit einer naiven binären Kodierung bräuchte man demnach für jedes Symbol $c \in \cal{A}$ $\log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
+Im Folgenden betrachte ich für diese Arte der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
+
+Das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$ beinhaltet alle Symbole aus dem CIGAR-String. Mit einer naiven binären Kodierung bräuchte man für jedes Symbol $c \in \cal{A}$ $\log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
+
+%TODO unäre Kodierung
+Die unäre Kodierung kodiert jedes Symbol der Häufigkeit des Auftretens im Alphabet nach mit $i$-1 1-Bits, gefolgt von einem 0-Bit, wobei $i$
+
+  das am häufigsten auftretende Symbol des Alphabets mit '0', das zweithäufigste mit '10', das dritthäufigste mit '110' usw. kodiert.
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bits pro Symbol beansprucht \cite{coding}.
 
@@ -428,26 +435,13 @@ Jeweils 100 zufällig generierte Sequenzpaare mit 200 Basen, einer Fehlerrate von
 \begin{center}
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der Huffman-Kodierung für CIGAR-Strings},			
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits}]
-	\addplot table {cigar_huffman.txt};
-	\end{axis}
-	\end{tikzpicture}
-\end{center}
-
-\begin{center}
-	\begin{tikzpicture}
-	\begin{axis}[
 	title={Bitverbrauch der naiven binären Kodierung für CIGAR-Strings},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {cigar_binary.txt};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
-
-\begin{center}
+	
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Bitverbrauch der unären binären Kodierung für CIGAR-Strings},			
@@ -456,9 +450,16 @@ Jeweils 100 zufällig generierte Sequenzpaare mit 200 Basen, einer Fehlerrate von
 	\addplot table {cigar_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
-
-\begin{center}
+	
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Bitverbrauch der Huffman-Kodierung für CIGAR-Strings},			
+	xlabel={Anzahl Durchläufe},
+	ylabel={Anzahl Bits}]
+	\addplot table {cigar_huffman.txt};
+	\end{axis}
+	\end{tikzpicture}
+	
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Bitverbrauch von unärer und Huffman-Kodierung für CIGAR-Strings},			

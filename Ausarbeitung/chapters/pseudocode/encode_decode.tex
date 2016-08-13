@@ -85,11 +85,13 @@
 		\Function{\textit{decode}}{$seq1, seq2, \Delta, TP$}
 		\State \Assign{cig}{\text{empty String}}
 		\For{\Assign{i}{0} \Upto \(\Size{TP}\)}
-		\State\text{append to cig:}\[{\begin{cases}
-			\textbf{cigar}(seq1[0...\Delta], seq2[0...TP[i] + 1])&\text{ if } i = 0\\
-			\textbf{cigar}(seq1[i \cdot \Delta...\Size{seq1}], seq2[TP[i - 1] + 1...\Size{seq2}])&\text{ if } i = \Size{TP} - 1\\
-			\textbf{cigar}(seq1[i \cdot \Delta...(i + 1) \cdot \Delta], seq2[TP[i - 1] + 1]...TP[i] + 1)&\text{ else.}
-		\end{cases}}\]
+			\If{i = 0}
+				\State append \textbf{cigar}($seq1[0...\Delta], seq2[0...TP[i] + 1]$) to $cig$
+			\ElsIf{i = \Size{TP} - 1}
+				\State append \textbf{cigar}($seq1[i \cdot \Delta...\Size{seq1}], seq2[TP[i - 1] + 1...\Size{seq2}]$) to $cig$
+			\Else
+				\State append \textbf{cigar}($seq1[i \cdot \Delta...(i + 1) \cdot \Delta], seq2[TP[i - 1] + 1]...TP[i] + 1$) to $cig$
+			\EndIf
 		\EndFor
 		\State \Assign{cig}{\textbf{combine}(cig)}
 		\State \Return cig
