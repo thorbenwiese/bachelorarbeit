@@ -43,13 +43,19 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
     # naiive binary coding for TPs
     # print (i/2)+1, int(math.ceil(math.log(len(tp_aln.tp),2)))*len(tp_aln.tp)
 
-    TP = []
-    for i in range(1,len(tp_aln.tp)):
-      TP.append(tp_aln.tp[i]-tp_aln.tp[i-1])
+    TP = [delta]
+    for j in range(1,len(tp_aln.tp)):
+      TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
     # print TP
 
-    # unary coding
-    print (i/2)+1, Huffman.unary(TP)
+    # unary coding for differences
+    # print (i/2)+1, Huffman.unary(TP)
+
+    # huffman coding for differences
+    # print (i/2)+1, Huffman.huffman(TP)
+
+    # naiive binary coding for differences
+    print (i/2)+1, int(math.ceil(math.log(len(TP),2)))*len(TP)
 
     if decode:
       cig = tp_aln.decode(tp_aln.tp)
