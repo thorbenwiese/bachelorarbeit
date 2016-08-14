@@ -1,7 +1,3 @@
-%
-% Einleitung
-%
-
 \chapter{CIGAR-Strings}
 
 Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten Cigar-String der aus einzelnen Zeichen besteht, die jeweil eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
@@ -18,7 +14,8 @@ Beispiel 1: Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignme
 \end{center}
 Ein Alignment wird üblicherweise in drei Zeilen geschrieben, wobei in der ersten Zeile die Sequenz $u$ und in der dritten Zeile die Sequenz $v$ geschrieben wird. In der mittleren Zeile symbolisiert das Zeichen '$|$' eine Substitution, wobei üblicherweise nur ein Match markiert wird. Außerdem wird ein $\varepsilon$ aus der Edit-Operation in diesem Fall durch das Zeichen '-' dargestellt.
 
-Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. Das Format benötigt wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz \cite{sam}.
+%TODO auf Speicher eingehen?
+Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. \cite{sam}.
 
 \section{Komplexität}
 \clearpage
@@ -26,6 +23,7 @@ Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. D
 \section{Speicherverbrauch}\label{Cigar_Speicher}
 \subsection{Beispiel}
 Sei das Alignment $A$
+
 \begin{verbatim}
 0    5    0    5    0    5    0    5    0    
 gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
@@ -33,56 +31,78 @@ gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
 gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 0    5    0    5    0    5    0    5    0   
 \end{verbatim}
-gegeben, welches durch den CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M1I7M1I5M1D4M} repräsentiert werden kann.
+gegeben, welches durch den CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M\\1I7M1I5M1D4M} repräsentiert werden kann.
 
-Im Folgenden betrachte ich für diese Arte der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
+Im Folgenden vergleiche ich für diese Art der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
 
-Das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$ beinhaltet alle Symbole aus dem CIGAR-String. Mit einer naiven binären Kodierung bräuchte man für jedes Symbol $c \in \cal{A}$ $\log_2(38) = 6$ Bit pro Symbol, also $38 \cdot 6 = 228$ Bit insgesamt.
-
-%TODO unäre Kodierung
-Die unäre Kodierung kodiert jedes Symbol der Häufigkeit des Auftretens im Alphabet nach mit $i$-1 1-Bits, gefolgt von einem 0-Bit, wobei $i$
-
-  das am häufigsten auftretende Symbol des Alphabets mit '0', das zweithäufigste mit '10', das dritthäufigste mit '110' usw. kodiert.
-
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bits pro Symbol beansprucht \cite{coding}.
-
-Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
-
-Gegeben sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, sowie die relativen Wahrscheinlichkeiten $p(i)$ jeden Symbols $i \in$ $\cal{A}$ mit
+Sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, welches alle Symbole aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben.
 
 \begin{center}
 	\begin{tabular}{ccc}
-		$i$&Anzahl&$p(i)$\\
+		$c$&Häufigkeit&$p(c)$\\
 		\hline
-		1 & 13 &$\frac{13}{38}$\\
-		M & 10 & $\frac{10}{38}$\\
-		D & 5 & $\frac{5}{38}$\\
-		I & 4 & $\frac{4}{38}$\\
-		4 & 2 & $\frac{2}{38}$\\
-		2 & 1 & $\frac{1}{38}$\\
-		5 & 1 & $\frac{1}{38}$\\
-		7 & 1 & $\frac{1}{38}$\\
-		8 & 1 & $\frac{1}{38}$
+		$1$ & $13$ &$\frac{13}{38}$\\
+		M & $10$ & $\frac{10}{38}$\\
+		D & $5$ & $\frac{5}{38}$\\
+		I & $4$ & $\frac{4}{38}$\\
+		$4$ & $2$ & $\frac{2}{38}$\\
+		$2$ & $1$ & $\frac{1}{38}$\\
+		$5$ & $1$ & $\frac{1}{38}$\\
+		$7$ & $1$ & $\frac{1}{38}$\\
+		$8$ & $1$ & $\frac{1}{38}$
 	\end{tabular}
 \end{center}
+
+Bei einer naiven binären Kodierung wird jedes Symbol $c \in \cal{A}$ mit $\lceil \log_2(n) \rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_2(38)\rceil = 6$ Bit pro Symbol. Insgesamt ergibt das somit $38 \cdot 6 = 228$ Bit.
+
+Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'1'$-Bits, gefolgt von einem $'0'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'0'$, das zweithäufigste mit $'10'$, das dritthäufigste mit $'110'$ usw. kodiert. \cite[S. 29-30]{coding}
+
+Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
+
+\begin{center}
+	\begin{tabular}{ccr}
+		Symbol & Kodierung &  Anzahl Bits\\
+		\hline
+		$1$ & $0$ & $13 \cdot 1 = 13$\\
+		M & $10$ & $10 \cdot 2 = 20$\\
+		D & $110$ & $5 \cdot 3 = 15$\\
+		I & $1110$ & $4 \cdot 4 = 16$\\
+		$4$ & $11110$ & $2 \cdot 5 = 10$\\
+		$2$ & $111110$ & $1 \cdot 6 =\ \ 6$\\
+		$5$ & $1111110$ & $1 \cdot 7 =\ \ 7$\\
+		$7$ & $11111110$ & $1 \cdot 8 =\ \ 8$\\
+		$8$ & $111111110$ & $1 \cdot 9 =\ \ 9$\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$104$
+	\end{tabular}
+\end{center}
+
+Insgesamt benötigt die unäre Kodierung also $104$ Bit.
+
+Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
+\[\frac{104}{38} \approx 2.74 \text{ Bit.}\]
+
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}.
+
+Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
 
 Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 
 \begin{center}
-	\begin{tabular}{crr}
+	\begin{tabular}{ccr}
 		Symbol & Kodierung & Anzahl Bits\\
 		\hline
-		1 & 00 & 2\\
-		M & 01 & 2\\
-		D & 100 & 3\\
-		I & 110 & 3\\
-		4 & 1010 & 4\\
-		7 & 1110 & 4\\
-		8 & 1111 & 4\\
-		2 & 10110 & 5\\
-		5 & 10111 & 5\\
+		$1$ & $00$ & $13 \cdot 2 = 26$\\
+		M & $01$ & $10 \cdot 2 = 20$\\
+		D & $100$ & $5 \cdot 3 = 15$\\
+		I & $110$ & $4 \cdot 3 = 12$\\
+		$4$ & $1010$ & $2 \cdot 4 = 8$\\
+		$7$ & $1110$ & $1 \cdot 4 = 4$\\
+		$8$ & $1111$ & $1 \cdot 4 = 4$\\
+		$2$ & $10110$ & $1 \cdot 5 = 5$\\
+		$5$ & $10111$ & $1 \cdot 5 = 5$\\
 		\hline
-		\multicolumn{2}{l}{Gesamtanzahl:}&32
+		\multicolumn{2}{l}{Gesamtanzahl:}&$99$
 	\end{tabular}
 \end{center}
 
@@ -112,16 +132,14 @@ und der dazugehörige Huffman-Baum:
 \end{forest}
 \end{center}
 
-Der gesamte Bitverbrauch dieser Kodierung ist demnach 32 Bit.
+Der gesamte Bitverbrauch dieser Kodierung ist demnach $99$ Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{38 + 23 + 15 + 9 + 6 + 4 + 2 + 2}{38} \approx 2.61 \text{ Bit.}\]
+\[\frac{99}{38} \approx 2.61 \text{ Bit.}\]
 
 \subsection{Testläufe}
 
-Alle folgenden Grafiken wurden mit den folgenden Parametern berechnet:
-
-Jeweils 100 zufällig generierte Sequenzpaare mit 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10.
+Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaare mit je 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
 
 \begin{filecontents*}{cigar_huffman.txt}
 	1 45
@@ -472,3 +490,10 @@ Jeweils 100 zufällig generierte Sequenzpaare mit 200 Basen, einer Fehlerrate von
 	\end{axis}
 	\end{tikzpicture}
 \end{center}
+
+\subsection{Bewertung}
+%TODO Bewertung
+
+am besten ist Huffman-Kodierung
+
+Das Format benötigt wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz
