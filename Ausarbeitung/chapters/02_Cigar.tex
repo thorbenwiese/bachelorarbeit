@@ -1,6 +1,6 @@
 \chapter{CIGAR-Strings}
 
-Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten Cigar-String der aus einzelnen Zeichen besteht, die jeweil eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
+Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die binär komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten CIGAR-String der aus einzelnen Zeichen besteht, die jeweils eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
 
 Beispiel 1: Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignment $A = (a\rightarrow a, c\rightarrow c, t\rightarrow t, ...)$ gegeben.
 \begin{center}
@@ -14,10 +14,10 @@ Beispiel 1: Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignme
 \end{center}
 Ein Alignment wird üblicherweise in drei Zeilen geschrieben, wobei in der ersten Zeile die Sequenz $u$ und in der dritten Zeile die Sequenz $v$ geschrieben wird. In der mittleren Zeile symbolisiert das Zeichen '$|$' eine Substitution, wobei üblicherweise nur ein Match markiert wird. Außerdem wird ein $\varepsilon$ aus der Edit-Operation in diesem Fall durch das Zeichen '-' dargestellt.
 
-%TODO auf Speicher eingehen?
-Dieses Alignment wird duch den Cigar-String \texttt{3M1I3M1D1M} repräsentiert. \cite{sam}.
+Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert. \cite{sam}.
 
 \section{Komplexität}
+%TODO
 \clearpage
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
@@ -139,7 +139,7 @@ Der durchschnittliche Bitverbrauch für ein Symbol beträgt
 
 \subsection{Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaare mit je 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
+Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren mit je etwa 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
 
 \begin{filecontents*}{cigar_huffman.txt}
 	1 45
@@ -491,7 +491,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaare m
 	\end{tikzpicture}
 \end{center}
 
-\subsection{Bewertung}
+\section{Bewertung}
 %TODO Bewertung
 
 am besten ist Huffman-Kodierung
