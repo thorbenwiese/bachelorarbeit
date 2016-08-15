@@ -90,7 +90,11 @@
 			\ElsIf{i = \Size{TP} - 1}
 				\State append \textbf{cigar}($seq1[i \cdot \Delta...\Size{seq1}], seq2[TP[i - 1] + 1...\Size{seq2}]$) to $cig$
 			\Else
-				\State append \textbf{cigar}($seq1[i \cdot \Delta...(i + 1) \cdot \Delta], seq2[TP[i - 1] + 1]...TP[i] + 1$) to $cig$ %TODO Zeilenumbruch
+				\State \begin{tabular}{rll}
+					append \textbf{cigar}&($seq1[i \cdot \Delta...(i + 1) \cdot \Delta],$&\\
+					&$seq2[TP[i - 1] + 1]...TP[i] + 1$)& to $cig$
+				\end{tabular}
+				
 			\EndIf
 		\EndFor
 		\State \Assign{cig}{\textbf{combine}(cig)}
