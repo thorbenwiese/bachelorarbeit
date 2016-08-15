@@ -5,8 +5,6 @@ import Alignment
 import TracePoint
 import Cigar_Pattern
 import time
-import Huffman
-import math
 
 import argparse
 
@@ -26,36 +24,10 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
                     start_seq1, end_seq1, start_seq2, end_seq2)
 
     cigar = aln.calc_cigar(aln.seq1, aln.seq2)
-    # huffman coding for cigar
-    # print Huffman.huffman(cigar)
-
-    # naiive binary coding for cigar
-    # print (i/2)+1, int(math.ceil(math.log(len(cigar),2)))*len(cigar)
-
-    # unary coding
-    # print (i/2)+1, Huffman.unary(cigar)
 
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                             end_seq1, start_seq2, end_seq2, 
                                             delta, cigar)
-
-    
-    # naiive binary coding for TPs
-    # print (i/2)+1, int(math.ceil(math.log(len(tp_aln.tp),2)))*len(tp_aln.tp)
-
-    TP = [delta]
-    for j in range(1,len(tp_aln.tp)):
-      TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
-    # print TP
-
-    # unary coding for differences
-    # print (i/2)+1, Huffman.unary(TP)
-
-    # huffman coding for differences
-    # print (i/2)+1, Huffman.huffman(TP)
-
-    # naiive binary coding for differences
-    print (i/2)+1, int(math.ceil(math.log(len(TP),2)))*len(TP)
 
     if decode:
       cig = tp_aln.decode(tp_aln.tp)
