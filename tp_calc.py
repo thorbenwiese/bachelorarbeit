@@ -2,13 +2,10 @@
 
 import TracePoint
 import Alignment
-import Cigar_Pattern
 
 import sys
-import math
 import argparse
 import string, random
-import os
 import time
 
 # random sequence generator
@@ -77,7 +74,6 @@ def random_sequences(amount, random_length, error_rate, alphabet):
       with open('random_seq_file.txt', 'a') as file_:
         file_.write("%s\n" % random_seqs[i])
 
-  # once input/output files are implemented, this should be deleted
   return random_seqs
 
 # read sequences and alignment data from seperate files

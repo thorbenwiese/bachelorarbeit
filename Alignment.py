@@ -1,6 +1,3 @@
-import sys
-
-import string, random
 import Cigar_Pattern
 
 from Bio import pairwise2

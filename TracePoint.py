@@ -1,9 +1,7 @@
 import Alignment
 import Cigar_Pattern
-
 import re
 import math
-import sys
 
 # pattern for CIGAR-String
 cigar_pattern = re.compile(r"\d+[MID]{1}")

@@ -10,37 +10,7 @@ def parse_cigar(cigar):
   for element in pattern:
     yield int(element[:-1]),element[-1]
 
-"""
-def combine_cigar(cigar):                                                
-                                                                                  
-  cig = ""                                                                     
-  tmp = iteration = 0
-                                                                                  
-  for ccount,csymbol in parse_cigar(cigar):
-                                
-    if iteration == 0:
-      prev_ccount = ccount
-      prev_csymbol = csymbol
-
-    else:
-      tmp += prev_ccount                                                         
-                                                                                  
-      if csymbol != prev_csymbol:                                                
-                                                                                  
-        cig += "%d%s" % (tmp, prev_csymbol)                                      
-        tmp = 0                                                                
-                                                                                  
-      prev_ccount = ccount
-      prev_symbol = csymbol
-
-    iteration += 1
-
-  cig += "%d%s" % (tmp + ccount, csymbol)                                  
-
-  return cig 
-"""
-
-#def combine(self, cigar, calc_cigar):
+# restructure CIGAR-String to avoid repetitive Edit-Operations
 def combine_cigar(cigar):
 
   cig = ""
