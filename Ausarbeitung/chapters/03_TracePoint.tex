@@ -1,7 +1,3 @@
-%
-% Einleitung
-%
-
 \chapter{TracePoint Konzept}
 
 Ein neuer Ansatz der speichereffizienten Repräsentation von Alignments wurde von Gene Myers in \cite{myers} beschrieben und basiert auf dem Konzept der Trace Points.
@@ -64,6 +60,7 @@ Trace Points: [15, 28]
 \subsection{Delta-Kodierung}\label{Delta-Kodierung}
 
 %TODO
+% L = (...)
 
 \subsection{Beispiel}
 Sei $\Delta = 5$ und das Alignment $A$
@@ -77,24 +74,85 @@ Sei $\Delta = 5$ und das Alignment $A$
 
 wie in Abschnitt \ref{Cigar_Speicher} mit den dazugehörigen TracePoints $5, 10, 15, 20, 24, 28$ und $34$ gegeben. Es ergibt sich somit das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$ mit ausschließlich positiven und aufsteigenden Werten.
 
-Für die Trace Points ist somit eine Delta-Kodierung möglich. Als neue Liste zu kodierender Werte ergibt sich somit nach \ref{Delta-Kodierung} $L = (5, 5, 5, 4, 4, 6)$.
+Für die Trace Point Darstellung ist somit eine Delta-Kodierung möglich. Als neue Liste zu kodierender Werte ergibt sich nach \ref{Delta-Kodierung} $L = (5, 5, 5, 4, 4, 6)$.
 
-%TODO
+Um aus den Trace Points ein neues Alignment rekonstruieren zu können, benötigt man zusätzlich mindestens den $\Delta$-Wert, damit die Grenzen der Substrings beider Sequenzen berechnet werden können. Hierfür muss also der $\Delta$-Wert zu $L$ hinzugefügt werden.
 
-Bei der naiven binären Kodierung
+Für das oben genannten Beispiel ergibt sich somit $L_\Delta = (5, 5, 5, 4, 4, 6, 5)$.
 
-Für die unäre Kodierung
+Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben. 
 
-Die Huffman-Kodierung ergibt
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccc}
+		$c$&Häufigkeit&$p(c)$\\
+		\hline
+		$5$ & $4$ & $\frac{4}{7}$\\
+		$4$ & $2$ & $\frac{2}{7}$\\
+		$6$ & $1$ & $\frac{1}{7}$
+	\end{tabular}
+	\caption{Relative Wahrscheinlichkeiten der Delta-Kodierung}
+\end{table}
 
+Bei der naiven binären Kodierung ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_2(7)\rceil = 3$ Bit pro Symbol, also $7 \cdot 3 = 21$ Bit insgesamt.
 
+Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
 
-%TODO binär / unär / huffman für Delta-Kodierung
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung &  Anzahl Bits\\
+		\hline
+		$5$ & $0$ & $4 \cdot 1 = 4$\\
+		$4$ & $10$ & $2 \cdot 2 = 4$\\
+		$6$ & $110$ & $1 \cdot 3 = 3$\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$11$
+	\end{tabular}
+	\caption{Unäre Kodierung der Delta-Kodierung}
+\end{table}
 
+Insgesamt benötigt die unäre Kodierung also $11$ Bit mit einem durchschnittlichen Verbrauch pro  Symbol von
+\[\frac{11}{7} \approx 1.57 \text{ Bit.}\]
+
+Die Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung & Anzahl Bits\\
+		\hline
+		$5$ & $0$ & $4 \cdot 1 = 4$\\
+		$4$ & $10$ & $2 \cdot 2 = 4$\\
+		$6$ & $11$ & $1 \cdot 2 = 2$\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$10$
+	\end{tabular}
+	\caption{Huffman-Kodierung der Delta-Kodierung}
+\end{table}
+
+und der dazugehörige Huffman-Baum:
+
+\begin{figure}[h]
+	\centering
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{7}{7}$
+		[$\frac{3}{7}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$6$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$4$, edge label={node[midway,left,font=\scriptsize]{0}}]]
+		[$5$, edge label={node[midway,left,font=\scriptsize]{0}}]
+		]
+	\end{forest}
+	\caption{Huffman-Baum der Delta-Kodierung}
+\end{figure}
+
+Der gesamte Bitverbrauch der Huffman-Kodierung ist demnach $10$ Bit mit einem durchschnittlichen Verbrauch pro Symbol von 
+\[\frac{10}{7} \approx 1.43 \text{ Bit.}\]
 
 \subsection{Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaare mit je 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
+Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren mit je etwa 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
 
 \begin{filecontents*}{differences_binary.txt}
 	1 95
@@ -405,46 +463,73 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaare m
 	100 28
 \end{filecontents*}
 
-\begin{center}
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der naiven binären Kodierung für die Delta-Kodierung},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {differences_binary.txt};
 	\end{axis}
 	\end{tikzpicture}
-	
+	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der unären binären Kodierung für die Delta-Kodierung},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {differences_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}
+\end{figure}
 	
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der Huffman-Kodierung für die Delta-Kodierung},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {differences_huffman.txt};
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}
+\end{figure}
 	
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch von unärer und Huffman-Kodierung für die Delta-Kodierung},			
 	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits}]
+	ylabel={Anzahl Bits},
+	legend pos=outer north east]
+	\addplot table {differences_binary.txt};
+	\addlegendentry{Binäre Kodierung};
+	\addplot table {differences_unary.txt};
+	\addlegendentry{Unäre Kodierung};
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Binäre und unäre Kodierung der Delta-Kodierung}
+\end{figure}
+	
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	xlabel={Anzahl Durchläufe},
+	ylabel={Anzahl Bits},
+	legend pos=outer north east]
 	\addplot table {differences_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot table {differences_huffman.txt};
 	\addlegendentry{Huffman-Kodierung};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
+	\caption{Unäre und Huffman-Kodierung der Delta-Kodierung}
+\end{figure}
 
 \section{Bewertung}
 Die Repräsentation des Alignments $A$ benötigt als CIGAR-String mit einer naiven binären Kodierung $228$ Bit und als unäre Kodierung XX Bit, wobei die Kodierung der Trace Points mit $\Delta = 5$ mit einer naiven binären Kodierung $21$ Bit und als unäre Kodierung XX Bit benötigt.

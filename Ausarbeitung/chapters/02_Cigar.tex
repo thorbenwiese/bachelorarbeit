@@ -37,7 +37,8 @@ Im Folgenden vergleiche ich für diese Art der Alignment-Repräsentation die Verfa
 
 Sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, welches alle Symbole aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben.
 
-\begin{center}
+\begin{table}[h]
+	\centering
 	\begin{tabular}{ccc}
 		$c$&Häufigkeit&$p(c)$\\
 		\hline
@@ -51,7 +52,8 @@ Sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, welches alle Symbo
 		$7$ & $1$ & $\frac{1}{38}$\\
 		$8$ & $1$ & $\frac{1}{38}$
 	\end{tabular}
-\end{center}
+	\caption{Relative Wahrscheinlichkeiten CIGAR-String}
+\end{table}
 
 Bei einer naiven binären Kodierung wird jedes Symbol $c \in \cal{A}$ mit $\lceil \log_2(n) \rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_2(38)\rceil = 6$ Bit pro Symbol. Insgesamt ergibt das somit $38 \cdot 6 = 228$ Bit.
 
@@ -59,7 +61,8 @@ Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im A
 
 Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
 
-\begin{center}
+\begin{table}[h]
+	\centering
 	\begin{tabular}{ccr}
 		Symbol & Kodierung &  Anzahl Bits\\
 		\hline
@@ -75,7 +78,8 @@ Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
 		\hline
 		\multicolumn{2}{l}{Gesamtanzahl:}&$104$
 	\end{tabular}
-\end{center}
+	\caption{Unäre Kodierung des CIGAR-Strings}
+\end{table}
 
 Insgesamt benötigt die unäre Kodierung also $104$ Bit.
 
@@ -88,7 +92,8 @@ Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings 
 
 Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 
-\begin{center}
+\begin{table}[h]
+	\centering
 	\begin{tabular}{ccr}
 		Symbol & Kodierung & Anzahl Bits\\
 		\hline
@@ -104,33 +109,36 @@ Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 		\hline
 		\multicolumn{2}{l}{Gesamtanzahl:}&$99$
 	\end{tabular}
-\end{center}
+	\caption{Huffmann-Kodierung des CIGAR-Strings}
+\end{table}
 
 und der dazugehörige Huffman-Baum:
 
-\begin{center}
-\begin{forest}
-	for tree={grow'=south}
-	[$\frac{38}{38}$
-	[$\frac{15}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[$\frac{6}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[8, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[7, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[I, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[$\frac{9}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
-	[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-	[5, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[2, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[4, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
-	[$\frac{23}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
-	[M, edge label={node[midway,right,font=\scriptsize]{1}}]
-	[1, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-	]
-\end{forest}
-\end{center}
+\begin{figure}[h]
+	\centering
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{38}{38}$
+		[$\frac{15}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$\frac{6}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[8, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[7, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		[I, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		[$\frac{9}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
+		[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[5, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[2, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		[4, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
+		[$\frac{23}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+		[M, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[1, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		]
+	\end{forest}
+	\caption{Huffman-Baum der Kodierung des CIGAR-Strings}
+\end{figure}
 
 Der gesamte Bitverbrauch dieser Kodierung ist demnach $99$ Bit.
 
@@ -450,37 +458,61 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	100 48
 \end{filecontents*}
 
-\begin{center}
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der naiven binären Kodierung für CIGAR-Strings},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {cigar_binary.txt};
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Bitverbrauch der naiven binären Kodierung des CIGAR-Strings}
+\end{figure}
 	
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der unären binären Kodierung für CIGAR-Strings},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {cigar_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}
+\end{figure}
 	
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-	title={Bitverbrauch der Huffman-Kodierung für CIGAR-Strings},			
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {cigar_huffman.txt};
 	\end{axis}
 	\end{tikzpicture}
-	
+	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
-	\begin{axis}[
-	title={Bitverbrauch von unärer und Huffman-Kodierung für CIGAR-Strings},			
+	\begin{axis}[	
+	xlabel={Anzahl Durchläufe},
+	ylabel={Anzahl Bits}]
+	\addplot table {cigar_binary.txt};
+	\addlegendentry{Binäre Kodierung};
+	\addplot table {cigar_unary.txt};
+	\addlegendentry{Unäre Kodierung};
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Binäre und unäre Kodierung des CIGAR-Strings}
+\end{figure}
+	
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[	
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {cigar_unary.txt};
@@ -489,7 +521,8 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addlegendentry{Huffman-Kodierung};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
+	\caption{Unäre und Huffman-Kodierung des CIGAR-Strings}
+\end{figure}
 
 \section{Bewertung}
 %TODO Bewertung
