@@ -36,6 +36,7 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta):
                                             end_seq1, start_seq2, end_seq2, 
                                             delta, cigar)
 
+      # store differences between Trace Points and Delta Value in List
       TP = [delta]
       for j in range(1,len(tp_aln.tp)):
         TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
