@@ -36,6 +36,27 @@
   \tikzset{el style/.style={midway, font=\scriptsize, inner sep=+1pt, auto=right}}
   \forestset{angled/.style={
   		content/.expanded={\noexpand\textless\forestov{content}\noexpand\textgreater}}}
+  
+  \newcommand{\Eop}[3][\!]{#2#1\to#1#3}
+  \newcommand{\Assign}[2]{\mbox{$#1\leftarrow #2$}}
+  \newcommand{\Size}[1]{|#1|}
+  \newcommand{\Upto}[0]{\textbf{upto}\xspace}
+  \newcommand{\Subchar}[2]{#1[#2]}
+  \newcommand{\Substring}[3]{#1[#2\ldots#3]}
+  \newcommand{\Rtab}[1][j_{0}]{R_{#1}}
+  \newcommand{\EDcol}[1]{E_{\mathsf{col}}^{#1}}
+  \newcommand{\Rcol}[1]{\Rtab^{#1}}
+  \newcommand{\Deletion}[2][\!]{\Eop[#1]{#2}{\varepsilon}}
+  \newcommand{\Insertion}[2][\!]{\Eop[#1]{\varepsilon}{#2}}
+  \newcommand{\Replacement}[3][\!]{\Eop[#1]{#2}{#3}}
+  \newcommand{\Substitution}[3][\!]{\Eop[#1]{#2}{#3}}
+  \newcommand{\Crosspoints}[0]{C}
+  \newcommand{\EvalCPname}[0]{\textit{evaluatecrosspoints}}
+  \newcommand{\Rounddown}[1]{\left\lfloor#1\right\rfloor}
+  \newcommand{\Roundup}[1]{\left\lceil#1\right\rceil}
+  \newcommand{\Evalallcolsname}[0]{\mathit{evaluateallcolumns}}
+  \newcommand{\Evalallcols}[3]{\Evalallcolsname(E,R,#1,#2,#3)}
+  \newcommand{\EvalCP}[4]{\EvalCPname(\Crosspoints,#1,#2,#3,#4)}
 
 	% Beliebige Farben definieren (bei Bedarf auskommentieren und selbst benennen und festlegen)
 %	\definecolor{hellblau}{RGB}{238,242,247}

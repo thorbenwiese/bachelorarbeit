@@ -466,9 +466,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
 	\addplot table {coding/cigar_binary.txt};
+	\addplot [dashed, color=red, thick] coordinates {
+		(-5,170) (105,170)
+	};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der naiven binären Kodierung des CIGAR-Strings}
+	\caption{Bitverbrauch der naiven binären Kodierung des CIGAR-Strings}\label{fig:cig-bin}
 \end{figure}
 	
 \begin{figure}[h]
@@ -480,7 +483,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addplot table {coding/cigar_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}
+	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}\label{fig:cig-una}
 \end{figure}
 	
 \begin{figure}[h]
@@ -492,7 +495,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addplot table {coding/cigar_huffman.txt};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}
+	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}\label{fig:cig-huf}
 \end{figure}
 
 \begin{figure}[h]
@@ -527,9 +530,9 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 
 \section{Bewertung}
 
-Die Abbildungen 2.2-2.4 verdeutlichen, dass jede der drei ausgewählten Methoden deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können.
-Im Mittel benötigt die naive binäre Kodierung 188 Bit, die unäre Kodierung 115 Bit und die Huffman-Kodierung 37 Bit.
+Die Abbildungen \ref{fig:cig-bin}-\ref{fig:cig-huf} verdeutlichen, dass jede der drei ausgewählten Methoden deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können.
+Im Mittel benötigt die naive binäre Kodierung 170 Bit, die unäre Kodierung 121 Bit und die Huffman-Kodierung 37 Bit.
 
-Sowohl in dem in \ref{Cigar_Beispiel} angegebene Beispiel, als auch in den in \ref{Cigar_Testläufe} dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich am wenigsten Speicher.
+Sowohl in dem in \ref{Cigar_Beispiel} angegebenen Beispiel, als auch in den in \ref{Cigar_Testläufe} dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich am wenigsten Speicher.
 
 Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.

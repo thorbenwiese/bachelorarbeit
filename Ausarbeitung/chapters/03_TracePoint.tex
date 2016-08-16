@@ -478,7 +478,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addplot table {coding/differences_binary.txt};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}
+	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}\label{fig:diff-bin}
 \end{figure}
 
 \begin{figure}[h]
@@ -490,7 +490,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addplot table {coding/differences_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}
+	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}\label{fig:diff-una}
 \end{figure}
 	
 \begin{figure}[h]
@@ -502,7 +502,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addplot table {coding/differences_huffman.txt};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}
+	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-huf}
 \end{figure}
 	
 \begin{figure}[h]
@@ -518,7 +518,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addlegendentry{Unäre Kodierung};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Binäre und unäre Kodierung der Delta-Kodierung}
+	\caption{Binäre und unäre Kodierung der Delta-Kodierung}\label{fig:diff-bin-una}
 \end{figure}
 	
 \begin{figure}[h]
@@ -534,14 +534,15 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\addlegendentry{Huffman-Kodierung};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Unäre und Huffman-Kodierung der Delta-Kodierung}
+	\caption{Unäre und Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-una-huf}
 \end{figure}
 
 \section{Bewertung}
-Die Repräsentation des Alignments $A$ benötigt als CIGAR-String mit einer naiven binären Kodierung $228$ Bit und als unäre Kodierung XX Bit, wobei die Kodierung der Trace Points mit $\Delta = 5$ mit einer naiven binären Kodierung $21$ Bit und als unäre Kodierung XX Bit benötigt.
 
-Es ist somit zu erkennen, dass die Kodierung der Trace Points in diesem Fall mit einem relativ klein gewählten $\Delta$ weniger Speicher benötigt, als die Kodierung des CIGAR-Strings. Dennoch hängt der Speicherverbrauch der Trace Points Kodierung von der Wahl des $\Delta$ ab, da bei einem kleinen $\Delta$ mehr Trace Points und somit Symbole gespeichert werden müssen, als bei einem großen $\Delta$ und kann somit bei einer sehr ungünstig gewählten Größe mehr Speicher verbrauchen als ein CIGAR-String.
+Die naive binäre Kodierung benötigt, wie in Abbildung \ref{fig:diff-bin} dargestellt, in jedem Durchlauf und somit auch im Mittel konstant $100$ Bit, da für jeden Durchlauf $19$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil log_2(20) \rceil = 100$ Bit.
 
-Je größer der vorher definierte positive Parameter $\Delta$ ist, desto weniger Trace-Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace-Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
+Die Abbildungen \ref{fig:diff-una} verdeutlicht, dass die unäre Kodierung Schwankungen im Bitverbrauch aufweist, welche sich wie bei den CIGAR-Strings durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Sie benötigt im Mittel $27$ Bit und damit nur etwa ein Viertel der binären Kodierung, was in Abbildung \ref{fig:diff-bin-una} grafisch dargestellt ist.
 
-Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
+Für die Huffman-Kodierung wird, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, deutlich weniger Speicher für die Kodierung benötigt als für die naive binäre oder unäre Kodierung. Sie verbraucht durchschnittlich nur 5 Bit und damit nur etwa ein Fünftel des Speicherbedarfs der unären Kodierung, was in \ref{fig:diff-una-huf} verdeutlicht wird.
+
+Es ist somit zu erkennen, dass die Kodierung der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
