@@ -24,7 +24,7 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta):
     # huffman coding for cigar
     if method == "cigar":
       if mode == "huffman":
-        print huffman(cigar)
+        print (i/2)+1, huffman(cigar)
       elif mode == "binary":
         # naiive binary coding for cigar
         print (i/2)+1, int(math.ceil(math.log(len(cigar),2)))*len(cigar)
@@ -37,10 +37,10 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta):
                                             delta, cigar)
 
       # store differences between Trace Points and Delta Value in List
-      TP = [delta]
+      TP = [delta, tp_aln.tp[0]]
       for j in range(1,len(tp_aln.tp)):
         TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
-
+      #print len(tp_aln.tp),len(TP)-1
       if mode == "binary":
         # naiive binary coding for differences
         print (i/2)+1, int(math.ceil(math.log(len(TP),2)))*len(TP)
@@ -70,7 +70,7 @@ def huffman(code):
   for ch in code:
     symb2freq[ch] += 1
   huff = encode(symb2freq)
-  bits = 0
+  bits = avg = 0
   # print "Symbol\tWeight\tHuffman Code"
   for p in huff:
     bits += len(p[1])

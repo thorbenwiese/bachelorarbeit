@@ -18,10 +18,11 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert. \
 
 \section{Komplexität}
 %TODO
+TODO
 \clearpage
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
-\subsection{Beispiel}
+\subsection{Beispiel}\label{Cigar_Beispiel}
 Sei das Alignment $A$
 
 \begin{verbatim}
@@ -145,7 +146,7 @@ Der gesamte Bitverbrauch dieser Kodierung ist demnach $99$ Bit.
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
 \[\frac{99}{38} \approx 2.61 \text{ Bit.}\]
 
-\subsection{Testläufe}
+\subsection{Testläufe}\label{Cigar_Testläufe}
 
 Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren mit je etwa 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
 
@@ -464,7 +465,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
-	\addplot table {cigar_binary.txt};
+	\addplot table {coding/cigar_binary.txt};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der naiven binären Kodierung des CIGAR-Strings}
@@ -476,7 +477,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
-	\addplot table {cigar_unary.txt};
+	\addplot table {coding/cigar_unary.txt};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}
@@ -488,7 +489,7 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
-	\addplot table {cigar_huffman.txt};
+	\addplot table {coding/cigar_huffman.txt};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}
@@ -500,9 +501,9 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[	
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
-	\addplot table {cigar_binary.txt};
+	\addplot table {coding/cigar_binary.txt};
 	\addlegendentry{Binäre Kodierung};
-	\addplot table {cigar_unary.txt};
+	\addplot table {coding/cigar_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\end{axis}
 	\end{tikzpicture}
@@ -515,9 +516,9 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[	
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits}]
-	\addplot table {cigar_unary.txt};
+	\addplot table {coding/cigar_unary.txt};
 	\addlegendentry{Unäre Kodierung};
-	\addplot table {cigar_huffman.txt};
+	\addplot table {coding/cigar_huffman.txt};
 	\addlegendentry{Huffman-Kodierung};
 	\end{axis}
 	\end{tikzpicture}
@@ -525,8 +526,10 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 \end{figure}
 
 \section{Bewertung}
-%TODO Bewertung
 
-am besten ist Huffman-Kodierung
+Die Abbildungen 2.2-2.4 verdeutlichen, dass jede der drei ausgewählten Methoden deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können.
+Im Mittel benötigt die naive binäre Kodierung 188 Bit, die unäre Kodierung 115 Bit und die Huffman-Kodierung 37 Bit.
 
-Das Format benötigt wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz
+Sowohl in dem in \ref{Cigar_Beispiel} angegebene Beispiel, als auch in den in \ref{Cigar_Testläufe} dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich am wenigsten Speicher.
+
+Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
