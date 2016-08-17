@@ -14,7 +14,7 @@ class Alignment(object):
     self.end_seq1 = end_seq1
     self.end_seq2 = end_seq2
 
-  # calculate alignment with BioPython
+  # calculate alignment with BioPython and extract CIGAR-String
   def calc_cigar(self, sequence1, sequence2):
 
     assert sequence1, "First sequence for calculating the alignment is empty!"

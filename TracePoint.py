@@ -1,10 +1,6 @@
 import Alignment
 import Cigar_Pattern
-import re
 import math
-
-# pattern for CIGAR-String
-cigar_pattern = re.compile(r"\d+[MID]{1}")
 
 class TracePointAlignment(object):
 
@@ -24,7 +20,7 @@ class TracePointAlignment(object):
   # extract TracePoints from CIGAR-String
   def encode(self):
 
-    count = count1 = count2 = cig_count = interval_count = 0
+    interval_count = 0
 
     # calculation of interval size
     itv_size = max(1,int(math.ceil(self.start_seq1/self.delta)))
@@ -53,11 +49,11 @@ class TracePointAlignment(object):
       intervals[i] = begin, end
 
     # search cigar for pattern
+    count = count1 = count2 = cig_count = 0
     tp = []
-    for j in cigar_pattern.findall(self.cigar):
 
-      cig_count = int(j[:-1])
-      cig_symbol = j[1]
+    for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(self.cigar):
+      
       assert cig_symbol not in ['N','S','H','P'], \
         "CIGAR-Symbol is not in ['M','I','D']"
    
@@ -70,7 +66,7 @@ class TracePointAlignment(object):
           count1 += 1
           count2 += 1
 
-        # count until the end but ignore end of last interval as TracePoint
+        # count until the end but ignore end of last interval as Trace Point
         if count1 == intervals[count][1] + 1 and count1 != len(self.seq1):
           tp.append(count2 - 1 + self.start_seq2)
           if count != len(intervals) - 1:
@@ -79,7 +75,8 @@ class TracePointAlignment(object):
 
     return tp
 
-  # create new intervals from TracePoints and calculate new alignment
+  # create new intervals from TracePoints and calculate new alignment to
+  # extrace CIGAR-String
   def decode(self, tp):
 
     assert self.seq1, "First sequence for decode function is empty."

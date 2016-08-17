@@ -8,6 +8,7 @@ def parse_cigar(cigar):
   pattern = cigar_pattern.findall(cigar)                                       
 
   for element in pattern:
+    # yield cig_count, cig_symbol
     yield int(element[:-1]),element[-1]
 
 # restructure CIGAR-String to avoid repetitive Edit-Operations
