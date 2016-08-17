@@ -474,8 +474,10 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{tikzpicture}
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits}]
+	ylabel={Anzahl Bits},
+	legend style={at={(0.5,-0.15)},anchor=north}]
 	\addplot table {coding/differences_binary.txt};
+	\addlegendentry{Binäre Kodierung};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}\label{fig:diff-bin}
@@ -486,8 +488,14 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{tikzpicture}
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits}]
+	ylabel={Anzahl Bits},
+	legend style={at={(0.5,-0.15)},anchor=north}]
 	\addplot table {coding/differences_unary.txt};
+	\addplot [dashed, color=red, thick] coordinates {
+		(-5,27) (105,27)
+	};
+	\addlegendentry{Unäre Kodierung};
+	\addlegendentry{Mittelwert};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}\label{fig:diff-una}
@@ -498,8 +506,14 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{tikzpicture}
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits}]
+	ylabel={Anzahl Bits},
+	legend style={at={(0.5,-0.15)},anchor=north}]
 	\addplot table {coding/differences_huffman.txt};
+	\addplot [dashed, color=red, thick] coordinates {
+		(-5,5) (105,5)
+	};
+	\addlegendentry{Huffman-Kodierung};
+	\addlegendentry{Mittelwert};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-huf}
@@ -511,11 +525,15 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend pos=outer north east]
+	legend style={at={(0.5,-0.15)},anchor=north}]
 	\addplot table {coding/differences_binary.txt};
 	\addlegendentry{Binäre Kodierung};
 	\addplot table {coding/differences_unary.txt};
 	\addlegendentry{Unäre Kodierung};
+	\addplot [dashed, color=red, thick] coordinates {
+		(-5,27) (105,27)
+	};
+	\addlegendentry{Mittelwert unäre Kodierung};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Binäre und unäre Kodierung der Delta-Kodierung}\label{fig:diff-bin-una}
@@ -527,11 +545,19 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend pos=outer north east]
+	legend style={at={(0.5,-0.15)},anchor=north}]
 	\addplot table {coding/differences_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot table {coding/differences_huffman.txt};
 	\addlegendentry{Huffman-Kodierung};
+	\addplot [dashed, color=blue, thick] coordinates {
+		(-5,27) (105,27)
+	};
+	\addplot [dashed, color=red, thick] coordinates {
+		(-5,5) (105,5)
+	};
+	\addlegendentry{Mittelwert unäre Kodierung};
+	\addlegendentry{Mittelwert Huffman-Kodierung};
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Unäre und Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-una-huf}
