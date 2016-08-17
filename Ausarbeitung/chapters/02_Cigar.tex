@@ -2,7 +2,7 @@
 
 Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die binär komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten CIGAR-String der aus einzelnen Zeichen besteht, die jeweils eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
 
-Beispiel 1: Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignment $A = (a\rightarrow a, c\rightarrow c, t\rightarrow t, ...)$ gegeben.
+Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignment $A = (a\rightarrow a, c\rightarrow c, t\rightarrow t, ...)$ gegeben.
 \begin{center}
 	\texttt{
 		\begin{tabular}{ccccccccc}
@@ -22,7 +22,7 @@ TODO
 \clearpage
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
-\subsection{Beispiel}\label{Cigar_Beispiel}
+\subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Beispiel}
 Sei das Alignment $A$
 
 \begin{verbatim}
@@ -465,10 +465,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,50,100,150,...,500}]
 	\addplot table {coding/cigar_binary.txt};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,170) (105,170)
+		(0,170) (100,170)
 	};
 	\addlegendentry{Binäre Kodierung};
 	\addlegendentry{Mittelwert};
@@ -483,10 +485,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,20,40,...,200}]
 	\addplot table {coding/cigar_unary.txt};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,121) (105,121)
+		(0,121) (100,121)
 	};
 	\addlegendentry{Unäre Kodierung};
 	\addlegendentry{Mittelwert};
@@ -501,10 +505,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,15,20,...,55}]
 	\addplot table {coding/cigar_huffman.txt};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,37) (105,37)
+		(0,37) (100,37)
 	};
 	\addlegendentry{Huffman-Kodierung};
 	\addlegendentry{Mittelwert};
@@ -519,16 +525,18 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[	
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,50,100,150,...,500}]
 	\addplot table {coding/cigar_binary.txt};
 	\addlegendentry{Binäre Kodierung};
 	\addplot table {coding/cigar_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot [dashed, color=blue, thick] coordinates {
-		(-5,170) (105,170)
+		(0,170) (100,170)
 	};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,121) (105,121)
+		(0,121) (100,121)
 	};
 	\addlegendentry{Mittelwert binäre Kodierung};
 	\addlegendentry{Mittelwert unäre Kodierung};
@@ -543,16 +551,18 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[	
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,20,40,...,200}]
 	\addplot table {coding/cigar_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot table {coding/cigar_huffman.txt};
 	\addlegendentry{Huffman-Kodierung};
 	\addplot [dashed, color=blue, thick] coordinates {
-		(-5,121) (105,121)
+		(0,121) (100,121)
 	};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,37) (105,37)
+		(0,37) (100,37)
 	};
 	\addlegendentry{Mittelwert unäre Kodierung};
 	\addlegendentry{Mittelwert Huffman-Kodierung};

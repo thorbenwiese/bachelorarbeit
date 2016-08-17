@@ -16,7 +16,7 @@ Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings
 
 Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$, berechnet hierfür ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
 
-Beispiel 2:
+Beispiel:
 \begin{verbatim}
 Sequenz 1: gagcatgttgcctggtcctttgctaggtactgtagaga
 Sequenz 2: gaccaagtaggcgtggaccttgctcggtctgtaagaga
@@ -52,6 +52,8 @@ Trace Points: [15, 28]
 
 \section{Komplexität}
 
+TODO
+
 %TODO ausführlicher
  Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment. \cite[S.41-42]{gsa-skript}
  
@@ -59,8 +61,7 @@ Trace Points: [15, 28]
 
 \subsection{Differenzen-Kodierung}\label{Differenzen-Kodierung}
 
-%TODO
-% L = (...)
+%TODO Quellen
 Gegeben sei eine Liste $L = (a_1, a_2, ... , a_n)$ mit $a_i < a_{i+1}, 0 < i \leq n$.
 
 Anstatt jeden Wert $a \in L$ als solchen abzuspeichern, kann alternativ die Differenz eines Wertes $a_i$ zu dem nachfolgenden Wert $a_{i+1}$ abgespeichert werden. Lediglich der erste (oder letzte) Wert aus $L$ wird benötigt, um später sukzessive die ursprüngliche Liste rekonstruieren zu können.
@@ -68,7 +69,7 @@ Anstatt jeden Wert $a \in L$ als solchen abzuspeichern, kann alternativ die Diff
 
 Bei gleichmäßig ansteigenden Werten ist die Abweichung der Differenzen zweier aufeinanderfolgender Werte in  der Liste untereinander gering und die Menge der zu kodierenden Symbole verringert sich.
 
-\subsection{Beispiel}
+\subsection{Kodierung der Trace Point Differenzen}
 Sei $\Delta = 5$ und das Alignment $A$
 \begin{verbatim}
 		0    5    0    5    0    5    0    5    0    
@@ -136,6 +137,8 @@ Die Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 	\end{tabular}
 	\caption{Huffman-Kodierung der Delta-Kodierung}
 \end{table}
+
+\FloatBarrier
 
 und der dazugehörige Huffman-Baum:
 
@@ -475,7 +478,9 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={80,90,100,110,120}]
 	\addplot table {coding/differences_binary.txt};
 	\addlegendentry{Binäre Kodierung};
 	\end{axis}
@@ -489,10 +494,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,20,22,24,...,38}]
 	\addplot table {coding/differences_unary.txt};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,27) (105,27)
+		(0,27) (105,27)
 	};
 	\addlegendentry{Unäre Kodierung};
 	\addlegendentry{Mittelwert};
@@ -507,10 +514,12 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,2,4,6,...,18}]
 	\addplot table {coding/differences_huffman.txt};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,5) (105,5)
+		(0,5) (105,5)
 	};
 	\addlegendentry{Huffman-Kodierung};
 	\addlegendentry{Mittelwert};
@@ -525,13 +534,15 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,20,30,...,100}]
 	\addplot table {coding/differences_binary.txt};
 	\addlegendentry{Binäre Kodierung};
 	\addplot table {coding/differences_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,27) (105,27)
+		(0,27) (105,27)
 	};
 	\addlegendentry{Mittelwert unäre Kodierung};
 	\end{axis}
@@ -545,16 +556,18 @@ Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren 
 	\begin{axis}[
 	xlabel={Anzahl Durchläufe},
 	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north}]
+	legend style={at={(0.5,-0.15)},anchor=north},
+	xtick={0,10,20,...,100},
+	ytick={0,5,10,15,20,...,40}]
 	\addplot table {coding/differences_unary.txt};
 	\addlegendentry{Unäre Kodierung};
 	\addplot table {coding/differences_huffman.txt};
 	\addlegendentry{Huffman-Kodierung};
 	\addplot [dashed, color=blue, thick] coordinates {
-		(-5,27) (105,27)
+		(0,27) (105,27)
 	};
 	\addplot [dashed, color=red, thick] coordinates {
-		(-5,5) (105,5)
+		(0,5) (105,5)
 	};
 	\addlegendentry{Mittelwert unäre Kodierung};
 	\addlegendentry{Mittelwert Huffman-Kodierung};
