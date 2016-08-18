@@ -1,6 +1,10 @@
 import Alignment
 import Cigar_Pattern
+import re
 import math
+
+# pattern for CIGAR-String
+cigar_pattern = re.compile(r"\d+[MID]{1}")
 
 class TracePointAlignment(object):
 
@@ -20,63 +24,53 @@ class TracePointAlignment(object):
   # extract TracePoints from CIGAR-String
   def encode(self):
 
-    interval_count = 0
-
     # calculation of interval size
-    itv_size = max(1,int(math.ceil(self.start_seq1/self.delta)))
+    # p is a factor to dynamically adjust the interval borders
+    # if the sequence starts at pos 0 then p should be 1
+    p = max(1,int(math.ceil(self.start_seq1/self.delta)))
 
-    # adjustment of interval length
-    interval_count = min(int(math.ceil(float(len(self.seq1)) / self.delta)), 
-                         int(math.ceil(float(len(self.seq2)) / self.delta)))
+    # number of intervals
+    tau = int(math.ceil(self.end_seq1/self.delta) - math.floor(self.start_seq1/
+                                                               self.delta))
 
-    # intervals
-    intervals = [0] * interval_count
+    # List of last indices of intervals in u initialized with 0
+    # tau - 1 because the last interval has no Trace Point
+    u_tp = [0] * (tau - 1)
 
-    for i in range(0, interval_count):
-      
-      if i == 0: 
-        begin = self.start_seq1
+    # tau - 1 because last interval has no Trace Point
+    for q in range(0, len(u_tp)):
+      u_tp[q] = (p + q) * self.delta - 1
 
-      else:
-        begin = (itv_size+ i - 1) * self.delta
-
-      if i == interval_count - 1:
-        end = self.end_seq1 - 1
-
-      else:
-        end = (itv_size+i) * self.delta - 1
-      
-      intervals[i] = begin, end
-
-    # search cigar for pattern
-    count = count1 = count2 = cig_count = 0
-    tp = []
+    v_tp = []
+    num_chars_in_u = num_chars_in_v = count = 0
 
     for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(self.cigar):
-      
-      assert cig_symbol not in ['N','S','H','P'], \
+
+      assert cig_symbol in ['M', 'I', 'D'], \
         "CIGAR-Symbol is not in ['M','I','D']"
    
       for i in range(0,cig_count):
         if cig_symbol == 'I':
-          count1 += 1
+          num_chars_in_v += 1
         elif cig_symbol == 'D':
-          count2 += 1
+          num_chars_in_u += 1
         else:
-          count1 += 1
-          count2 += 1
+          num_chars_in_u += 1
+          num_chars_in_v += 1
 
-        # count until the end but ignore end of last interval as Trace Point
-        if count1 == intervals[count][1] + 1 and count1 != len(self.seq1):
-          tp.append(count2 - 1 + self.start_seq2)
-          if count != len(intervals) - 1:
+        # count until the end but ignore end of last interval as TracePoint
+        if num_chars_in_u == u_tp[count]:# and count != len(u_tp):
+          v_tp.append(num_chars_in_v - 1)
+
+          # do not increment count if the last element in u_tp is reached
+          if count + 1 != len(u_tp):
             count += 1
-    assert tp, "TracePoint Array from encode function is empty."
 
-    return tp
+    assert v_tp, "TracePoint Array from encode function is empty."
 
-  # create new intervals from TracePoints and calculate new alignment to
-  # extrace CIGAR-String
+    return v_tp
+
+  # create new intervals from TracePoints and calculate new alignment
   def decode(self, tp):
 
     assert self.seq1, "First sequence for decode function is empty."
@@ -95,24 +89,27 @@ class TracePointAlignment(object):
     # calculate CIGAR of intervals
     cigar = ""
     
-    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1, 
+    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1,
                               self.end_seq1,self.start_seq2,self.end_seq2)
 
     for i in range(0,len(tp)):
-      
+
       if i == 0:
 
         cigar = aln.calc_cigar(self.seq1[0:self.delta],self.seq2[0:tp[i]+1])
+        print "Delta:",self.delta
       
       elif i == len(tp) - 1:
  
         cigar += aln.calc_cigar(self.seq1[i*self.delta:len(self.seq1)],
                                 self.seq2[tp[i-1]+1:len(self.seq2)])
+        print "Delta:",self.delta
 
       else:
         
         cigar += aln.calc_cigar(self.seq1[i*self.delta:(i+1)*self.delta],
                                       self.seq2[tp[i-1]+1:tp[i] + 1])
+        print "Delta:",self.delta
 
     cigar = Cigar_Pattern.combine_cigar(cigar)
 

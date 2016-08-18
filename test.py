@@ -69,7 +69,7 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
                                           start_seq2,end_seq2, delta, cigar)
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
-
+  aln.show_aln(seq1, seq2, cigar)
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
 
@@ -183,7 +183,7 @@ def main():
   elif args.random:
     test_random(verbose, decode)
   elif args.intense:
-    test_random_sequences(100,200,0.15,"acgt",10,verbose,decode)
+    test_random_sequences(10000,200,0.15,"acgt",10,verbose,decode)
   else:
     sys.stderr.write("# Falsche Eingabe der Argumente!")
     sys.exit(1);

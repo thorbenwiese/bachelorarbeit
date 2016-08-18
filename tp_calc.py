@@ -31,10 +31,10 @@ def random_sequences(amount, random_length, error_rate, alphabet):
       if r_num <= error_rate:
         r_choice = random.random()
         if 0 <= r_choice < 0.1:
-          # Insertion
+          # Deletion
           aln2[position] = ''
         elif 0.1 < r_choice < 0.2:
-          # Deletion
+          # Insertion
           aln1[position] = ''
         elif 0.2 < r_choice < 0.4:
           # a

@@ -30,7 +30,7 @@ class Alignment(object):
     assert (len(alns) > 0), "No alignment could be calculated.\n"
     top_aln = alns[0]
 
-    aln1, aln2, = top_aln[0], top_aln[1]
+    aln1, aln2, = top_aln[0].lower(), top_aln[1].lower()
     
     assert (len(aln1) == len(aln2)), \
       "Alignment sequences do not have the same length!"
@@ -46,9 +46,9 @@ class Alignment(object):
     count = 1
 
     if aln1[0] == '-':
-      previous_op  = 'D'
-    elif aln2[0] == '-':
       previous_op  = 'I'
+    elif aln2[0] == '-':
+      previous_op  = 'D'
     else:
       previous_op = 'M'
 
@@ -56,19 +56,19 @@ class Alignment(object):
 
       # deletion
       if aln1[i] == '-':
-        if previous_op != 'D':
+        if previous_op != 'I':
           cigar += "%d%s" % (count, previous_op)
           count = 1
-          previous_op = 'D'
+          previous_op = 'I'
         else:
           count += 1
 
       # insertion
       elif aln2[i] == '-':
-        if previous_op != 'I':
+        if previous_op != 'D':
           cigar += "%d%s" % (count, previous_op)
           count = 1
-          previous_op = 'I'
+          previous_op = 'D'
         else:
           count += 1
 
@@ -83,7 +83,7 @@ class Alignment(object):
 
     # last operation
     cigar += "%d%s" % (count, previous_op)
-
+    self.show_aln(aln1,aln2,cigar)
     return cigar
 
   # 0s and 5s for the pretty_print_alignment
@@ -128,10 +128,10 @@ class Alignment(object):
 
   def cigar_to_aln(self, cigar):                                                 
     
-    cig_count = offset1 = offset2 = 0                                            
+    offset1 = offset2 = 0                                            
     aln1 = aln2 = ""                                                             
                                                                                   
-    for cig_count,cig_symbol in Cigar_Pattern.parse_cigar(cigar):
+    for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
 
       if cig_symbol == 'M':                                                      
         aln1 += str(self.seq1[offset1:offset1 + cig_count])                      
@@ -140,13 +140,15 @@ class Alignment(object):
         offset2 += cig_count                                                     
 
       elif cig_symbol == 'I':                                                    
-        aln1 += str(self.seq1[offset1:offset1 + cig_count])                      
-        aln2 += str("-" * cig_count)                                             
-        offset1 += cig_count                                                     
-
-      elif cig_symbol == 'D':                                                    
         aln1 += str("-" * cig_count)                                             
         aln2 += str(self.seq2[offset2:offset2 + cig_count])                      
+
         offset2 += cig_count                                                     
+
+      elif cig_symbol == 'D':                                                    
+        aln1 += str(self.seq1[offset1:offset1 + cig_count])                      
+        aln2 += str("-" * cig_count)                                             
+
+        offset1 += cig_count                                                     
 
     return [aln1, aln2]
