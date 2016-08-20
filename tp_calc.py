@@ -154,7 +154,6 @@ def main(argv):
   cigar = args.cigar
   delta = args.delta
 
-
   t = time.clock()
 
   # show specific alignment from input files

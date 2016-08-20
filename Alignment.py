@@ -83,6 +83,7 @@ class Alignment(object):
 
     # last operation
     cigar += "%d%s" % (count, previous_op)
+    # TODO??
     self.show_aln(aln1,aln2,cigar)
     return cigar
 
@@ -105,15 +106,13 @@ class Alignment(object):
     return positions
 
   # pretty_print of an alignment with positions and '|'s
-  def show_aln(self, seq1, seq2, cigar):
+  def show_aln(self, aln1, aln2, cigar):
 
-    assert seq1, "First sequence for show_aln is empty."
-    assert seq2, "Second sequence for show_aln is empty."
+    assert aln1, "First sequence for show_aln is empty."
+    assert aln2, "Second sequence for show_aln is empty."
     assert cigar, "CIGAR-String for show_aln is empty."
 
     middle = pretty_print = ""
-
-    aln1, aln2 = self.cigar_to_aln(cigar)
 
     assert len(aln1)==len(aln2), \
       "Alignment sequences do not have the same length."
@@ -123,30 +122,31 @@ class Alignment(object):
 
     print "\n".join((self.print_sequence_positions(aln1),aln1,middle,aln2,
                      self.print_sequence_positions(aln2),
-                     "CIGAR-String: "))+cigar
+                     "CIGAR-String: ")) + cigar
 
 
-  def cigar_to_aln(self, cigar):                                                 
-    
+  def cigar_to_aln(self, seq1, seq2, cigar): 
+
     offset1 = offset2 = 0                                            
     aln1 = aln2 = ""                                                             
-                                                                                  
+
     for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
 
       if cig_symbol == 'M':                                                      
-        aln1 += str(self.seq1[offset1:offset1 + cig_count])                      
-        aln2 += str(self.seq2[offset2:offset2 + cig_count])                      
+        aln1 += str(seq1[offset1:offset1 + cig_count])                      
+        aln2 += str(seq2[offset2:offset2 + cig_count])                      
+
         offset1 += cig_count                                                     
         offset2 += cig_count                                                     
 
       elif cig_symbol == 'I':                                                    
         aln1 += str("-" * cig_count)                                             
-        aln2 += str(self.seq2[offset2:offset2 + cig_count])                      
+        aln2 += str(seq2[offset2:offset2 + cig_count])                      
 
         offset2 += cig_count                                                     
 
       elif cig_symbol == 'D':                                                    
-        aln1 += str(self.seq1[offset1:offset1 + cig_count])                      
+        aln1 += str(seq1[offset1:offset1 + cig_count])                      
         aln2 += str("-" * cig_count)                                             
 
         offset1 += cig_count                                                     

@@ -59,11 +59,11 @@ class TracePointAlignment(object):
           num_chars_in_v += 1
 
         # count until the end but ignore end of last interval as TracePoint
-        if num_chars_in_u == u_tp[count]:# and count != len(u_tp):
+        if num_chars_in_u == u_tp[count]:
           v_tp.append(num_chars_in_v - 1)
 
           # do not increment count if the last element in u_tp is reached
-          if count + 1 != len(u_tp):
+          if u_tp[count] != u_tp[-1]:
             count += 1
 
     assert v_tp, "TracePoint Array from encode function is empty."

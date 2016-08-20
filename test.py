@@ -33,7 +33,8 @@ def test_random_sequences(amount,random_length,error_rate,alphabet,delta,
       cig = tp_aln.decode(tp_aln.tp)
 
       if verbose:
-        aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
+        aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cig)
+        aln.show_aln(aln1, aln2, cig)
 
     if verbose:
       print "# TracePoints:", tp_aln.tp
@@ -55,7 +56,8 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
     cig = tp_aln.decode(tp_aln.tp)
 
     if verbose:
-      aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
+      aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cig)
+      aln.show_aln(aln1, aln2, cig)
 
   if verbose:
     print "# TracePoints:", tp_aln.tp
@@ -69,12 +71,15 @@ def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
                                           start_seq2,end_seq2, delta, cigar)
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
-  aln.show_aln(seq1, seq2, cigar)
+
+  aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cigar)
+  aln.show_aln(aln1, aln2, cigar)
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
 
     if verbose:
-      aln.show_aln(tp_aln.seq1, tp_aln.seq2, cig)
+      aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cig)
+      aln.show_aln(aln1, aln2, cig)
 
   if verbose:
     print "# TracePoints:", tp_aln.tp
@@ -119,7 +124,7 @@ def test_cigar(verbose, decode):
 	
   seq1 = "gagcatgttgcctggtcctttgctaggtactgtagaga" 
   seq2 = "gaccaagtaggcgtggaccttgctcggtctgtaagaga" 
-  cigar = "5M5M1I3M5M1D9M1D5M1I2M2M"
+  cigar = "10M1I8M1D9M1D5M1I4M"
 
   print "# Testing sequences with CIGAR 1/4..."
   test_with_cigar(seq1,seq2,cigar,10,verbose,decode)
@@ -133,14 +138,14 @@ def test_cigar(verbose, decode):
 	
   seq1 = "actgaactgact"
   seq2 = "actagaatggct"
-  cigar = "3M1D3M1I5M"
+  cigar = "3M1I3M1D5M"
 
   print "# Testing sequences with CIGAR 3/4..."
   test_with_cigar(seq1,seq2,cigar,3,verbose, decode)
 	
   seq1 = "gtgtcgcccgtctagcatacgc"
   seq2 = "ggtgcgccgtcttagcata"
-  cigar = "1M1I2M1D4M1I3M1D7M3I"
+  cigar = "1M1D2M1I4M1D3M1I7M3D"
 
   print "# Testing sequences with CIGAR 4/4..."
   test_with_cigar(seq1,seq2,cigar,3,verbose,decode)
