@@ -63,12 +63,13 @@ def test_without_cigar(seq1,seq2,delta,verbose, decode):
     print "# TracePoints:", tp_aln.tp
 
 
-def test_with_cigar(seq1,seq2,cigar,delta,verbose, decode):
+def test_with_cigar(seq1, seq2, cigar, delta, verbose, decode):
 
   end_seq1 = len(seq1)
   end_seq2 = len(seq2)
   tp_aln = TracePoint.TracePointAlignment(seq1, seq2,start_seq1, end_seq1,
                                           start_seq2,end_seq2, delta, cigar)
+
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
 

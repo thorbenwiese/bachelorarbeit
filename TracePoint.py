@@ -30,8 +30,8 @@ class TracePointAlignment(object):
     p = max(1,int(math.ceil(self.start_seq1/self.delta)))
 
     # number of intervals
-    tau = int(math.ceil(self.end_seq1/self.delta) - math.floor(self.start_seq1/
-                                                               self.delta))
+    tau = int(math.ceil(float(self.end_seq1) / self.delta) - math.floor(
+                              self.start_seq1 / self.delta))
 
     # List of last indices of intervals in u initialized with 0
     # tau - 1 because the last interval has no Trace Point
@@ -60,15 +60,17 @@ class TracePointAlignment(object):
 
         # count until the end but ignore end of last interval as TracePoint
         if num_chars_in_u == u_tp[count]:
-          v_tp.append(num_chars_in_v - 1)
+          v_tp.append(num_chars_in_v)# -1
 
           # do not increment count if the last element in u_tp is reached
-          if u_tp[count] != u_tp[-1]:
+          if count == len(u_tp) - 1:#u_tp[count] > u_tp[-1]:
+            assert v_tp, "TracePoint Array from encode function is empty."
+            return v_tp
+
+          else:
             count += 1
 
-    assert v_tp, "TracePoint Array from encode function is empty."
 
-    return v_tp
 
   # create new intervals from TracePoints and calculate new alignment
   def decode(self, tp):

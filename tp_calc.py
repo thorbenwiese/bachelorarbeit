@@ -159,13 +159,14 @@ def main(argv):
   # show specific alignment from input files
   if args.input_seq and args.input_aln and args.id:
     read_files(args.input_seq, args.input_aln, args.id)
+    return
 
-  elif not args.random:
+  if not args.random:
     seq1 = seq1[start_seq1:end_seq1]
     seq2 = seq2[start_seq2:end_seq2]
 
   # with CIGAR
-  elif args.cigar:
+  if args.cigar:
 
     tp_aln = TracePoint.TracePointAlignment(seq1, seq2, start_seq1, end_seq1, 
                                             start_seq2, end_seq2, delta, cigar)
@@ -173,7 +174,6 @@ def main(argv):
 
   # Random
   elif args.random:
-
     random_seq_list = random_sequences(int(args.random[0]), int(args.random[1]), 
                       float(args.random[2]), args.random[3])
 
@@ -187,6 +187,7 @@ def main(argv):
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
                                               end_seq1, start_seq2, end_seq2, 
                                               delta, cigar)
+      print "Trace Points:", tp_aln.tp
 
       if i == 0:
         tp_aln.store_tp_aln('w')
@@ -201,6 +202,7 @@ def main(argv):
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                             end_seq1, start_seq2, end_seq2, 
                                             delta, cigar)
+    print "Trace Points:", tp_aln.tp
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
