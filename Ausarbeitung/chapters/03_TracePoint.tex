@@ -101,7 +101,7 @@ Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_\Delta$, sowie die relativen W
 	\caption{Relative Wahrscheinlichkeiten der Delta-Kodierung}
 \end{table}
 
-Bei der naiven binären Kodierung ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_2(8)\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt.
+Bei der naiven binären Kodierung ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_28\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt.
 
 Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
 
@@ -120,7 +120,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
 \end{table}
 
 Insgesamt benötigt die unäre Kodierung also $12$ Bit mit einem durchschnittlichen Verbrauch pro  Symbol von
-\[\frac{12}{8} \approx 1.5 \text{ Bit.}\]
+\[\frac{12}{8} \approx 1.5 \frac{\text{Bit}}{\text{Symbol}}\]
 
 Die Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
 
@@ -157,7 +157,7 @@ und der dazugehörige Huffman-Baum:
 \end{figure}
 
 Der gesamte Bitverbrauch der Huffman-Kodierung ist demnach $11$ Bit mit einem durchschnittlichen Verbrauch pro Symbol von 
-\[\frac{11}{8} \approx 1.38 \text{ Bit.}\]
+\[\frac{11}{8} \approx 1.38 \frac{\text{Bit}}{\text{Symbol}}\]
 
 \subsection{Testläufe}
 

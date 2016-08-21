@@ -32,35 +32,44 @@ gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
 gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 0    5    0    5    0    5    0    5    0   
 \end{verbatim}
-gegeben, welches durch den CIGAR-String \texttt{4M1D1M1D1M1D1M2I1M1I1M1D8M\\1I7M1I5M1D4M} repräsentiert werden kann.
+gegeben, welches durch den CIGAR-String \texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M\\1D7M1D5M1I4M} repräsentiert werden kann.
 
 Im Folgenden vergleiche ich für diese Art der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
 
-Sei das Alphabet $\cal{A}$ $= \{M, I, D, 1, 2, 4, 5, 7, 8\}$, welches alle Symbole aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben.
+Sei das Alphabet $\cal{A}$$_1$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_2$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c_1)$ jeden Symbols $c_1 \in$ $\cal{A}$$_1$ und $p(c_2)$ jeden Symbols $c_2 \in$ $\cal{A}$$_2$gegeben.
 
 \begin{table}[h]
 	\centering
-	\begin{tabular}{ccc}
-		$c$&Häufigkeit&$p(c)$\\
+	\begin{tabular}{cccc}
+		$c_1$&Häufigkeit&$p(c_1)$&\\
 		\hline
-		$1$ & $13$ &$\frac{13}{38}$\\
-		M & $10$ & $\frac{10}{38}$\\
-		D & $5$ & $\frac{5}{38}$\\
-		I & $4$ & $\frac{4}{38}$\\
-		$4$ & $2$ & $\frac{2}{38}$\\
-		$2$ & $1$ & $\frac{1}{38}$\\
-		$5$ & $1$ & $\frac{1}{38}$\\
-		$7$ & $1$ & $\frac{1}{38}$\\
-		$8$ & $1$ & $\frac{1}{38}$
-	\end{tabular}
+		M & $10$ & $\frac{10}{38}$&\\
+		I & $5$ & $\frac{5}{38}$&\\
+		D & $4$ & $\frac{4}{38}$&\\
+		&&&\\
+		&&&\\
+		&&&
+	\end{tabular}\begin{tabular}{ccc}
+	$c_2$&Häufigkeit&$p(c_2)$\\
+	\hline
+	$1$ & $13$ &$\frac{13}{38}$\\
+	$4$ & $2$ & $\frac{2}{38}$\\
+	$2$ & $1$ & $\frac{1}{38}$\\
+	$5$ & $1$ & $\frac{1}{38}$\\
+	$7$ & $1$ & $\frac{1}{38}$\\
+	$8$ & $1$ & $\frac{1}{38}$
+\end{tabular}
 	\caption{Relative Wahrscheinlichkeiten CIGAR-String}
 \end{table}
 
-Bei einer naiven binären Kodierung wird jedes Symbol $c \in \cal{A}$ mit $\lceil \log_2(n) \rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_2(38)\rceil = 6$ Bit pro Symbol. Insgesamt ergibt das somit $38 \cdot 6 = 228$ Bit.
+Bei einer naiven binären Kodierung wird jedes Symbol $c_i \in \cal{A}$$_i$ mit $\lceil \log_2n
+ \rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol. Insgesamt ergibt das somit $19 \cdot 2 + 19 \cdot 3 = 95$ Bit.
 
 Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'1'$-Bits, gefolgt von einem $'0'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'0'$, das zweithäufigste mit $'10'$, das dritthäufigste mit $'110'$ usw. kodiert. \cite[S. 29-30]{coding}
 
 Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
+
+%TODO weiter mit 2 Alphabeten
 
 \begin{table}[h]
 	\centering
@@ -85,7 +94,7 @@ Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
 Insgesamt benötigt die unäre Kodierung also $104$ Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{104}{38} \approx 2.74 \text{ Bit.}\]
+\[\frac{104}{38} \approx 2.74 \frac{\text{Bit}}{\text{Symbol}}\]
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}.
 
@@ -144,7 +153,7 @@ und der dazugehörige Huffman-Baum:
 Der gesamte Bitverbrauch dieser Kodierung ist demnach $99$ Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{99}{38} \approx 2.61 \text{ Bit.}\]
+\[\frac{99}{38} \approx 2.61 \frac{\text{Bit}}{\text{Symbol}}\]
 
 \subsection{Testläufe}\label{Cigar_Testläufe}
 
