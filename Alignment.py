@@ -83,8 +83,6 @@ class Alignment(object):
 
     # last operation
     cigar += "%d%s" % (count, previous_op)
-    # TODO??
-    self.show_aln(aln1,aln2,cigar)
     return cigar
 
   # 0s and 5s for the pretty_print_alignment

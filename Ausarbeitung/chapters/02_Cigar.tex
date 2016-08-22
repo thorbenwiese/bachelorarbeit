@@ -36,7 +36,7 @@ gegeben, welches durch den CIGAR-String \texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M\\1D7M
 
 Im Folgenden vergleiche ich für diese Art der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
 
-Sei das Alphabet $\cal{A}$$_1$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_2$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c_1)$ jeden Symbols $c_1 \in$ $\cal{A}$$_1$ und $p(c_2)$ jeden Symbols $c_2 \in$ $\cal{A}$$_2$gegeben.
+Sei das Alphabet $\cal{A}$$_1$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_2$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c_1)$ jeden Symbols $c_1 \in$ $\cal{A}$$_1$ und $p(c_2)$ jeden Symbols $c_2 \in$ $\cal{A}$$_2$ gegeben.
 
 \begin{table}[h]
 	\centering
@@ -69,521 +69,138 @@ Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im A
 
 Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
 
-%TODO weiter mit 2 Alphabeten
-
 \begin{table}[h]
 	\centering
 	\begin{tabular}{ccr}
 		Symbol & Kodierung &  Anzahl Bits\\
 		\hline
-		$1$ & $0$ & $13 \cdot 1 = 13$\\
-		M & $10$ & $10 \cdot 2 = 20$\\
-		D & $110$ & $5 \cdot 3 = 15$\\
-		I & $1110$ & $4 \cdot 4 = 16$\\
-		$4$ & $11110$ & $2 \cdot 5 = 10$\\
-		$2$ & $111110$ & $1 \cdot 6 =\ \ 6$\\
-		$5$ & $1111110$ & $1 \cdot 7 =\ \ 7$\\
-		$7$ & $11111110$ & $1 \cdot 8 =\ \ 8$\\
-		$8$ & $111111110$ & $1 \cdot 9 =\ \ 9$\\
+		M & $0$ & $10 \cdot 1 = 10$\\
+		D & $10$ & $5 \cdot 2 = 10$\\
+		I & $110$ & $4 \cdot 3 = 12$\\
+		&&\\
+		&&\\
+		&&\\
 		\hline
-		\multicolumn{2}{l}{Gesamtanzahl:}&$104$
-	\end{tabular}
+		\multicolumn{2}{l}{Gesamtanzahl:}&$32$
+	\end{tabular}\begin{tabular}{ccr}
+	Symbol & Kodierung &  Anzahl Bits\\
+	\hline
+	$1$ & $0$ & $13 \cdot 1 = 13$\\
+	$4$ & $10$ & $2 \cdot 2 = \ \ 4$\\
+	$2$ & $110$ & $1 \cdot 3 =\ \ 3$\\
+	$5$ & $1110$ & $1 \cdot 4 =\ \ 4$\\
+	$7$ & $11110$ & $1 \cdot 5 =\ \ 5$\\
+	$8$ & $111110$ & $1 \cdot 6 =\ \ 6$\\
+	\hline
+	\multicolumn{2}{l}{}&$35$
+\end{tabular}
 	\caption{Unäre Kodierung des CIGAR-Strings}
 \end{table}
 
-Insgesamt benötigt die unäre Kodierung also $104$ Bit.
+Insgesamt benötigt die unäre Kodierung also $32 + 35 = 67$ Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{104}{38} \approx 2.74 \frac{\text{Bit}}{\text{Symbol}}\]
+\[\frac{67}{38} \approx 1.76 \frac{\text{Bit}}{\text{Symbol}}\]
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}.
 
 Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
 
 Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
-
+\FloatBarrier
 \begin{table}[h]
 	\centering
 	\begin{tabular}{ccr}
 		Symbol & Kodierung & Anzahl Bits\\
 		\hline
-		$1$ & $00$ & $13 \cdot 2 = 26$\\
-		M & $01$ & $10 \cdot 2 = 20$\\
-		D & $100$ & $5 \cdot 3 = 15$\\
-		I & $110$ & $4 \cdot 3 = 12$\\
-		$4$ & $1010$ & $2 \cdot 4 = 8$\\
-		$7$ & $1110$ & $1 \cdot 4 = 4$\\
-		$8$ & $1111$ & $1 \cdot 4 = 4$\\
-		$2$ & $10110$ & $1 \cdot 5 = 5$\\
-		$5$ & $10111$ & $1 \cdot 5 = 5$\\
+		M & $0$ & $10 \cdot 1 = 10$\\
+		D & $10$ & $5 \cdot 2 = 10$\\
+		I & $11$ & $4 \cdot 2 =\ \ 8$\\
+		&&\\
+		&&\\
+		&&\\
 		\hline
-		\multicolumn{2}{l}{Gesamtanzahl:}&$99$
-	\end{tabular}
+		\multicolumn{2}{l}{Gesamtanzahl:}&$28$
+	\end{tabular}\begin{tabular}{ccr}
+	Symbol & Kodierung & Anzahl Bits\\
+	\hline
+	$1$ & $00$ & $13 \cdot 2 = 26$\\
+	$4$ & $01$ & $2 \cdot 2 =\ \ 4$\\
+	$2$ & $100$ & $1 \cdot 3 =\ \ 3$\\
+	$5$ & $101$ & $1 \cdot 3 =\ \ 3$\\
+	$7$ & $110$ & $1 \cdot 3 =\ \ 3$\\
+	$8$ & $111$ & $1 \cdot 3 =\ \ 3$\\
+	\hline
+	\multicolumn{2}{l}{}&$42$
+\end{tabular}
 	\caption{Huffmann-Kodierung des CIGAR-Strings}
 \end{table}
-
-und der dazugehörige Huffman-Baum:
+\FloatBarrier
+und die dazugehörigen Huffman-Bäume:
 
 \begin{figure}[h]
 	\centering
 	\begin{forest}
 		for tree={grow'=south}
-		[$\frac{38}{38}$
-		[$\frac{15}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-		[$\frac{6}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-		[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-		[8, edge label={node[midway,right,font=\scriptsize]{1}}]
-		[7, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-		[I, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-		[$\frac{9}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
-		[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-		[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
-		[5, edge label={node[midway,right,font=\scriptsize]{1}}]
-		[2, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-		[4, edge label={node[midway,left,font=\scriptsize]{0}}] ]
-		[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] ]
-		[$\frac{23}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
-		[M, edge label={node[midway,right,font=\scriptsize]{1}}]
-		[1, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		[$\frac{19}{38}$
+		[$\frac{9}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[I, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] 
+		[M, edge label={node[midway,left,font=\scriptsize]{0}}] ]
 		]
 	\end{forest}
-	\caption{Huffman-Baum der Kodierung des CIGAR-Strings}
+	\begin{forest}
+	for tree={grow'=south}
+	[$\frac{19}{38}$
+	[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+	[$8$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$7$, edge label={node[midway,left,font=\scriptsize]{0}}]]
+	[$\frac{2}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
+	[$5$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$2$, edge label={node[midway,left,font=\scriptsize]{0}}] ]]
+	[$\frac{15}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+	[$4$, edge label={node[midway,right,font=\scriptsize]{1}}]
+	[$1$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+	]
+\end{forest}
+	\caption{Huffman-Bäume der Kodierung des CIGAR-Strings}
 \end{figure}
 
-Der gesamte Bitverbrauch dieser Kodierung ist demnach $99$ Bit.
+Der gesamte Bitverbrauch dieser Kodierung ist demnach $28 + 42 = 70$ Bit.
 
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
-\[\frac{99}{38} \approx 2.61 \frac{\text{Bit}}{\text{Symbol}}\]
+\[\frac{70}{38} \approx 1.84 \frac{\text{Bit}}{\text{Symbol}}\]
 
 \subsection{Testläufe}\label{Cigar_Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 100 zufällig generierte Sequenzpaaren mit je etwa 200 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 10 berechnet.
+%TODO 10.000 - 1000 - d100
 
-\begin{filecontents*}{cigar_huffman.txt}
-	1 45
-	2 26
-	3 32
-	4 31
-	5 39
-	6 32
-	7 27
-	8 37
-	9 32
-	10 36
-	11 36
-	12 45
-	13 37
-	14 27
-	15 39
-	16 32
-	17 38
-	18 39
-	19 27
-	20 44
-	21 32
-	22 43
-	23 32
-	24 38
-	25 38
-	26 45
-	27 32
-	28 39
-	29 38
-	30 26
-	31 32
-	32 38
-	33 37
-	34 32
-	35 27
-	36 32
-	37 37
-	38 45
-	39 39
-	40 43
-	41 26
-	42 44
-	43 38
-	44 43
-	45 32
-	46 26
-	47 45
-	48 21
-	49 50
-	50 39
-	51 38
-	52 37
-	53 25
-	54 52
-	55 29
-	56 21
-	57 49
-	58 26
-	59 43
-	60 45
-	61 44
-	62 39
-	63 26
-	64 41
-	65 32
-	66 39
-	67 43
-	68 38
-	69 37
-	70 26
-	71 45
-	72 38
-	73 32
-	74 47
-	75 38
-	76 32
-	77 32
-	78 43
-	79 43
-	80 36
-	81 21
-	82 45
-	83 50
-	84 52
-	85 45
-	86 37
-	87 32
-	88 48
-	89 57
-	90 36
-	91 32
-	92 52
-	93 46
-	94 45
-	95 39
-	96 57
-	97 52
-	98 44
-	99 38
-	100 51
-\end{filecontents*}
-
-\begin{filecontents*}{cigar_binary.txt}
-	1 115
-	2 52
-	3 150
-	4 234
-	5 294
-	6 306
-	7 155
-	8 252
-	9 246
-	10 56
-	11 100
-	12 120
-	13 258
-	14 198
-	15 360
-	16 246
-	17 135
-	18 294
-	19 276
-	20 222
-	21 115
-	22 258
-	23 252
-	24 52
-	25 90
-	26 95
-	27 210
-	28 240
-	29 105
-	30 135
-	31 234
-	32 90
-	33 198
-	34 52
-	35 140
-	36 85
-	37 160
-	38 288
-	39 85
-	40 155
-	41 110
-	42 110
-	43 360
-	44 110
-	45 135
-	46 210
-	47 258
-	48 110
-	49 160
-	50 324
-	51 160
-	52 90
-	53 150
-	54 150
-	55 36
-	56 222
-	57 270
-	58 216
-	59 234
-	60 240
-	61 135
-	62 135
-	63 288
-	64 258
-	65 135
-	66 264
-	67 56
-	68 130
-	69 294
-	70 135
-	71 210
-	72 216
-	73 228
-	74 110
-	75 216
-	76 110
-	77 110
-	78 150
-	79 155
-	80 234
-	81 198
-	82 90
-	83 155
-	84 95
-	85 264
-	86 366
-	87 342
-	88 135
-	89 372
-	90 240
-	91 354
-	92 288
-	93 324
-	94 135
-	95 100
-	96 294
-	97 160
-	98 270
-	99 90
-	100 210
-\end{filecontents*}
-
-\begin{filecontents*}{cigar_unary.txt}
-	1 166
-	2 80
-	3 175
-	4 133
-	5 87
-	6 187
-	7 116
-	8 165
-	9 61
-	10 106
-	11 114
-	12 136
-	13 171
-	14 100
-	15 81
-	16 25
-	17 88
-	18 146
-	19 92
-	20 112
-	21 80
-	22 138
-	23 171
-	24 186
-	25 102
-	26 188
-	27 116
-	28 98
-	29 104
-	30 152
-	31 100
-	32 118
-	33 120
-	34 135
-	35 93
-	36 58
-	37 97
-	38 169
-	39 154
-	40 106
-	41 116
-	42 24
-	43 136
-	44 72
-	45 162
-	46 89
-	47 109
-	48 141
-	49 161
-	50 137
-	51 114
-	52 67
-	53 44
-	54 113
-	55 111
-	56 153
-	57 161
-	58 112
-	59 135
-	60 79
-	61 92
-	62 130
-	63 121
-	64 165
-	65 118
-	66 58
-	67 129
-	68 95
-	69 131
-	70 86
-	71 144
-	72 122
-	73 89
-	74 115
-	75 102
-	76 170
-	77 142
-	78 107
-	79 119
-	80 148
-	81 144
-	82 117
-	83 45
-	84 89
-	85 117
-	86 146
-	87 117
-	88 92
-	89 137
-	90 49
-	91 110
-	92 150
-	93 101
-	94 140
-	95 71
-	96 123
-	97 95
-	98 112
-	99 104
-	100 48
-\end{filecontents*}
+Die folgenden Grafiken wurden mit jeweils 1.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
 
 \begin{figure}[h]
 	\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north},
-	xtick={0,10,20,...,100},
-	ytick={0,50,100,150,...,500}]
-	\addplot table {coding/cigar_binary.txt};
-	\addplot [dashed, color=red, thick] coordinates {
-		(0,170) (100,170)
-	};
-	\addlegendentry{Binäre Kodierung};
-	\addlegendentry{Mittelwert};
-	\end{axis}
-	\end{tikzpicture}
-	\caption{Bitverbrauch der naiven binären Kodierung des CIGAR-Strings}\label{fig:cig-bin}
+	\includegraphics[width=12cm]{coding/cig-bin-1000-1000-d100}
+	\caption{Bitverbrauch der binären Kodierung des CIGAR-Strings}\label{fig:cig-bin}
 \end{figure}
-	
+
 \begin{figure}[h]
 	\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north},
-	xtick={0,10,20,...,100},
-	ytick={0,20,40,...,200}]
-	\addplot table {coding/cigar_unary.txt};
-	\addplot [dashed, color=red, thick] coordinates {
-		(0,121) (100,121)
-	};
-	\addlegendentry{Unäre Kodierung};
-	\addlegendentry{Mittelwert};
-	\end{axis}
-	\end{tikzpicture}
+	\includegraphics[width=12cm]{coding/cig-una-1000-1000-d100}
 	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}\label{fig:cig-una}
 \end{figure}
-	
+
 \begin{figure}[h]
 	\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north},
-	xtick={0,10,20,...,100},
-	ytick={0,15,20,...,55}]
-	\addplot table {coding/cigar_huffman.txt};
-	\addplot [dashed, color=red, thick] coordinates {
-		(0,37) (100,37)
-	};
-	\addlegendentry{Huffman-Kodierung};
-	\addlegendentry{Mittelwert};
-	\end{axis}
-	\end{tikzpicture}
+	\includegraphics[width=12cm]{coding/cig-huf-1000-1000-d100}
 	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}\label{fig:cig-huf}
 \end{figure}
 
-\begin{figure}[h]
-	\centering
-	\begin{tikzpicture}
-	\begin{axis}[	
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north},
-	xtick={0,10,20,...,100},
-	ytick={0,50,100,150,...,500}]
-	\addplot table {coding/cigar_binary.txt};
-	\addlegendentry{Binäre Kodierung};
-	\addplot table {coding/cigar_unary.txt};
-	\addlegendentry{Unäre Kodierung};
-	\addplot [dashed, color=blue, thick] coordinates {
-		(0,170) (100,170)
-	};
-	\addplot [dashed, color=red, thick] coordinates {
-		(0,121) (100,121)
-	};
-	\addlegendentry{Mittelwert binäre Kodierung};
-	\addlegendentry{Mittelwert unäre Kodierung};
-	\end{axis}
-	\end{tikzpicture}
-	\caption{Binäre und unäre Kodierung des CIGAR-Strings}
-\end{figure}
-	
-\begin{figure}[h]
-	\centering
-	\begin{tikzpicture}
-	\begin{axis}[	
-	xlabel={Anzahl Durchläufe},
-	ylabel={Anzahl Bits},
-	legend style={at={(0.5,-0.15)},anchor=north},
-	xtick={0,10,20,...,100},
-	ytick={0,20,40,...,200}]
-	\addplot table {coding/cigar_unary.txt};
-	\addlegendentry{Unäre Kodierung};
-	\addplot table {coding/cigar_huffman.txt};
-	\addlegendentry{Huffman-Kodierung};
-	\addplot [dashed, color=blue, thick] coordinates {
-		(0,121) (100,121)
-	};
-	\addplot [dashed, color=red, thick] coordinates {
-		(0,37) (100,37)
-	};
-	\addlegendentry{Mittelwert unäre Kodierung};
-	\addlegendentry{Mittelwert Huffman-Kodierung};
-	\end{axis}
-	\end{tikzpicture}
-	\caption{Unäre und Huffman-Kodierung des CIGAR-Strings}
-\end{figure}
-
 \section{Bewertung}
+%TODO überarbeiten mit neuen Grafiken
 
 Die Abbildungen \ref{fig:cig-bin}-\ref{fig:cig-huf} verdeutlichen, dass jede der drei ausgewählten Methoden deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können.
-Im Mittel benötigt die naive binäre Kodierung 170 Bit, die unäre Kodierung 121 Bit und die Huffman-Kodierung 37 Bit.
+Im Mittel benötigt die naive binäre Kodierung $XX$ Bit, die unäre Kodierung $XX$ Bit und die Huffman-Kodierung $XX$ Bit.
 
 Sowohl in dem in \ref{Cigar_Beispiel} angegebenen Beispiel, als auch in den in \ref{Cigar_Testläufe} dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich am wenigsten Speicher.
 
