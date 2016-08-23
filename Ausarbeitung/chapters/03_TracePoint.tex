@@ -59,6 +59,20 @@ TODO
  
 \section{Speicherverbrauch}
 
+\subsection{Entropie unabhängig vom Kodierungsverfahren}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff_ent_einzel-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings pro Symbol}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff_ent_faktor-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings}
+\end{figure}
+\FloatBarrier
 \subsection{Differenzen-Kodierung}\label{Differenzen-Kodierung}
 
 %TODO Quellen
@@ -67,7 +81,7 @@ Gegeben sei eine Liste $L = (a_1, a_2, ... , a_n)$ mit $a_i < a_{i+1}, 0 < i \le
 Anstatt jeden Wert $a \in L$ als solchen abzuspeichern, kann alternativ die Differenz eines Wertes $a_i$ zu dem nachfolgenden Wert $a_{i+1}$ abgespeichert werden. Lediglich der erste (oder letzte) Wert aus $L$ wird benötigt, um später sukzessive die ursprüngliche Liste rekonstruieren zu können.
 \[L_{diff} = (a_1, (a_2-a_1), (a_3-a_2), ... , (a_{n}-a_{n-1}))\]
 
-Bei gleichmäßig ansteigenden Werten ist die Abweichung der Differenzen zweier aufeinanderfolgender Werte in  der Liste untereinander gering und die Menge der zu kodierenden Symbole verringert sich.
+Bei gleichmäßig ansteigenden Werten ist die Abweichung der Differenzen zweier aufeinanderfolgender Werte in der Liste untereinander gering und die Menge der zu kodierenden Symbole verringert sich.
 
 \subsection{Kodierung der Trace Point Differenzen}
 Sei $\Delta = 5$ und das Alignment $A$
@@ -85,9 +99,9 @@ Für die Trace Point Darstellung ist somit eine Differenzen-Kodierung möglich. Al
 
 Um aus den Trace Points ein neues Alignment rekonstruieren zu können, benötigt man zusätzlich mindestens den $\Delta$-Wert, damit die Grenzen der Substrings beider Sequenzen berechnet werden können. Hierfür muss also der $\Delta$-Wert zu $L$ hinzugefügt werden.
 
-Für das oben genannten Beispiel ergibt sich somit $L_\Delta = (5, 5, 5, 5, 5, 4, 4, 6)$.
+Für das oben genannten Beispiel ergibt sich somit $L_{diff} = (5, 5, 5, 5, 5, 4, 4, 6)$.
 
-Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_\Delta$, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben. 
+Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_{diff}$, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben. 
 
 \begin{table}[h]
 	\centering

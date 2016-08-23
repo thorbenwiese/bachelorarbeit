@@ -22,6 +22,21 @@ TODO
 \clearpage
 
 \section{Speicherverbrauch}\label{Cigar_Speicher}
+
+\subsection{Entropie unabhängig vom Kodierungsverfahren}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig_ent_einzel-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings pro Symbol}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig_ent_faktor-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings}
+\end{figure}
+\FloatBarrier
 \subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Beispiel}
 Sei das Alignment $A$
 
@@ -102,7 +117,7 @@ Insgesamt benötigt die unäre Kodierung also $32 + 35 = 67$ Bit.
 Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
 \[\frac{67}{38} \approx 1.76 \frac{\text{Bit}}{\text{Symbol}}\]
 
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}.
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}. Eine sparsamere Variante des regulären Huffman-Algorithmus ist der Kanonische Huffman-Algorithmus, welcher im Gegensatz zu der ursprünglichen Variante eine eindeutige Menge von Codewörtern liefert und keinen vollständigen Huffman-Baum, sondern lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren. %TODO cite und für Beispiele anwenden
 
 Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
 
@@ -174,8 +189,6 @@ Der durchschnittliche Bitverbrauch für ein Symbol beträgt
 
 \subsection{Testläufe}\label{Cigar_Testläufe}
 
-%TODO 10.000 - 1000 - d100
-
 Die folgenden Grafiken wurden mit jeweils 1.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
 
 \begin{figure}[h]
@@ -197,11 +210,10 @@ Die folgenden Grafiken wurden mit jeweils 1.000 zufällig generierte Sequenzpaare
 \end{figure}
 
 \section{Bewertung}
-%TODO überarbeiten mit neuen Grafiken
 
-Die Abbildungen \ref{fig:cig-bin}-\ref{fig:cig-huf} verdeutlichen, dass jede der drei ausgewählten Methoden deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können.
-Im Mittel benötigt die naive binäre Kodierung $XX$ Bit, die unäre Kodierung $XX$ Bit und die Huffman-Kodierung $XX$ Bit.
+Die Abbildungen \ref{fig:cig-bin} und \ref{fig:cig-una} verdeutlichen, dass die binäre und unäre Kodierung deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Die Abbildung \ref{fig:cig-huf} hingegen weist eine Normalverteilung des Bitverbrauchs für die Huffman-Kodierung auf.
+Im Mittel benötigt die naive binäre Kodierung $284.60$ Bit, die unäre Kodierung $264.84$ Bit und die Huffman-Kodierung $162.93$ Bit.
 
-Sowohl in dem in \ref{Cigar_Beispiel} angegebenen Beispiel, als auch in den in \ref{Cigar_Testläufe} dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich am wenigsten Speicher.
+In den dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich mit Abstand am wenigsten Speicher, obwohl in dem unter \ref{Cigar_Beispiel} beschriebenen Beispiel die unäre Kodierung den CIGAR-String etwas effizienter kodiert. Der Grund hierfür ist die deutlich höhere Fehlerrate in \ref{Cigar_Beispiel}, welche die Anzahl der zu kodierenden Symbole deutlich erhöht.
 
 Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
