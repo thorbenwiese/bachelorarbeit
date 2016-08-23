@@ -2,7 +2,6 @@
 
 import TracePoint
 import Alignment
-
 import sys
 import argparse
 import string, random
@@ -88,10 +87,10 @@ def read_files(sequence_file, aln_file, id):
   with open(aln_file, 'r') as aln_file:
     coded_aln = aln_file.readlines()
 
-  seq1 = sequences[id*2-2].replace("\n","")
-  seq2 = sequences[id*2-1].replace("\n","")
+  seq1 = sequences[id * 2 - 2].replace("\n","")
+  seq2 = sequences[id * 2 - 1].replace("\n","")
 
-  data = coded_aln[id-1].split(";")
+  data = coded_aln[id - 1].split(";")
   delta = int(data[0])
   start_seq1 = int(data[1])
   end_seq1 = int(data[2])

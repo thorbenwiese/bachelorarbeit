@@ -38,10 +38,8 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
           cig_count_sum.append(cig_count)
         bit_sum.append(huffman(cig_count_sum))
         cig_count_sum = []
-        # bit_sum.append(huffman(cigar))
       elif mode == "binary":
         # naiive binary coding for cigar
-        # bit_sum.append(int(math.ceil(math.log(len(cigar),2)))*len(cigar))
         for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
           cig_count_sum.append(cig_count)
         bit_sum.append(int(math.ceil(math.log(len(cig_count_sum),2)))*len(
@@ -50,7 +48,6 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
         cig_count_sum = []
       else:
         # unary coding
-        # bit_sum.append(unary(cigar))
         m_count = i_count = d_count = 0
         for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
           if cig_symbol == 'M':
@@ -84,7 +81,6 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
       else:
         # huffman coding for differences
         bit_sum.append(huffman(TP))
-  #plot(bit_sum, mode, filename)
   return bit_sum
 
 def multiplot(bs1, bs2, bs3, t, method):
@@ -132,26 +128,6 @@ def multiplot(bs1, bs2, bs3, t, method):
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
 
-def plot(bit_sum, mode, filename):
-  counter = collections.Counter(bit_sum)
-  if mode == "binary":
-    mlabel = "Binary Coding"
-  elif mode == "unary":
-    mlabel = "Unary Coding"
-  elif mode == "huffman":
-    mlabel = "Huffman Coding"
-  plt.plot(counter.keys(), counter.values(), 'bo', label=mlabel)
-  y = list(range(counter.most_common(1)[0][1]))
-  x = [float(sum(bit_sum))/len(bit_sum)] * counter.most_common(1)[0][1]
-  print "Mean:", float(sum(bit_sum))/len(bit_sum)
-  plt.plot(x,y, 'i--',label='Mean')
-  plt.ylabel('Anzahl Ergebnisse')
-  plt.xlabel('Anzahl Bits')
-  plt.axis([0, max(counter.keys())*1.2, 0, counter.most_common(1)[0][1] * 1.2])
-  plt.legend(loc='upper right')
-  plt.savefig("runs/%s" % filename)
-  plt.show()
-
 def encode(symb2freq):
     """Huffman encode the given dict mapping symbols to weights"""
     heap = [[wt, [sym, ""]] for sym, wt in symb2freq.items()]
@@ -193,55 +169,102 @@ def unary(code):
     bits += (i+1)*order[i]
   return bits 
 
+def entropy(amount, random_length, error_rate, alphabet, delta):
+  start_seq1 = start_seq2 = 0
+  random_seq_list = tp_calc.random_sequences(amount,random_length,error_rate,
+                    alphabet)
+
+  diff_ent_sum = []
+  cig_ent_sum = []
+  for i in range(0, len(random_seq_list), 2):
+    end_seq1 = len(random_seq_list[i])
+    end_seq2 = len(random_seq_list[i+1]) 
+    aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
+                    start_seq1, end_seq1, start_seq2, end_seq2)
+
+    cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+    tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
+                                            end_seq1, start_seq2, end_seq2, 
+                                            delta, cigar)
+    mcount = dcount = icount = 0
+    cig_count_sum = []
+    cig_sym_sum = []
+    for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
+      #if cig_symbol == 'M':
+      #  mcount += 1
+      #elif cig_symbol == 'D':
+      #  dcount += 1
+      #elif cig_symbol == 'I':
+      #  icount += 1
+      cig_sym_sum.append(cig_symbol)
+      cig_count_sum.append(cig_count)
+    counter1 = collections.Counter(cig_count_sum)    
+    counter2 = collections.Counter(cig_sym_sum)    
+
+    ent1 = ent2 = 0
+    for value in counter1.values():
+      px = float(value)/sum(counter1.values())
+      ent1 += px * math.log(px,2)
+
+    for value in counter2.values():
+      px = float(value)/sum(counter2.values())
+      ent2 += px * math.log(px,2)
+    cig_ent_sum.append(-ent1 * len(cig_count_sum) + (-ent2 * len(cig_sym_sum)))
+    #cig_ent_sum.append(-ent1 + (-ent2))
+
+    # store differences between Trace Points and Delta Value in List
+    TP = [delta, tp_aln.tp[0]]
+    for j in range(1,len(tp_aln.tp)):
+      TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
+
+    counter = collections.Counter(TP)
+    ent = 0
+    for value in counter.values():
+      px = float(value)/sum(counter.values())
+      ent += px * math.log(px,2)
+    diff_ent_sum.append(-ent*len(TP))
+
+  cig_counter = collections.Counter(cig_ent_sum)
+  diff_counter = collections.Counter(diff_ent_sum)
+
+  plt.figure(1)
+  plt.ylabel('Anzahl Ergebnisse')
+  plt.xlabel('Entropie')
+  plt.axis([0, max(cig_counter.keys())*1.2, 0, 
+            cig_counter.most_common(1)[0][1] * 1.2])
+  plt.plot(cig_counter.keys(), cig_counter.values(), 
+           'bo', label="CIGAR Entropy")
+  y = list(range(cig_counter.most_common(1)[0][1]))
+  x = [float(sum(cig_ent_sum))/len(cig_ent_sum)] * cig_counter.most_common(1)[0][1]
+  print "Cigar Entropy Mean:",float(sum(cig_ent_sum))/len(cig_ent_sum)
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+  plt.savefig("runs/cig_entropy")
+
+  plt.figure(2)
+  plt.ylabel('Anzahl Ergebnisse')
+  plt.xlabel('Entropie')
+  plt.axis([0, max(diff_counter.keys())*1.2, 0, 
+            diff_counter.most_common(1)[0][1] * 1.2])
+  plt.plot(diff_counter.keys(), diff_counter.values(), 
+           'ro', label="Differences Entropy")
+  y = list(range(diff_counter.most_common(1)[0][1]))
+  x = [float(sum(diff_ent_sum))/len(diff_ent_sum)] * diff_counter.most_common(1)[0][1]
+  print "Diff Entropy Mean:",float(sum(diff_ent_sum))/len(diff_ent_sum)
+  plt.plot(x,y, 'r--',label='Mean')
+  plt.legend(loc='upper right')
+  plt.savefig("runs/diff_entropy")
+
+  plt.show()
 def main():
 
-  """
-  parser = argparse.ArgumentParser()
-  parser.add_argument("-t", "--tracepoint", help="Test with TPs", 
-                      action="store_true")
-  parser.add_argument("-c", "--cigar", help="Test with CIGAR-String",
-                      action="store_true")
-  parser.add_argument("-hu", "--huffman", help="Test with Huffman coding",
-                      action="store_true")
-  parser.add_argument("-b", "--binary", help="Test with binary coding",
-                      action="store_true")
-  parser.add_argument("-u", "--unary", help="Test with unary coding",
-                      action="store_true")
-  parser.add_argument("-r", "--random",
-    help="Random sequences with <Amount> <Length> <Error Rate> <Alphabet>",
-    nargs=4)
-  parser.add_argument("-n", "--name", help="File Name")
-
-  parser.add_argument("-d", "--delta", help="Delta Value",
-                      type=int)
-
-  args = parser.parse_args()
-
-  method = mode = filename = ""
-  delta = args.delta
-  if args.tracepoint:
-    method = "tracepoint"
-  else:
-    method = "cigar"
-  if args.huffman:
-    mode = "huffman"
-  elif args.binary:
-    mode = "binary"
-  else:
-    mode = "unary"
-
-  filename = args.name
-  
-  calc_bits(method, mode, int(args.random[0]), int(args.random[1]), 
-            float(args.random[2]), args.random[3], delta, filename)
-  """
   t = time.clock()
-  """
-  bs1 = calc_bits("cigar","binary",100,1000,0.15,"acgt",100,"cig-bin-1000-1000-d100")
-  bs2 = calc_bits("cigar","unary",100,1000,0.15,"acgt",100,"cig-una-1000-1000-d100")
-  bs3 = calc_bits("cigar","huffman",100,1000,0.15,"acgt",100,"cig-huf-1000-1000-d100")
-
-  multiplot(bs1, bs2, bs3, t)
+  
+  #bs1 = calc_bits("cigar","binary",1000,1000,0.15,"acgt",100,"cig-bin-1000-1000-d100")
+  #bs2 = calc_bits("cigar","unary",1000,1000,0.15,"acgt",100,"cig-una-1000-1000-d100")
+  #bs3 = calc_bits("cigar","huffman",100,1000,0.15,"acgt",100,"cig-huf-1000-1000-d100")
+  entropy(1000,1000,0.15,"acgt",100)
+  #multiplot(bs1, bs2, bs3, t, "cig")
   """
   bs4 = calc_bits("tracepoint","binary",1000,1000,0.15,"acgt",100,
             "diff-bin-1000-1000-d100")
@@ -252,6 +275,6 @@ def main():
   bs6 = calc_bits("tracepoint","huffman",1000,1000,0.15,"acgt",100,
             "diff-huf-1000-1000-d100")
   multiplot(bs4, bs5, bs6, t, "diff")
-
+  """
 if __name__ == "__main__":
   main()

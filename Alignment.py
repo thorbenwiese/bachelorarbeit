@@ -1,5 +1,4 @@
 import Cigar_Pattern
-
 from Bio import pairwise2
 
 # Alignment structure with CIGAR-String

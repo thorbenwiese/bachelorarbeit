@@ -73,17 +73,17 @@ def test_with_cigar(seq1, seq2, cigar, delta, verbose, decode):
   aln = Alignment.Alignment(seq1, seq2, start_seq1, end_seq1, 
                             start_seq2, end_seq2)
 
-  aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cigar)
-  aln.show_aln(aln1, aln2, cigar)
+  if verbose:
+    aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cigar)
+    aln.show_aln(aln1, aln2, cigar)
+    print "# TracePoints:", tp_aln.tp
+
   if decode:
     cig = tp_aln.decode(tp_aln.tp)
 
     if verbose:
       aln1, aln2 = aln.cigar_to_aln(tp_aln.seq1, tp_aln.seq2, cig)
       aln.show_aln(aln1, aln2, cig)
-
-  if verbose:
-    print "# TracePoints:", tp_aln.tp
 
 def test_random(verbose, decode):
 

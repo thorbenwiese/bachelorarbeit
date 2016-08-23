@@ -8,8 +8,8 @@ def parse_cigar(cigar):
   pattern = cigar_pattern.findall(cigar)                                       
 
   for element in pattern:
-    # yield cig_count, cig_symbol
-    yield int(element[:-1]),element[-1]
+    #     cig_count        , cig_symbol
+    yield int(element[:-1]), element[-1]
 
 # restructure CIGAR-String to avoid repetitive Edit-Operations
 def combine_cigar(cigar):
@@ -24,8 +24,8 @@ def combine_cigar(cigar):
     ccount = int(pattern[i][:-1]) 
     csymbol = pattern[i][-1] 
 
-    prev_ccount = int(pattern[i-1][:-1]) 
-    prev_csymbol = pattern[i-1][-1] 
+    prev_ccount = int(pattern[i - 1][:-1]) 
+    prev_csymbol = pattern[i - 1][-1] 
 
     tmp += prev_ccount 
 
@@ -35,7 +35,7 @@ def combine_cigar(cigar):
       if i < len(pattern): 
         tmp = 0 
 
-    if i == len(pattern)-1: 
+    if i == len(pattern) - 1: 
       cig += "%d%s" % (tmp + ccount, csymbol) 
 
   return cig

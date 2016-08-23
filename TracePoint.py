@@ -1,10 +1,6 @@
 import Alignment
 import Cigar_Pattern
-import re
 import math
-
-# pattern for CIGAR-String
-cigar_pattern = re.compile(r"\d+[MID]{1}")
 
 class TracePointAlignment(object):
 
@@ -63,7 +59,7 @@ class TracePointAlignment(object):
           v_tp.append(num_chars_in_v)# -1
 
           # do not increment count if the last element in u_tp is reached
-          if count == len(u_tp) - 1:#u_tp[count] > u_tp[-1]:
+          if count == len(u_tp) - 1:
             assert v_tp, "TracePoint Array from encode function is empty."
             return v_tp
 
@@ -98,20 +94,17 @@ class TracePointAlignment(object):
 
       if i == 0:
 
-        cigar = aln.calc_cigar(self.seq1[0:self.delta],self.seq2[0:tp[i]+1])
-        print "Delta:",self.delta
+        cigar = aln.calc_cigar(self.seq1[0:self.delta], self.seq2[0:tp[i] + 1])
       
       elif i == len(tp) - 1:
  
         cigar += aln.calc_cigar(self.seq1[i*self.delta:len(self.seq1)],
-                                self.seq2[tp[i-1]+1:len(self.seq2)])
-        print "Delta:",self.delta
+                                self.seq2[tp[i - 1] + 1:len(self.seq2)])
 
       else:
         
-        cigar += aln.calc_cigar(self.seq1[i*self.delta:(i+1)*self.delta],
-                                      self.seq2[tp[i-1]+1:tp[i] + 1])
-        print "Delta:",self.delta
+        cigar += aln.calc_cigar(self.seq1[i * self.delta:(i + 1) * self.delta],
+                                self.seq2[tp[i - 1] + 1:tp[i] + 1])
 
     cigar = Cigar_Pattern.combine_cigar(cigar)
 
