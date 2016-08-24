@@ -259,22 +259,22 @@ def entropy(amount, random_length, error_rate, alphabet, delta):
 def main():
 
   t = time.clock()
-  
-  #bs1 = calc_bits("cigar","binary",1000,1000,0.15,"acgt",100,"cig-bin-1000-1000-d100")
-  #bs2 = calc_bits("cigar","unary",1000,1000,0.15,"acgt",100,"cig-una-1000-1000-d100")
-  #bs3 = calc_bits("cigar","huffman",100,1000,0.15,"acgt",100,"cig-huf-1000-1000-d100")
-  entropy(1000,1000,0.15,"acgt",100)
-  #multiplot(bs1, bs2, bs3, t, "cig")
+  """ 
+  bs1 = calc_bits("cigar","binary",10000,1000,0.15,"acgt",100,"cig-bin-10000-1000-d100")
+  bs2 = calc_bits("cigar","unary",10000,1000,0.15,"acgt",100,"cig-una-10000-1000-d100")
+  bs3 = calc_bits("cigar","huffman",10000,1000,0.15,"acgt",100,"cig-huf-10000-1000-d100")
+  #entropy(1000,1000,0.15,"acgt",100)
+  multiplot(bs1, bs2, bs3, t, "cig")
   """
-  bs4 = calc_bits("tracepoint","binary",1000,1000,0.15,"acgt",100,
-            "diff-bin-1000-1000-d100")
+  bs4 = calc_bits("tracepoint","binary",10000,1000,0.15,"acgt",100,
+            "diff-bin-10000-1000-d100")
 
-  bs5 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",100,
-            "diff-una-1000-1000-d100")
+  bs5 = calc_bits("tracepoint","unary",10000,1000,0.15,"acgt",100,
+            "diff-una-10000-1000-d100")
 
-  bs6 = calc_bits("tracepoint","huffman",1000,1000,0.15,"acgt",100,
-            "diff-huf-1000-1000-d100")
+  bs6 = calc_bits("tracepoint","huffman",10000,1000,0.15,"acgt",100,
+            "diff-huf-10000-1000-d100")
   multiplot(bs4, bs5, bs6, t, "diff")
-  """
+  
 if __name__ == "__main__":
   main()

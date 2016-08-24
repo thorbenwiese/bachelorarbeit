@@ -175,23 +175,23 @@ Der gesamte Bitverbrauch der Huffman-Kodierung ist demnach $11$ Bit mit einem du
 
 \subsection{Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 1000 zufällig generierte Sequenzpaaren mit je etwa 1000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
+Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{coding/diff-bin-1000-1000-d100}
+	\includegraphics[width=12cm]{coding/diff-bin-10000-1000-d100}
 	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}\label{fig:diff-bin}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{coding/diff-una-1000-1000-d100}
+	\includegraphics[width=12cm]{coding/diff-una-10000-1000-d100}
 	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}\label{fig:diff-una}
 \end{figure}
 	
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{coding/diff-huf-1000-1000-d100}
+	\includegraphics[width=12cm]{coding/diff-huf-10000-1000-d100}
 	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-huf}
 \end{figure}
 
@@ -199,8 +199,8 @@ Die folgenden Grafiken wurden mit jeweils 1000 zufällig generierte Sequenzpaaren
 %TODO überarbeiten?
 Die naive binäre Kodierung benötigt, wie in Abbildung \ref{fig:diff-bin} dargestellt, in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit.
 
-Die Abbildungen \ref{fig:diff-una} verdeutlicht, dass die unäre Kodierung Schwankungen im Bitverbrauch aufweist, welche sich wie bei den CIGAR-Strings durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Sie benötigt im Mittel $24.62$ Bit und damit nur etwa $62$\% der binären Kodierung.
+Die Abbildungen \ref{fig:diff-una} verdeutlicht, dass die unäre Kodierung Schwankungen im Bitverbrauch aufweist, welche sich wie bei den CIGAR-Strings durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Sie benötigt im Mittel $24.70$ Bit und damit nur etwa $62$\% der binären Kodierung.
 
-Für die Huffman-Kodierung wird, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, deutlich weniger Speicher für die Kodierung benötigt als für die naive binäre oder unäre Kodierung. Sie verbraucht durchschnittlich nur $13.82$ Bit und damit nur etwa $56$\% des Speicherbedarfs der unären Kodierung.
+Für die Huffman-Kodierung wird, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, deutlich weniger Speicher für die Kodierung benötigt als für die naive binäre oder unäre Kodierung. Sie verbraucht durchschnittlich nur $14.00$ Bit und damit nur etwa $57$\% des Speicherbedarfs der unären Kodierung.
 
 Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
