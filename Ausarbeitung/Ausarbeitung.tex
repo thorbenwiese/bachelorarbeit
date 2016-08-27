@@ -1,0 +1,601 @@
+\chapter{Einleitung}
+%TODO ausführlicher
+
+Ein Sequenzalignment wird in der Bioinformatik dazu verwendet, zwei oder mehrere Sequenzen von zum Beispiel DNA-Strängen oder Proteinsequenzen miteinander zu vergleichen und die Verwandtschaft zu bestimmen. Ein Alignment ist das Ergebnis eines solchen Vergleichs. Bei einem globalen Alignment wird jeweils die gesamte Sequenz betrachtet, bei einem lokalen Alignment lediglich Teilabschnitte der beiden Sequenzen.
+Um die verschiedenen Sequenzen vergleichen zu können, berechnet man einen Score oder die Kosten, um den Aufwand, den man betreiben muss, um die gegebenene Sequenz in die Zielsequenz umzuwandeln, beschreiben zu können. Hierbei wird jeweils das Optimum, also entweder der maximale Score oder die minimalen Kosten gesucht.
+Die verschiedenen Schritte, um die Symbole der Strings zu verändern, sind bei Gleichheit ein 'match', bei der Substitution ein 'mismatch', bei der Löschung eine 'deletion' und bei der Einfügung eine 'insertion', welche je nach Verfahren unterschiedlich gewichtet werden können. Hierbei haben ähnliche Sequenzen einen hohen Score und geringe Kosten und unterschiedliche Sequenzen analog einen kleinen Score und hohe Kosten.
+
+Ziel dieser Bachelorarbeit ist es, eine speichereffiziente Repräsentation von paarweisen Sequenzalignments zu implementieren und die Funktionsweise, sowie Vergleiche zu anderen Verfahren zu diskutieren.
+
+\section*{Die Edit-Operationen}
+
+Die in diesem Kapitel eingeführten Begriffe werden in \cite[S. 5-7, 14-16]{gsa-skript} definiert.
+
+Sei $\mathcal{A}$ eine endliche Menge von Buchstaben, die man Alphabet nennt. Für DNA-Sequenzen verwendet man üblicherweise die Menge der Basen, also $\mathcal{A} = \{a, c, g, t\}$. $\mathcal{A}^i$ sei die Menge der Sequenzen der Länge $i$ aus $\mathcal{A}$ und $\varepsilon$ sei die leere Sequenz. Formal ausgedrückt ist eine Edit-Operation ein Tupel 
+\[(\alpha, \beta) \in (\mathcal{A}^1 \cup \{\varepsilon\}) \times (\mathcal{A}^1 \cup \{\varepsilon\}) \backslash \{(\varepsilon, \varepsilon)\},\]
+
+Eine äquivalente Schreibweise von $(\alpha,\beta)$ ist $\alpha \rightarrow \beta$. Es gibt drei verschiedene Edit-Operationen
+\begin{align*}
+a \rightarrow \varepsilon &\indent \text{ ist eine Deletion für alle }a \in \mathcal{A}\\
+\varepsilon \rightarrow b &\indent \text{ ist eine Insertion für alle }b \in \mathcal{A}\\
+a \rightarrow b &\indent \text{ ist eine Substitution für alle }a,b \in \mathcal{A}
+\end{align*}
+Dabei ist zu beachten, dass $\varepsilon \rightarrow \varepsilon$ keine Edit-Operation darstellt.
+
+Ein Alignment von zwei Sequenzen $u$ und $v$ lässt sich nun als eine Sequenz $(\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ von Edit-Operationen definieren, sodass $u = \alpha_1 ... \alpha_h$ und $v = \beta_1 ... \beta_h$ gilt.
+
+\section*{Die Edit-Distanz}
+
+Sei eine Kostenfunktion $\delta$ mit $\delta(a\rightarrow b)\geq 0$ für alle Substitutionen $a \rightarrow b$ und $\delta(\alpha \rightarrow \beta)>0$ für alle Einfügungen und Löschungen $\alpha \rightarrow \beta$ gegeben. Die Kosten für ein Alignment $A = (\alpha_1 \rightarrow \beta_1, ... , \alpha_h \rightarrow \beta_h)$ ist die Summe der Kosten aller Edit-Operationen des Alignments.
+\[\delta(A) = \sum_{i=1}^{h}\delta(\alpha_i \rightarrow \beta_i)\]
+Ein Beispiel einer Kostenfunktion ist die Einheitskostenfunktion
+\[
+\delta(\alpha \rightarrow \beta) = 
+\begin{cases} 
+0 ,& \text{wenn } \alpha,\beta \in \mathcal{A} \text{ und } \alpha=\beta \\
+1 , & \text{sonst.}
+\end{cases}
+\]
+Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
+\[edist_\delta(u,v) = \min\{\delta(A) \mid A \text{ ist Alignment von }u \text{ und }v\}\]
+Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
+Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
+
+Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
+
+\chapter{Methoden}
+
+\section{CIGAR-Strings}
+
+Ein Dateiformat, welches zur Speicherung von Alignments verwendet wird, ist das SAM-Format oder die binär komprimierte Version BAM. Dieses codiert ein Alignment in einem sogenannten CIGAR-String der aus einzelnen Zeichen besteht, die jeweils eine Edit-Operation bezeichnen, also M für eine Substitution, I für eine Insertion und D für eine Deletion. Gleiche aufeinanderfolgende Operationen werden als Kombination von Quantität und Symbol geschrieben.
+
+Sei $u =$ \texttt{actgaact}, $v =$ \texttt{actagaat} und das Alignment $A = (a\rightarrow a, c\rightarrow c, t\rightarrow t, ...)$ gegeben.
+\begin{center}
+	\texttt{
+		\begin{tabular}{ccccccccc}
+			a & c & t & - & g & a & a & c & t\\
+			$|$&$|$&$|$&&$|$&$|$&$|$& &$|$\\
+			a&c&t&a&g&a&a& - &t
+		\end{tabular}
+	}
+\end{center}
+Ein Alignment wird üblicherweise in drei Zeilen geschrieben, wobei in der ersten Zeile die Sequenz $u$ und in der dritten Zeile die Sequenz $v$ geschrieben wird. In der mittleren Zeile symbolisiert das Zeichen '$|$' eine Substitution, wobei üblicherweise nur ein Match markiert wird. Außerdem wird ein $\varepsilon$ aus der Edit-Operation in diesem Fall durch das Zeichen '-' dargestellt.
+
+Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert. \cite{sam}.
+
+\subsection{Komplexität}
+%TODO
+TODO
+
+\subsection{Speicherverbrauch}\label{Cigar_Speicher}
+
+%TODO
+\subsection{Entropie unabhängig vom Kodierungsverfahren}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig_ent_einzel-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings pro Symbol}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig_ent_faktor-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings}
+\end{figure}
+\FloatBarrier
+\subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Beispiel}
+Sei das Alignment $A$
+
+\begin{verbatim}
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0   
+\end{verbatim}
+gegeben, welches durch den CIGAR-String \texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M\\1D7M1D5M1I4M} repräsentiert werden kann.
+
+Im Folgenden vergleiche ich für diese Art der Alignment-Repräsentation die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
+
+Sei das Alphabet $\cal{A}$$_1$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_2$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(c_1)$ jeden Symbols $c_1 \in$ $\cal{A}$$_1$ und $p(c_2)$ jeden Symbols $c_2 \in$ $\cal{A}$$_2$ gegeben.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{cccc}
+		$c_1$&Häufigkeit&$p(c_1)$&\\
+		\hline
+		M & $10$ & $\frac{10}{38}$&\\
+		I & $5$ & $\frac{5}{38}$&\\
+		D & $4$ & $\frac{4}{38}$&\\
+		&&&\\
+		&&&\\
+		&&&
+	\end{tabular}\begin{tabular}{ccc}
+	$c_2$&Häufigkeit&$p(c_2)$\\
+	\hline
+	$1$ & $13$ &$\frac{13}{38}$\\
+	$4$ & $2$ & $\frac{2}{38}$\\
+	$2$ & $1$ & $\frac{1}{38}$\\
+	$5$ & $1$ & $\frac{1}{38}$\\
+	$7$ & $1$ & $\frac{1}{38}$\\
+	$8$ & $1$ & $\frac{1}{38}$
+\end{tabular}
+\caption{Relative Wahrscheinlichkeiten CIGAR-String}
+\end{table}
+
+Bei einer naiven binären Kodierung wird jedes Symbol $c_i \in \cal{A}$$_i$ mit $\lceil \log_2n
+\rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol. Insgesamt ergibt das somit $19 \cdot 2 + 19 \cdot 3 = 95$ Bit.
+
+Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'1'$-Bits, gefolgt von einem $'0'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'0'$, das zweithäufigste mit $'10'$, das dritthäufigste mit $'110'$ usw. kodiert. \cite[S. 29-30]{coding}
+
+Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung &  Anzahl Bits\\
+		\hline
+		M & $0$ & $10 \cdot 1 = 10$\\
+		D & $10$ & $5 \cdot 2 = 10$\\
+		I & $110$ & $4 \cdot 3 = 12$\\
+		&&\\
+		&&\\
+		&&\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$32$
+	\end{tabular}\begin{tabular}{ccr}
+	Symbol & Kodierung &  Anzahl Bits\\
+	\hline
+	$1$ & $0$ & $13 \cdot 1 = 13$\\
+	$4$ & $10$ & $2 \cdot 2 = \ \ 4$\\
+	$2$ & $110$ & $1 \cdot 3 =\ \ 3$\\
+	$5$ & $1110$ & $1 \cdot 4 =\ \ 4$\\
+	$7$ & $11110$ & $1 \cdot 5 =\ \ 5$\\
+	$8$ & $111110$ & $1 \cdot 6 =\ \ 6$\\
+	\hline
+	\multicolumn{2}{l}{}&$35$
+\end{tabular}
+\caption{Unäre Kodierung des CIGAR-Strings}
+\end{table}
+
+Insgesamt benötigt die unäre Kodierung also $32 + 35 = 67$ Bit.
+
+Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
+\[\frac{67}{38} \approx 1.76 \frac{\text{Bit}}{\text{Symbol}}\]
+
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}. Eine sparsamere Variante des regulären Huffman-Algorithmus ist der Kanonische Huffman-Algorithmus, welcher im Gegensatz zu der ursprünglichen Variante eine eindeutige Menge von Codewörtern liefert und keinen vollständigen Huffman-Baum, sondern lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren. %TODO cite und für Beispiele anwenden
+
+Der Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings wie folgt ablaufen:
+
+Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
+\FloatBarrier
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung & Anzahl Bits\\
+		\hline
+		M & $0$ & $10 \cdot 1 = 10$\\
+		D & $10$ & $5 \cdot 2 = 10$\\
+		I & $11$ & $4 \cdot 2 =\ \ 8$\\
+		&&\\
+		&&\\
+		&&\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$28$
+	\end{tabular}\begin{tabular}{ccr}
+	Symbol & Kodierung & Anzahl Bits\\
+	\hline
+	$1$ & $00$ & $13 \cdot 2 = 26$\\
+	$4$ & $01$ & $2 \cdot 2 =\ \ 4$\\
+	$2$ & $100$ & $1 \cdot 3 =\ \ 3$\\
+	$5$ & $101$ & $1 \cdot 3 =\ \ 3$\\
+	$7$ & $110$ & $1 \cdot 3 =\ \ 3$\\
+	$8$ & $111$ & $1 \cdot 3 =\ \ 3$\\
+	\hline
+	\multicolumn{2}{l}{}&$42$
+\end{tabular}
+\caption{Huffmann-Kodierung des CIGAR-Strings}
+\end{table}
+\FloatBarrier
+und die dazugehörigen Huffman-Bäume:
+
+\begin{figure}[h]
+	\centering
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{19}{38}$
+		[$\frac{9}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[I, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[D, edge label={node[midway,left,font=\scriptsize]{0}}] ] 
+		[M, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		]
+	\end{forest}
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{19}{38}$
+		[$\frac{4}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$\frac{2}{38}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$8$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$7$, edge label={node[midway,left,font=\scriptsize]{0}}]]
+		[$\frac{2}{38}$, edge label={node[midway,left,font=\scriptsize]{0}}
+		[$5$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$2$, edge label={node[midway,left,font=\scriptsize]{0}}] ]]
+		[$\frac{15}{38}$, edge label={node[midway,left,font=\scriptsize]{0}} 
+		[$4$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$1$, edge label={node[midway,left,font=\scriptsize]{0}}] ]
+		]
+	\end{forest}
+	\caption{Huffman-Bäume der Kodierung des CIGAR-Strings}
+\end{figure}
+
+Der gesamte Bitverbrauch dieser Kodierung ist demnach $28 + 42 = 70$ Bit.
+
+Der durchschnittliche Bitverbrauch für ein Symbol beträgt 
+\[\frac{70}{38} \approx 1.84 \frac{\text{Bit}}{\text{Symbol}}\]
+
+\section{TracePoint Konzept}
+
+Ein neuer Ansatz der speichereffizienten Repräsentation von Alignments wurde von Gene Myers in \cite{myers} beschrieben und basiert auf dem Konzept der Trace Points.
+
+Sei $A$ ein Alignment von $u[i...j]$ und $v[k...\ell]$ mit $i < j$ und $k < l$ und sei $\Delta \in \mathbb{N}$. Sei $p = \left \lceil\frac{i}{\Delta}\right \rceil$. Man unterteilt $u[i...j]$ in $\tau = \left \lceil\frac{j}{\Delta}\right \rceil - \left \lfloor\frac{i}{\Delta}\right \rfloor$ Substrings $u_0, u_1, ... , u_{\tau -1}$ mit
+\[  
+u_q =
+\begin{cases} 
+u[i...p\cdot\Delta] & \text{falls }q = 0 \\
+u[(p+q-1)\cdot\Delta+1...(p+q)\cdot\Delta] & \text{falls }0<q<\tau -1\\
+u[(p+\tau-2)\cdot\Delta...j] & \text{falls }q = \tau -1
+\end{cases}
+\]
+
+Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings von $v$, der in A mit $u_q$ aligniert. $t_q$ nennt man Trace Point. Für $q = 0$ aligniert $u_0$ mit $v_0 = v[k...t_0]$. Für alle $q$ mit $0<q< \tau -1$ aligniert $u_q$ mit $v_q = v[t_{q-1}+1...t_q]$.
+
+Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$, berechnet hierfür ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
+
+Beispiel:
+\begin{verbatim}
+Sequenz 1: gagcatgttgcctggtcctttgctaggtactgtagaga
+Sequenz 2: gaccaagtaggcgtggaccttgctcggtctgtaagaga
+Delta: 15
+
+Gesamtalignment:
+
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0    
+
+
+
+seq1[0...14] aligniert mit seq2[0...15]
+gagc-a-t-gttgcc-tgg
+|| | | | |  | | |||
+gaccaagtag--g-cgtgg
+
+seq1[15...29] aligniert mit seq2[16...28]
+tcctttgctaggtac
+|||| ||| ||| |
+acctt-gctcggt-c
+
+seq1[30...37] aligniert mit seq2[29...37]
+tgta-gaga
+|||| ||||
+tgtaagaga
+
+Trace Points: [15, 28] 
+\end{verbatim}
+
+\subsection{Komplexität}
+
+TODO
+
+%TODO ausführlicher
+Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment. \cite[S.41-42]{gsa-skript}
+
+\subsection{Speicherverbrauch}
+
+%TODO
+\subsection{Entropie unabhängig vom Kodierungsverfahren}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff_ent_einzel-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings pro Symbol}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff_ent_faktor-1000-1000-d100}
+	\caption{Entropie des CIGAR-Strings}
+\end{figure}
+\FloatBarrier
+\section{Differenzen-Kodierung}\label{Differenzen-Kodierung}
+
+%TODO Quellen
+Gegeben sei eine Liste $L = (a_1, a_2, ... , a_n)$ mit $a_i < a_{i+1}, 0 < i \leq n$.
+
+Anstatt jeden Wert $a \in L$ als solchen abzuspeichern, kann alternativ die Differenz eines Wertes $a_i$ zu dem nachfolgenden Wert $a_{i+1}$ abgespeichert werden. Lediglich der erste (oder letzte) Wert aus $L$ wird benötigt, um später sukzessive die ursprüngliche Liste rekonstruieren zu können.
+\[L_{diff} = (a_1, (a_2-a_1), (a_3-a_2), ... , (a_{n}-a_{n-1}))\]
+
+Bei gleichmäßig ansteigenden Werten ist die Abweichung der Differenzen zweier aufeinanderfolgender Werte in der Liste untereinander gering und die Menge der zu kodierenden Symbole verringert sich.
+
+\subsection{Kodierung der Trace Point Differenzen}
+Sei $\Delta = 5$ und das Alignment $A$
+\begin{verbatim}
+0    5    0    5    0    5    0    5    0    
+gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
+|| | | | |  | | ||| |||| ||| ||| ||||| ||||
+gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
+0    5    0    5    0    5    0    5    0   
+\end{verbatim}
+
+wie in Abschnitt \ref{Cigar_Speicher} mit den dazugehörigen TracePoints $5, 10, 15, 20, 24, 28$ und $34$ gegeben. Es ergibt sich somit das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$ mit ausschließlich positiven und aufsteigenden Werten.
+
+Für die Trace Point Darstellung ist somit eine Differenzen-Kodierung möglich. Als neue Liste zu kodierender Werte ergibt sich nach \ref{Differenzen-Kodierung} $L_{diff} = (5, 5, 5, 5, 4, 4, 6)$.
+
+Um aus den Trace Points ein neues Alignment rekonstruieren zu können, benötigt man zusätzlich mindestens den $\Delta$-Wert, damit die Grenzen der Substrings beider Sequenzen berechnet werden können. Hierfür muss also der $\Delta$-Wert zu $L$ hinzugefügt werden.
+
+Für das oben genannten Beispiel ergibt sich somit $L_{diff} = (5, 5, 5, 5, 5, 4, 4, 6)$.
+
+Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_{diff}$, sowie die relativen Wahrscheinlichkeiten $p(c)$ jeden Symbols $c \in$ $\cal{A}$ gegeben. 
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccc}
+		$c$&Häufigkeit&$p(c)$\\
+		\hline
+		$5$ & $5$ & $\frac{5}{8}$\\
+		$4$ & $2$ & $\frac{2}{8}$\\
+		$6$ & $1$ & $\frac{1}{8}$
+	\end{tabular}
+	\caption{Relative Wahrscheinlichkeiten der Delta-Kodierung}
+\end{table}
+
+Bei der naiven binären Kodierung ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_28\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt.
+
+Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung &  Anzahl Bits\\
+		\hline
+		$5$ & $0$ & $5 \cdot 1 = 5$\\
+		$4$ & $10$ & $2 \cdot 2 = 4$\\
+		$6$ & $110$ & $1 \cdot 3 = 3$\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$12$
+	\end{tabular}
+	\caption{Unäre Kodierung der Delta-Kodierung}
+\end{table}
+
+Insgesamt benötigt die unäre Kodierung also $12$ Bit mit einem durchschnittlichen Verbrauch pro  Symbol von
+\[\frac{12}{8} \approx 1.5 \frac{\text{Bit}}{\text{Symbol}}\]
+
+Die Ausführung des Huffman-Algorithmus ergibt nach \cite[S. 54]{coding}:
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ccr}
+		Symbol & Kodierung & Anzahl Bits\\
+		\hline
+		$5$ & $0$ & $5 \cdot 1 = 5$\\
+		$4$ & $10$ & $2 \cdot 2 = 4$\\
+		$6$ & $11$ & $1 \cdot 2 = 2$\\
+		\hline
+		\multicolumn{2}{l}{Gesamtanzahl:}&$11$
+	\end{tabular}
+	\caption{Huffman-Kodierung der Delta-Kodierung}
+\end{table}
+
+\FloatBarrier
+
+und der dazugehörige Huffman-Baum:
+
+\begin{figure}[h]
+	\centering
+	\begin{forest}
+		for tree={grow'=south}
+		[$\frac{8}{8}$
+		[$\frac{3}{8}$, edge label={node[midway,right,font=\scriptsize]{1}}
+		[$6$, edge label={node[midway,right,font=\scriptsize]{1}}]
+		[$4$, edge label={node[midway,left,font=\scriptsize]{0}}]]
+		[$5$, edge label={node[midway,left,font=\scriptsize]{0}}]
+		]
+	\end{forest}
+	\caption{Huffman-Baum der Delta-Kodierung}
+\end{figure}
+
+Der gesamte Bitverbrauch der Huffman-Kodierung ist demnach $11$ Bit mit einem durchschnittlichen Verbrauch pro Symbol von 
+\[\frac{11}{8} \approx 1.38 \frac{\text{Bit}}{\text{Symbol}}\]
+
+\chapter{Resultate}
+%TODO hier soll neutral und ohne Wertung beschrieben werden, was in den Testläufen herausgekommen ist. Die ganzen Grafiken sollen hier gezeigt werden
+
+\section{Testläufe CIGAR Kodierung}\label{Cigar_Testläufe}
+
+Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig-bin-10000-1000-d100}
+	\caption{Bitverbrauch der binären Kodierung des CIGAR-Strings}\label{fig:cig-bin}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig-una-10000-1000-d100}
+	\caption{Bitverbrauch der unären Kodierung des CIGAR-Strings}\label{fig:cig-una}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/cig-huf-10000-1000-d100}
+	\caption{Bitverbrauch der Huffman-Kodierung des CIGAR-Strings}\label{fig:cig-huf}
+\end{figure}
+
+Die Abbildungen \ref{fig:cig-bin} und \ref{fig:cig-una} verdeutlichen, dass die binäre und unäre Kodierung deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Die Abbildung \ref{fig:cig-huf} hingegen weist eine Normalverteilung des Bitverbrauchs für die Huffman-Kodierung auf.
+Im Mittel benötigt die naive binäre Kodierung $284.60$ Bit, die unäre Kodierung $264.84$ Bit und die Huffman-Kodierung $162.93$ Bit.
+
+In den dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich mit Abstand am wenigsten Speicher, obwohl in dem unter \ref{Cigar_Beispiel} beschriebenen Beispiel die unäre Kodierung den CIGAR-String etwas effizienter kodiert. Der Grund hierfür ist die deutlich höhere Fehlerrate in \ref{Cigar_Beispiel}, welche die Anzahl der zu kodierenden Symbole deutlich erhöht.
+
+Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
+
+\section{Testläufe Differenzen Kodierung}\label{Diff-Testläufe}
+
+Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff-bin-10000-1000-d100}
+	\caption{Bitverbrauch der naiven binären Kodierung der Delta-Kodierung}\label{fig:diff-bin}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff-una-10000-1000-d100}
+	\caption{Bitverbrauch der unären Kodierung der Delta-Kodierung}\label{fig:diff-una}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{coding/diff-huf-10000-1000-d100}
+	\caption{Bitverbrauch der Huffman-Kodierung der Delta-Kodierung}\label{fig:diff-huf}
+\end{figure}
+
+Die naive binäre Kodierung benötigt, wie in Abbildung \ref{fig:diff-bin} dargestellt, in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit.
+
+Die Abbildungen \ref{fig:diff-una} verdeutlicht, dass die unäre Kodierung Schwankungen im Bitverbrauch aufweist, welche sich wie bei den CIGAR-Strings durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Sie benötigt im Mittel $24.70$ Bit und damit nur etwa $62$\% der binären Kodierung.
+
+Für die Huffman-Kodierung wird, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, deutlich weniger Speicher für die Kodierung benötigt als für die naive binäre oder unäre Kodierung. Sie verbraucht durchschnittlich nur $14.00$ Bit und damit nur etwa $57$\% des Speicherbedarfs der unären Kodierung.
+
+Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
+
+\chapter{Diskussion}
+%TODO hier soll wertend beschrieben werden, was die Resultate bedeuten und wie sich bestimmte Werte erklären lassen
+\section{Bewertung CIGAR-Kodierung}
+\section{Bewertung Differenzen-Kodierung der Trace Points}
+
+\chapter{Programm}
+
+\section{Aufbau}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/UML}
+	\caption{UML-Diagramm}
+\end{figure}
+
+\clearpage
+
+\section{Funktionalität}
+
+\begin{algorithm}[h]
+	\caption{Computation of Trace Points from a given CIGAR-String}
+	\label{encode}
+	\noindent\begin{tabular}{@{}l@{~}l}
+		\textbf{Input}:
+		&$seq1, seq2, start\_seq1, end\_seq1, start\_seq2, \Delta, cigar$ mit \\
+		&$\Size{seq1}, \Size{seq2}, \Size{cigar} > 0$;\\
+		&$start\_seq1, start\_seq2 \geq 0$;\\
+		&$start\_seq1 < end\_seq1$ und\\
+		&$\Delta > 0$\\
+		\textbf{Output}:&Array $TP$ of Trace Points
+	\end{tabular}
+	\medskip
+	\begin{algorithmic}[1]
+		\Function{\textit{encode}}{$seq1, seq2, start\_seq1, end\_seq1, start\_seq2, \Delta, cigar$}
+		\State \Assign{itv\_size}{MAX(1, \Roundup{start\_seq1/\Delta})}
+		\State \Assign{itv\_count}{MIN(\Roundup{\Size{seq1}/\Delta}, \Roundup{\Size{seq2}/\Delta})}
+		\For{\Assign{i}{0} \Upto \(\Size{itv\_count}\)} \\
+		\Assign{\indent itv[i]}{
+			\begin{cases}
+				start\_seq1, itv\_size \cdot \Delta - 1&\text{ if } i = 0\\
+				(itv\_size + i - 1) \cdot \Delta, (itv\_size + i) \cdot \Delta - 1&\text{ if } 0 < i < \Size{itv\_count}\\
+				(itv\_size + i - 1) \cdot \Delta, end\_seq1 - 1&\text{ else.}
+			\end{cases}}
+			\EndFor
+			\State \Assign{count1, count2, count3}{0}
+			\State \Assign{TP}{\text{Array for Trace Points}}
+			\For{\text{each $(cig\_count, cig\_symbol)$ in cigar}}
+			\For{\Assign{i}{0} \Upto \(cig\_count\)}
+			\If{cig\_symbol = 'I'}
+			\State increment $count1$
+			\ElsIf{cig\_symbol = 'D'}
+			\State increment $count2$
+			\Else
+			\State increment $count1, count2$
+			\EndIf
+			
+			\If{count1 = intervals[count3][1] + 1 \textbf{and} count1 $\neq \Size{seq1}$}
+			\State append (count2 - 1 + start\_seq2) to $TP$
+			\EndIf
+			\If{count $\neq \Size{itv} - 1$}
+			\State increment $count3$
+			\EndIf
+			\EndFor
+			\EndFor
+			\State \Return $TP$
+			\EndFunction
+		\end{algorithmic}
+	\end{algorithm}
+	
+	\FloatBarrier
+	\subsection{Informationsverlust bei der encode()-Funktion}
+	Die encode-Funktion extrahiert aus dem gegebenen CIGAR-String die Trace Points, welche dann zusammen mit dem $\Delta$-Wert und den Start- und Endpositionen der Sequenzabschnitte gespeichert werden. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren.
+	Für die Rückgewinnung dieser Information muss in der decode()-Funktion zunächst ein neues Alignment des jeweiligen Intervall-Paares errechnet werden und alle Teilalignments zu einem Gesamtalignment konkateniert werden.
+	
+	\begin{algorithm}[h]
+		\caption{Computation of a CIGAR-String from a given Trace Point Array}
+		\label{decode}
+		\noindent\begin{tabular}{@{}l@{~}l}
+			\textbf{Input}:
+			&$seq1, seq2, \Delta, TP$ mit\\
+			&$\Size{seq1}, \Size{seq2}, \Delta, \Size{TP} > 0$\\
+			\textbf{Output}:&CIGAR-String
+		\end{tabular}
+		\medskip
+		\begin{algorithmic}[1]
+			\Function{\textit{decode}}{$seq1, seq2, \Delta, TP$}
+			\State \Assign{cig}{\text{empty String}}
+			\For{\Assign{i}{0} \Upto \(\Size{TP}\)}
+			\If{i = 0}
+			\State append \textbf{cigar}($seq1[0...\Delta], seq2[0...TP[i] + 1]$) to $cig$
+			\ElsIf{i = \Size{TP} - 1}
+			\State append \textbf{cigar}($seq1[i \cdot \Delta...\Size{seq1}], seq2[TP[i - 1] + 1...\Size{seq2}]$) to $cig$
+			\Else
+			\State \begin{tabular}{rll}
+				append \textbf{cigar}&($seq1[i \cdot \Delta...(i + 1) \cdot \Delta],$&\\
+				&$seq2[TP[i - 1] + 1]...TP[i] + 1$)& to $cig$
+			\end{tabular}
+			
+			\EndIf
+			\EndFor
+			\State \Assign{cig}{\textbf{combine}(cig)}
+			\State \Return cig
+			\EndFunction\\
+			
+			\Function{\textit{combine}}{$cigar$}
+			\State \Assign{cig}{\text{empty String}}
+			\State \Assign{tmp}{0}
+			\For{\text{each $(cig\_count, cig\_symbol)$ in cigar}}
+			\State \Assign{tmp}{tmp + previous\_cig\_count}
+			\If{cig\_symbol = previous\_cig\_symbol}
+			\If{\text{not last element in cigar}}
+			\State \Assign{tmp}{0}
+			\EndIf
+			\EndIf
+			\If{\text{last element in cigar}}
+			\State \text{append $(tmp + cig\_count, cig\_symbol)$ to cig}
+			\EndIf
+			\EndFor
+			\State \Return cig
+			\EndFunction
+		\end{algorithmic}
+	\end{algorithm}
+	
+\chapter{Fazit}
+
+Je größer der vorher definierte positive Parameter $\Delta$ ist, desto weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
+
+Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
