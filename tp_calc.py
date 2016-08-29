@@ -7,6 +7,32 @@ import argparse
 import string, random
 import time
 
+"""
+def mutate(sequence,err_prob,alphabet):
+  seqlen = len(sequence)
+  asize = len(alphabet)
+  s = []
+  i = 0
+  for element in seqlen:
+    r = random.random()
+    if r <= err_prob:
+      r = random.random()
+      if r <= 0.8:
+        #TODO was macht @rgen.rand ? 1 ist 1 element auswaehlen
+        s.append(alphabet[@rgen.rand * asize, 1])
+        i += 1
+      else if r <= 0.9:
+        s.append(alphabet[@rgen.rand * asize, 1])
+      else:
+        i += 1
+    else:
+      s.append(sequence[i, 1])
+      i += 1
+    if i >= seqlen:
+     break
+  return "".join(s)
+"""
+
 # random sequence generator
 def random_sequences(amount, random_length, error_rate, alphabet):
 
