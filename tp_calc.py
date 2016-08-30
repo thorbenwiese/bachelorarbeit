@@ -7,31 +7,30 @@ import argparse
 import string, random
 import time
 
-"""
+
 def mutate(sequence,err_prob,alphabet):
   seqlen = len(sequence)
   asize = len(alphabet)
   s = []
   i = 0
-  for element in seqlen:
+  for element in range(0,seqlen):
     r = random.random()
     if r <= err_prob:
       r = random.random()
       if r <= 0.8:
-        #TODO was macht @rgen.rand ? 1 ist 1 element auswaehlen
-        s.append(alphabet[@rgen.rand * asize, 1])
+        s.append(random.choice(alphabet))
         i += 1
-      else if r <= 0.9:
-        s.append(alphabet[@rgen.rand * asize, 1])
+      elif r <= 0.9:
+        s.append(random.choice(alphabet))
       else:
         i += 1
     else:
-      s.append(sequence[i, 1])
+      s.append(sequence[i])
       i += 1
     if i >= seqlen:
      break
   return "".join(s)
-"""
+
 
 # random sequence generator
 def random_sequences(amount, random_length, error_rate, alphabet):
@@ -44,48 +43,10 @@ def random_sequences(amount, random_length, error_rate, alphabet):
   random_seqs = []
 
   for i in range(0, amount):
-    seq = ''.join(random.choice(alphabet) for j in range(random_length))
-    aln1 = list(seq)
-    aln2 = list(seq)
-        
-    position = 0
-
-    for i in range(0, len(aln1)):
-      # random number between 0 and 1
-      r_num = random.random()
-      if r_num <= error_rate:
-        r_choice = random.random()
-        if 0 <= r_choice < 0.1:
-          # Deletion
-          aln2[position] = ''
-        elif 0.1 < r_choice < 0.2:
-          # Insertion
-          aln1[position] = ''
-        elif 0.2 < r_choice < 0.4:
-          # a
-          if aln2[position] == 'a':
-            continue
-          aln2[position] = 'a'
-        elif 0.4 < r_choice < 0.6:
-          # c
-          if aln2[position] == 'c':
-            continue
-          aln2[position] = 'c'
-        elif 0.6 < r_choice < 0.8:
-          # g
-          if aln2[position] == 'g':
-            continue
-          aln2[position] = 'g'
-        elif 0.8 < r_choice <= 1.0:
-          # t
-          if aln2[position] == 't':
-            continue
-          aln2[position] = 't'
-      position += 1
-    aln1 = "".join(aln1)
-    aln2 = "".join(aln2)
-    random_seqs.append(aln1)
-    random_seqs.append(aln2)
+    rseq1 = ''.join(random.choice(alphabet) for j in range(random_length))
+    rseq2 = mutate(rseq1, error_rate, alphabet)
+    random_seqs.append(rseq1)
+    random_seqs.append(rseq2)
 
   assert random_seqs, "Random sequences are empty."
 
