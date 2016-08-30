@@ -56,7 +56,7 @@ class TracePointAlignment(object):
 
         # count until the end but ignore end of last interval as TracePoint
         if num_chars_in_u == u_tp[count]:
-          v_tp.append(num_chars_in_v)# -1
+          v_tp.append(num_chars_in_v)
 
           # do not increment count if the last element in u_tp is reached
           if count == len(u_tp) - 1:
