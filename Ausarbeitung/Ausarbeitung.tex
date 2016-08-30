@@ -69,9 +69,7 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert \c
 %\subsection{Komplexität}
 %TODO
 
-\subsection{Speicherverbrauch}\label{Cigar_Speicher}
-
-\subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Beispiel}
+\subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Speicher}
 
 \begin{bsp}
 Sei das Alignment $A$
@@ -277,8 +275,6 @@ Trace Points: [15, 28]
 %TODO ausführlicher
 %Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment \cite[S.41-42]{gsa-skript}.
 
-\subsection{Speicherverbrauch}
-
 \subsection{Differenzen-Kodierung}\label{Differenzen-Kodierung}
 
 %TODO Quellen
@@ -345,7 +341,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
 Die Größe dieser Kodierung ist demnach $12$ Bit mit einem durchschnittlichen Bedarf pro Symbol von
 \[\frac{12}{8} \approx 1.5 \frac{\text{Bit}}{\text{Symbol}}\]
 
-Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Beispiel} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$ nötig.
+Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$ nötig.
 
 
 Die Größe der Huffman-Kodierung ist demnach $11$ Bit mit einem durchschnittlichen Bedarf pro Symbol von 
@@ -444,12 +440,11 @@ Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaar
 	\caption{Größe der Huffman-Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{fig:cig-huf}
 \end{figure}
 
-%TODO
 Die naive binäre Kodierung der CIGAR-Strings benötigt wie in Abbildung \ref{fig:cig-bin} dargestellt im Mittel $282.88$ Bit, wobei Werte zwischen $50$ und $900$ Bit erreicht werden. Diese bilden zwei Maxima bei $2050$ Sequenzpaaren mit jeweils etwa $120$ Bit als globales Maximum und $700$ Sequenzpaaren mit jeweils etwa $420$ Bit als lokales Maximum.
 
-Im Mittel benötigt die naive binäre Kodierung $282.88$ Bit, die unäre Kodierung $263.39$ Bit und die Huffman-Kodierung $162.79$ Bit.
+Wie in Abbildung \ref{fig:cig-una} zu erkennen ist, ähnelt die Anzahl der Bits für die unäre Kodierung der CIGAR-Strings der der naiven binären Kodierung. Hier werden ebenfalls zwei Maxima erreicht, wobei hier das globale Maximum bei $2050$ Sequenzpaaren mit etwa $120$ Bit und das lokale Maximum bei $500$ Sequenzpaaren mit etwa $420$ Bit liegt. Für die unäre Kodierung wird im Mittel $263.39$ Bit für die Kodierung eines CIGAR-Strings und damit nur etwa $7$\% weniger als bei der naiven binären Kodierung benötigt.
 
-Unär benötigt nur $93.11$\% der naiven binären Kodierung, Huffman benötigt $61.81$\% der unären und $57.55$\% der naiven binären Kodierung.
+Die Huffman-Kodierung kodiert wie in Abbildung \ref{fig:cig-huf} zu erkennen ist zwischen $70$ und $250$ Bit für die Kodierung der CIGAR-Strings. Die Bitanzahl ist hier nahezu normalverteilt mit einem Maximum von $2550$ Sequenzpaaren für etwa $160$ Bit, was in etwa dem Durchschnitt von $162.79$ Bit entspricht. Die Huffman-Kodierung benötigt somit für die Kodierung im Schnitt nur $61.81$\% der Bitanzahl der unären und $57.55$\% der naiven binären Kodierung.
 
 \section{Testläufe Differenzen Kodierung}\label{Diff-Testläufe}
 
@@ -488,31 +483,26 @@ Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaar
 
 \FloatBarrier
 
-%TODO trennen zwischen Resultate und Diskussion
 Die naive binäre Kodierung benötigt in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit.
 
-Die Abbildung \ref{fig:diff-una} verdeutlicht, dass die unäre Kodierung Schwankungen %TODO??
- im Bitverbrauch aufweist. Sie benötigt im Mittel $24.62$ Bit und damit nur etwa $61.54$\% der binären Kodierung.
+Für die unäre Kodierung der Differenzen der Trace Points wird, wie in Abbildung \ref{fig:diff-una} verdeutlicht, zwischen $12$ und $45$ Bit benötigt. Die Bitanzahl ist in etwa normalverteilt, wobei das Maximum bei $3100$ Sequenzpaaren mit $26$ Bit liegt. Im Mittel  wird für diese Kodierung $24.62$ Bit und damit nur etwa $61.54$\% der binären Kodierung benötigt.
 
-Für die Huffman-Kodierung wird, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, deutlich weniger Speicher für die Kodierung benötigt, als für die naive binäre oder unäre Kodierung. Sie verbraucht durchschnittlich nur $14.03$ Bit und damit nur etwa $56.99$\% des Speicherbedarfs der unären und $35.10$\% der naiven binären Kodierung.
+Die Huffman-Kodierung kodiert, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $4$ bis $30$ Bit, wobei hier das Maximum bei $2550$ Sequenzpaaren und $15$ Bit liegt. Sie verbraucht durchschnittlich nur $14.03$ Bit und damit nur etwa $56.99$\% des Speicherbedarfs der unären und $35.10$\% der naiven binären Kodierung.
 
 \chapter{Diskussion}
 %TODO hier soll wertend beschrieben werden, was die Resultate bedeuten und wie sich bestimmte Werte erklären lassen
 
 \section{Bewertung CIGAR-Kodierung}
 
-%TODO
-Die Abbildungen \ref{fig:cig-bin} und \ref{fig:cig-una} verdeutlichen, dass die binäre und unäre Kodierung deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Die Abbildung \ref{fig:cig-huf} hingegen weist eine Normalverteilung des Bitverbrauchs für die Huffman-Kodierung auf.
+%Die Abbildungen \ref{fig:cig-bin} und \ref{fig:cig-una} verdeutlichen, dass die binäre und unäre Kodierung deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Die Abbildung \ref{fig:cig-huf} hingegen weist eine Normalverteilung des Bitverbrauchs für die Huffman-Kodierung auf.
 
-In den dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich mit Abstand am wenigsten Speicher, obwohl in dem unter \ref{Cigar_Beispiel} beschriebenen Beispiel die unäre Kodierung den CIGAR-String etwas effizienter kodiert. Der Grund hierfür ist die deutlich höhere Fehlerrate in \ref{Cigar_Beispiel}, welche die Anzahl der zu kodierenden Symbole deutlich erhöht.
+%In den dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich mit Abstand am wenigsten Speicher, obwohl in dem unter \ref{Cigar_Speicher} beschriebenen Beispiel die unäre Kodierung den CIGAR-String etwas effizienter kodiert. Der Grund hierfür ist die deutlich höhere Fehlerrate in \ref{Cigar_Speicher}, welche die Anzahl der zu kodierenden Symbole deutlich erhöht.
 
-Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
+%Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
 
-\section{Bewertung Differenzen-Kodierung der Trace Points}
+\section{Bewertung Kodierung der Differenzen der Trace Points}
 
-%TODO
-Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
-
+%Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
 
 \chapter{Programm}
 
@@ -542,37 +532,39 @@ Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mi
 	\medskip
 	\begin{algorithmic}[1]
 		\Function{\textit{encode}}{$seq1, seq2, start\_seq1, end\_seq1, start\_seq2, \Delta, cigar$}
-		\State \Assign{itv\_size}{MAX(1, \Roundup{start\_seq1/\Delta})}
-		\State \Assign{itv\_count}{MIN(\Roundup{\Size{seq1}/\Delta}, \Roundup{\Size{seq2}/\Delta})}
-		\For{\Assign{i}{0} \Upto \(\Size{itv\_count}\)} \\
-		\Assign{\indent itv[i]}{
-			\begin{cases}
-				start\_seq1, itv\_size \cdot \Delta - 1&\text{ if } i = 0\\
-				(itv\_size + i - 1) \cdot \Delta, (itv\_size + i) \cdot \Delta - 1&\text{ if } 0 < i < \Size{itv\_count}\\
-				(itv\_size + i - 1) \cdot \Delta, end\_seq1 - 1&\text{ else.}
-			\end{cases}}
+		\State \Assign{p}{MAX(1, \Roundup{start\_seq1/\Delta})}
+		\State \Assign{tau}{\Roundup{end\_seq1/\Delta} - \Rounddown{start\_seq2/\Delta}}
+		\State \Assign{uTP}{\text{Array for interval termini in the first sequence}}
+		\For{\Assign{i}{0} \Upto \(\Size{tau}\)}
+		\State \Assign{uTP[i]}{(p + i) \cdot (\Delta - 1)}
+			%\begin{cases}
+			%	start\_seq1, p \cdot \Delta - 1&\text{ if } i = 0\\
+			%	(p + i - 1) \cdot \Delta, (p + i) \cdot \Delta - 1&\text{ if } 0 < i < \Size{tau}\\
+			%	(p + i - 1) \cdot \Delta, end\_seq1 - 1&\text{ else.}
+			%\end{cases}}
 			\EndFor
-			\State \Assign{count1, count2, count3}{0}
+			\State \Assign{\#uChars, \#vChars, count}{0}
 			\State \Assign{TP}{\text{Array for Trace Points}}
 			\For{\text{each $(cig\_count, cig\_symbol)$ in cigar}}
 			\For{\Assign{i}{0} \Upto \(cig\_count\)}
 			\If{cig\_symbol = 'I'}
-			\State increment $count1$
+			\State increment $\#uChars$
 			\ElsIf{cig\_symbol = 'D'}
-			\State increment $count2$
+			\State increment $\#vChars$
 			\Else
-			\State increment $count1, count2$
+			\State increment $\#uChars, \#vChars$
 			\EndIf
 			
-			\If{count1 = intervals[count3][1] + 1 \textbf{and} count1 $\neq \Size{seq1}$}
-			\State append (count2 - 1 + start\_seq2) to $TP$
+			\If{$\#uChars = uTP[count]$}
+			\State append ($\#vChars$ to $TP$
 			\EndIf
-			\If{count $\neq \Size{itv} - 1$}
-			\State increment $count3$
-			\EndIf
-			\EndFor
-			\EndFor
+			\If{$count \neq \Size{uTP} - 1$}
 			\State \Return $TP$
+			\Else
+			\State increment $count$
+			\EndIf
+			\EndFor
+			\EndFor
 			\EndFunction
 		\end{algorithmic}
 	\end{algorithm}
@@ -615,7 +607,7 @@ Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mi
 			\Function{\textit{combine}}{$cigar$}
 			\State \Assign{cig}{\text{empty String}}
 			\State \Assign{tmp}{0}
-			\For{\text{each $(cig\_count, cig\_symbol)$ in cigar}}
+			\For{\text{each $cig\_count, cig\_symbol$ in cigar}}
 			\State \Assign{tmp}{tmp + previous\_cig\_count}
 			\If{cig\_symbol = previous\_cig\_symbol}
 			\If{\text{not last element in cigar}}
@@ -623,7 +615,7 @@ Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mi
 			\EndIf
 			\EndIf
 			\If{\text{last element in cigar}}
-			\State \text{append $(tmp + cig\_count, cig\_symbol)$ to cig}
+			\State \text{append $tmp + cig\_count, cig\_symbol$ to cig}
 			\EndIf
 			\EndFor
 			\State \Return cig
