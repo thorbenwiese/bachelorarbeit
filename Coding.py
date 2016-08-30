@@ -19,7 +19,14 @@ sys.setdefaultencoding('utf8')
 
 from heapq import heappush, heappop, heapify
 from collections import defaultdict
+#################
 
+counter11 = ({122: 670, 366: 670, 126: 667, 378: 667, 134: 666, 469: 666, 130: 652, 455: 652, 138: 623, 483: 623, 118: 594, 354: 594, 114: 575, 342: 575, 142: 572, 497: 572, 110: 481, 330: 481, 525: 442, 150: 442, 146: 440, 511: 440, 106: 431, 318: 431, 539: 383, 154: 383, 553: 351, 158: 351, 102: 297, 306: 297, 567: 274, 162: 274, 98: 251, 294: 251, 581: 217, 166: 217, 94: 177, 282: 177, 595: 139, 170: 139, 609: 128, 174: 128, 90: 114, 270: 114, 86: 85, 258: 85, 623: 74, 178: 74, 82: 58, 246: 58, 637: 55, 182: 55, 78: 42, 234: 42, 128: 34, 651: 34, 186: 34, 384: 34, 124: 31, 372: 31, 136: 30, 476: 30, 665: 26, 190: 26, 140: 25, 144: 25, 210: 25, 490: 25, 504: 25, 120: 23, 360: 23, 70: 20, 222: 20, 532: 19, 74: 19, 132: 19, 152: 19, 462: 19, 112: 18, 336: 18, 108: 17, 160: 17, 324: 17, 560: 16, 116: 16, 348: 16, 546: 14, 156: 14, 198: 13, 588: 12, 679: 12, 168: 12, 194: 12, 574: 11, 616: 11, 164: 11, 176: 11, 100: 10, 300: 10, 518: 9, 96: 9, 148: 9, 288: 9, 92: 8, 693: 8, 707: 8, 202: 8, 276: 8, 206: 7, 721: 7, 602: 6, 172: 6, 66: 5, 88: 5, 735: 5, 264: 5, 104: 4, 312: 4, 180: 3, 630: 3, 214: 3, 218: 3, 749: 3, 763: 3, 686: 2, 80: 2, 84: 2, 155: 2, 192: 2, 196: 2, 240: 2, 252: 2, 62: 2, 672: 2, 58: 1, 64: 1, 72: 1, 145: 1, 184: 1, 700: 1, 200: 1, 216: 1, 254: 1, 777: 1, 644: 1, 889: 1})
+counter22 = ({110: 2041, 120: 1833, 100: 1601, 130: 1303, 90: 1184, 140: 752, 80: 546, 410: 465, 400: 457, 420: 450, 450: 433, 440: 431, 390: 429, 430: 425, 460: 405, 380: 403, 370: 396, 360: 388, 470: 341, 480: 334, 340: 327, 150: 321, 350: 311, 330: 295, 490: 288, 310: 266, 500: 266, 320: 246, 510: 226, 520: 219, 300: 218, 530: 203, 70: 195, 290: 182, 540: 163, 550: 161, 280: 154, 270: 123, 160: 121, 560: 117, 260: 106, 250: 86, 570: 85, 580: 79, 240: 75, 590: 73, 230: 52, 170: 50, 600: 50, 610: 42, 60: 41, 620: 36, 220: 34, 180: 27, 630: 23, 210: 18, 200: 17, 640: 16, 650: 12, 660: 12, 190: 12, 680: 9, 670: 7, 50: 7, 690: 4, 700: 3, 720: 2, 770: 1, 750: 1, 760: 1})
+counter33 = ({160: 2556, 170: 1564, 180: 1125, 150: 1052, 190: 865, 140: 830, 130: 615, 200: 603, 120: 381, 210: 207, 110: 64, 100: 51, 220: 50, 90: 24, 230: 10, 80: 1, 240: 1, 250: 1})
+
+
+#################
 def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
               filename):
   start_seq1 = start_seq2 = 0
@@ -92,7 +99,7 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
         bit_sum.append(huffman(TP))
   return bit_sum
 
-def bucket(bit_sum, base=10):
+def bucket(bit_sum, base):
 
   bucket = []
   for element in bit_sum:
@@ -101,9 +108,11 @@ def bucket(bit_sum, base=10):
   return bucket
 
 def multiplot(bs1, bs2, bs3, t, method):
-  counter1 = collections.Counter(bs1)
+  counter1 = collections.Counter(bucket(bs1))
   counter2 = collections.Counter(bucket(bs2))
   counter3 = collections.Counter(bucket(bs3))
+
+  bin_mean = una_mean = huf_mean = 0
 
   plt.figure(1)
   plt.ylabel('Anzahl der Sequenzpaare')
@@ -111,9 +120,11 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.axis([0, max(counter1.keys())*1.2, 0, counter1.most_common(1)[0][1] * 1.2])
   plt.plot(counter1.keys(), counter1.values(),'bo', 
            label="Binary Coding")
+  bin_mean = float(sum(bs1))/len(bs1)
   y = list(range(counter1.most_common(1)[0][1]))
-  x = [float(sum(bs1))/len(bs1)] * counter1.most_common(1)[0][1]
-  print "Binary Mean:",float(sum(bs1))/len(bs1)
+  x = [bin_mean] * counter1.most_common(1)[0][1]
+
+  print "Binary Mean:", bin_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-bin-1000-1000-d100" % method)
@@ -124,9 +135,11 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.axis([0, max(counter2.keys())*1.2, 0, counter2.most_common(1)[0][1] * 1.2])
   plt.plot(counter2.keys(), counter2.values(), 'bo', 
            label="Unary Coding")
+  una_mean = float(sum(bs2))/len(bs2)
   y = list(range(counter2.most_common(1)[0][1]))
-  x = [float(sum(bs2))/len(bs2)] * counter2.most_common(1)[0][1]
-  print "Unary Mean:",float(sum(bs2))/len(bs2)
+  x = [una_mean] * counter2.most_common(1)[0][1]
+
+  print "Unary Mean:", una_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-una-1000-1000-d100" % method)
@@ -137,19 +150,29 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.axis([0, max(counter3.keys())*1.2, 0, counter3.most_common(1)[0][1] * 1.2])
   plt.plot(counter3.keys(), counter3.values(), 'bo', 
            label="Huffman Coding")
+  huf_mean = float(sum(bs3))/len(bs3)
   y = list(range(counter3.most_common(1)[0][1]))
-  x = [float(sum(bs3))/len(bs3)] * counter3.most_common(1)[0][1]
-  print "Huffman Mean:",float(sum(bs3))/len(bs3)
+  x = [huf_mean] * counter3.most_common(1)[0][1]
+
+  print "Huffman Mean:", huf_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-huf-1000-1000-d100" % method)
 
+  print counter1
+  print counter2
+  print counter3
+  print "##########################"
   print counter1.keys()
-  print bucket(counter1.keys())
   print counter2.keys()
-  print bucket(counter2.keys())
   print counter3.keys()
-  print bucket(counter3.keys())
+
+  print "Bin/Una:",float(bin_mean)/una_mean
+  print "Una/Bin:",float(una_mean)/bin_mean
+  print "Bin/Huf:",float(bin_mean)/huf_mean
+  print "Huf/Bin:",float(huf_mean)/bin_mean
+  print "Huf/Una:",float(huf_mean)/una_mean
+  print "Una/Huf:",float(una_mean)/huf_mean
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
@@ -247,16 +270,22 @@ def entropy(amount, random_length, error_rate, alphabet, delta):
   cig_counter = collections.Counter(cig_ent_sum)
   diff_counter = collections.Counter(diff_ent_sum)
 
+  cig_mean = diff_mean = 0
+
   plt.figure(1)
   plt.ylabel('Anzahl Sequenzpaare')
   plt.xlabel('Entropie in Bit')
   plt.axis([0, max(cig_counter.keys())*1.2, 0, 
             cig_counter.most_common(1)[0][1] * 1.2])
-  plt.plot(cig_counter.keys(), cig_counter.values(), 
+  cigkeylist = [int(i) for i in cig_counter.keys()]
+  diffkeylist = [int(i) for i in diff_counter.keys()]
+  plt.plot(cigkeylist, cig_counter.values(), 
            'bo', label="CIGAR Entropy")
+  cig_mean = float(sum(cig_ent_sum))/len(cig_ent_sum)
   y = list(range(cig_counter.most_common(1)[0][1]))
-  x = [float(sum(cig_ent_sum))/len(cig_ent_sum)] * cig_counter.most_common(1)[0][1]
-  print "Cig Entropy Mean:",float(sum(cig_ent_sum))/len(cig_ent_sum)
+  x = [cig_mean] * cig_counter.most_common(1)[0][1]
+
+  print "Cig Entropy Mean:", cig_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/cig_entropy")
@@ -266,36 +295,209 @@ def entropy(amount, random_length, error_rate, alphabet, delta):
   plt.xlabel('Entropie in Bit')
   plt.axis([0, max(diff_counter.keys())*1.2, 0, 
             diff_counter.most_common(1)[0][1] * 1.2])
-  plt.plot(diff_counter.keys(), diff_counter.values(), 
+  plt.plot(diffkeylist, diff_counter.values(), 
            'ro', label="Differences Entropy")
+  diff_mean = float(sum(diff_ent_sum))/len(diff_ent_sum)
   y = list(range(diff_counter.most_common(1)[0][1]))
-  x = [float(sum(diff_ent_sum))/len(diff_ent_sum)] * diff_counter.most_common(1)[0][1]
-  print "Diff Entropy Mean:",float(sum(diff_ent_sum))/len(diff_ent_sum)
+  x = [diff_mean] * diff_counter.most_common(1)[0][1]
+  print "Diff Entropy Mean:", diff_mean
   plt.plot(x,y, 'r--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/diff_entropy")
 
+  print "cig/diff:", float(cig_mean)/diff_mean
+  print "diff/cig:", float(diff_mean)/cig_mean
+  print cig_counter
+  print diff_counter
+  print [int(i) for i in cig_counter.keys()]
+  print diff_counter.keys()
+
   plt.show()
+
+def megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t):
+
+  counter1 = collections.Counter(bucket(bs1,10))
+  counter2 = collections.Counter(bucket(bs2,10))
+  counter3 = collections.Counter(bucket(bs3,10))
+
+  cig_bin_mean = cig_una_mean = cig_huf_mean = 0
+
+  plt.figure(1)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter1.keys())*1.2, 0, counter1.most_common(1)[0][1] * 1.2])
+  plt.plot(counter1.keys(), counter1.values(),'bo', 
+           label="Binary Coding")
+  cig_bin_mean = float(sum(bs1))/len(bs1)
+  y = list(range(counter1.most_common(1)[0][1]))
+  x = [cig_bin_mean] * counter1.most_common(1)[0][1]
+
+  print "Cigar Binary Mean:", cig_bin_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+  plt.figure(2)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter2.keys())*1.2, 0, counter2.most_common(1)[0][1] * 1.2])
+  plt.plot(counter2.keys(), counter2.values(), 'bo', 
+           label="Unary Coding")
+  cig_una_mean = float(sum(bs2))/len(bs2)
+  y = list(range(counter2.most_common(1)[0][1]))
+  x = [cig_una_mean] * counter2.most_common(1)[0][1]
+
+  print "Cigar Unary Mean:", cig_una_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+  plt.figure(3)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter3.keys())*1.2, 0, counter3.most_common(1)[0][1] * 1.2])
+  plt.plot(counter3.keys(), counter3.values(), 'bo', 
+           label="Huffman Coding")
+  cig_huf_mean = float(sum(bs3))/len(bs3)
+  y = list(range(counter3.most_common(1)[0][1]))
+  x = [cig_huf_mean] * counter3.most_common(1)[0][1]
+
+  print "Cigar Huffman Mean:", cig_huf_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+
+
+  counter4 = collections.Counter(bucket(bs4,3))
+  counter5 = collections.Counter(bucket(bs5,3))
+  counter6 = collections.Counter(bucket(bs6,3))
+
+  diff_bin_mean = diff_una_mean = diff_huf_mean = 0
+
+  plt.figure(4)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter4.keys())*1.2, 0, counter4.most_common(1)[0][1] * 1.2])
+  plt.plot(counter4.keys(), counter4.values(),'bo', 
+           label="Binary Coding")
+  diff_bin_mean = float(sum(bs4))/len(bs4)
+  y = list(range(counter4.most_common(1)[0][1]))
+  x = [diff_bin_mean] * counter4.most_common(1)[0][1]
+
+  print "Diff Binary Mean:", diff_bin_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+  plt.figure(5)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter5.keys())*1.2, 0, counter5.most_common(1)[0][1] * 1.2])
+  plt.plot(counter5.keys(), counter5.values(), 'bo', 
+           label="Unary Coding")
+  diff_una_mean = float(sum(bs5))/len(bs5)
+  y = list(range(counter5.most_common(1)[0][1]))
+  x = [diff_una_mean] * counter5.most_common(1)[0][1]
+
+  print "Diff Unary Mean:", diff_una_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+  plt.figure(6)
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter6.keys())*1.2, 0, counter6.most_common(1)[0][1] * 1.2])
+  plt.plot(counter6.keys(), counter6.values(), 'bo', 
+           label="Huffman Coding")
+  diff_huf_mean = float(sum(bs6))/len(bs6)
+  y = list(range(counter6.most_common(1)[0][1]))
+  x = [diff_huf_mean] * counter6.most_common(1)[0][1]
+
+  print "Diff Huffman Mean:", diff_huf_mean
+  plt.plot(x,y, 'b--',label='Mean')
+  plt.legend(loc='upper right')
+
+
+  print "##########################"
+  print counter1
+  print counter2
+  print counter3
+  print "##########################"
+  print counter1.keys()
+  print counter2.keys()
+  print counter3.keys()
+  print "##########################"
+
+  print "Cig Bin/Una:",float(cig_bin_mean)/cig_una_mean
+  print "Cig Una/Bin:",float(cig_una_mean)/cig_bin_mean
+  print "Cig Bin/Huf:",float(cig_bin_mean)/cig_huf_mean
+  print "Cig Huf/Bin:",float(cig_huf_mean)/cig_bin_mean
+  print "Cig Huf/Una:",float(cig_huf_mean)/cig_una_mean
+  print "Cig Una/Huf:",float(cig_una_mean)/cig_huf_mean
+
+
+  print "##########################"
+  print counter4
+  print counter5
+  print counter6
+  print "##########################"
+  print counter4.keys()
+  print counter5.keys()
+  print counter6.keys()
+  print "##########################"
+
+  print "Diff Bin/Una:",float(diff_bin_mean)/diff_una_mean
+  print "Diff Una/Bin:",float(diff_una_mean)/diff_bin_mean
+  print "Diff Bin/Huf:",float(diff_bin_mean)/diff_huf_mean
+  print "Diff Huf/Bin:",float(diff_huf_mean)/diff_bin_mean
+  print "Diff Huf/Una:",float(diff_huf_mean)/diff_una_mean
+  print "Diff Una/Huf:",float(diff_una_mean)/diff_huf_mean
+
+  print "Unterschied Bin:", float(diff_bin_mean)/cig_bin_mean
+  print "Unterschied Una:", float(diff_una_mean)/cig_una_mean
+  print "Unterschied Huf:", float(diff_huf_mean)/cig_huf_mean
+
+  print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
+  plt.show()
+
 def main():
 
   t = time.clock()
-  """ 
-  bs1 = calc_bits("cigar","binary",1,1000,0.15,"acgt",100,"cig-bin-10-1000-d100")
-  bs2 = calc_bits("cigar","unary",1,1000,0.15,"acgt",100,"cig-una-10-1000-d100")
+   
+  bs1 = calc_bits("cigar","binary",10000,1000,0.15,"acgt",100,"cig-bin-10-1000-d100")
+  bs2 = calc_bits("cigar","unary",10000,1000,0.15,"acgt",100,"cig-una-10-1000-d100")
   bs3 = calc_bits("cigar","huffman",10000,1000,0.15,"acgt",100,"cig-huf-10-1000-d100")
-  """
-  entropy(10000,1000,0.15,"acgt",100)
+  
+  #entropy(100,1000,0.15,"acgt",100)
   #multiplot(bs1, bs2, bs3, t, "cig")
+
   """
-  bs4 = calc_bits("tracepoint","binary",1000,1000,0.15,"acgt",100,
+  thislist1 = []
+  for key,value in counter11.items():
+    print key, value
+    for i in range(0,value):
+      thislist1.append(key)
+  thislist2 = []
+  for key,value in counter22.items():
+    print key, value
+    for i in range(0,value):
+      thislist2.append(key)
+  thislist3 = []
+  for key,value in counter33.items():
+    print key, value
+    for i in range(0,value):
+      thislist3.append(key)
+
+  multiplot(thislist1, thislist2, thislist3, t, "cig")
+  """
+  bs4 = calc_bits("tracepoint","binary",10000,1000,0.15,"acgt",100,
             "diff-bin-10-1000-d100")
 
-  bs5 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",100,
+  bs5 = calc_bits("tracepoint","unary",10000,1000,0.15,"acgt",100,
             "diff-una-10-1000-d100")
 
-  bs6 = calc_bits("tracepoint","huffman",1000,1000,0.15,"acgt",100,
+  bs6 = calc_bits("tracepoint","huffman",10000,1000,0.15,"acgt",100,
             "diff-huf-10-1000-d100")
-  multiplot(bs4, bs5, bs6, t, "diff")
-  """
+  #multiplot(bs4, bs5, bs6, t, "diff")
+  
+  megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t)
+
 if __name__ == "__main__":
   main()
