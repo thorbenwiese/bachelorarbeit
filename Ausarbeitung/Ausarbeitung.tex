@@ -68,7 +68,7 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert \c
 
 \subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Speicher}
 
-%TODO immer MID??
+%TODO immer MID?? sonst p(x_s) = 0 -> 
 Sei ein CIGAR-String $C = s_1c_1s_2c_2...s_nc_n$ mit $|C| = 2n$ eines Alignments mit $s_i \in \{$M$,$I$,$D$\}$ und $c_i \in \mathbb{N}, 0 < i \leq n$ gegeben.
 
 Für die Kodierung eines CIGAR-Strings ist es sinnvoll, alle $s_i$ und $c_i$ seperat zu kodieren, um so mit kleineren Alphabeten für die zu kodierenden Symbole arbeiten zu können.
