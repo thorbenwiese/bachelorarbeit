@@ -101,9 +101,9 @@ def bucket(bit_sum, base):
   return bucket
 
 def multiplot(bs1, bs2, bs3, t, method):
-  counter1 = collections.Counter(bucket(bs1))
-  counter2 = collections.Counter(bucket(bs2))
-  counter3 = collections.Counter(bucket(bs3))
+  counter1 = collections.Counter(bucket(bs1,3))
+  counter2 = collections.Counter(bucket(bs2,3))
+  counter3 = collections.Counter(bucket(bs3,3))
 
   bin_mean = una_mean = huf_mean = 0
 
@@ -190,11 +190,63 @@ def huffman(code):
     symb2freq[ch] += 1
   huff = encode(symb2freq)
   bits = avg = 0
-  # print "Symbol\tWeight\tHuffman Code"
+  canon = []
+  #print "Symbol\tWeight\tHuffman Code"
   for p in huff:
     bits += len(p[1])
-    # print "%s\t%s\t%s" % (p[0], symb2freq[p[0]], p[1])
+    it = (p[0],p[1],len(p[1]))
+    canon.append(it)
+    #print "%s\t%s\t%s" % (p[0], symb2freq[p[0]], p[1])
+  bits += canonical(canon)
   return bits 
+
+def canonical(huf):
+  #for a in huf:print a
+  minsize=huf[0][2]
+  co = '0'
+  if len(co)<minsize:co='0'*(minsize-len(co))+co
+  ne = [(huf[0][0],co,len(co))]
+  code = 0
+  for i in range(1,len(huf)):
+    code = (code+1) << huf[i][2] - huf[i-1][2]
+    co=bin(code)[2:]
+    l = len(co)
+    if l<minsize:co='0'*(minsize-l)+co
+    ne.append((huf[i][0],co,len(co)))
+  #for a in ne:
+  #  print a
+  ls1 = []
+  ls2 = []
+  ls3 = []
+  for a in ne:
+    ls1.append(a[2]) # len(bits)
+    ls2.append(a[1]) # bits
+    ls3.append(a[0]) # symbol
+  c = collections.Counter(ls1)
+  vals = c.values()
+
+  keys = c.keys()
+  for i in range(0,len(ls2)):
+    if len(ls2[i]) != i+1:
+      vals.insert(i,0)
+  leng = len(ls2)-1
+  for i in range(leng,0,-1):
+    if vals[i] == 0:
+      del vals[i]
+    elif vals[i] != 0:
+      break
+  #TODO hier nicht einfach binaer sondern irgendwie anders...
+  binvals = []
+  for a in vals:binvals.append(bin(a)[2:])
+  symvals = []
+  for b in ls3:symvals.append(bin(b)[2:])
+  
+  #print [binvals, symvals]
+  mem = 0
+  for c in binvals:mem+=len(c)
+  for d in symvals:mem+=len(d)
+
+  return mem
 
 def unary(code):
   symb2freq = defaultdict(int)
@@ -478,20 +530,20 @@ def main():
 
   multiplot(thislist1, thislist2, thislist3, t, "cig")
   """
-  """
-  bs4 = calc_bits("tracepoint","binary",10000,1000,0.15,"acgt",100,
+  
+  bs4 = calc_bits("tracepoint","binary",1,1000,0.15,"acgt",100,
             "diff-bin-10-1000-d100")
 
-  bs5 = calc_bits("tracepoint","unary",10000,1000,0.15,"acgt",100,
+  bs5 = calc_bits("tracepoint","unary",1,1000,0.15,"acgt",100,
             "diff-una-10-1000-d100")
 
-  bs6 = calc_bits("tracepoint","huffman",10000,1000,0.15,"acgt",100,
+  bs6 = calc_bits("tracepoint","huffman",100,1000,0.15,"acgt",100,
             "diff-huf-10-1000-d100")
-  #multiplot(bs4, bs5, bs6, t, "diff")
+  multiplot(bs4, bs5, bs6, t, "diff")
   
-  megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t)
-  """
-  entropy(10000,1000,0.15,"acgt",100)
+  #megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t)
+  
+  #entropy(10000,1000,0.15,"acgt",100)
 
 
 if __name__ == "__main__":

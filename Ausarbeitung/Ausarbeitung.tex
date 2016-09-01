@@ -68,12 +68,11 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert \c
 
 \subsection{Kodierung eines CIGAR-Strings}\label{Cigar_Speicher}
 
-%TODO immer MID?? sonst p(x_s) = 0 -> 
 Sei ein CIGAR-String $C = s_1c_1s_2c_2...s_nc_n$ mit $|C| = 2n$ eines Alignments mit $s_i \in \{$M$,$I$,$D$\}$ und $c_i \in \mathbb{N}, 0 < i \leq n$ gegeben.
 
 Für die Kodierung eines CIGAR-Strings ist es sinnvoll, alle $s_i$ und $c_i$ seperat zu kodieren, um so mit kleineren Alphabeten für die zu kodierenden Symbole arbeiten zu können.
 
-$\cal{A}$$_s = ($M$,$I$,$D$)$ und $\cal{A}$$_c = (c_1,...,c_n)$ sind somit die Alphabete der zu kodierenden Symbole eines CIGAR-Strings mit den relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x_s \in $$\ \cal{A}$$_s,\ x_c \in $$\ \cal{A}$$_c$.
+$\cal{A}$$_s = (s_1,...,s_n)$ und $\cal{A}$$_c = (c_1,...,c_n)$ sind somit die Alphabete der zu kodierenden Symbole eines CIGAR-Strings mit den relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x_s \in $$\ \cal{A}$$_s$ und $x_c \in $$\ \cal{A}$$_c$.
 
 %(M,I,D) ist fest gegeben, die Zahlen sind mit einer gewissen Häufigkeit vertreten (Verteilung), anhand dessen man den Code erstellen kann, je nach Verteilung.
 
@@ -390,32 +389,30 @@ und damit nur $\frac{11}{70} = 15.71$\% der Huffman-Kodierung für den CIGAR-Stri
 \end{figure}
 \end{bsp}
 
+\section{Entropie der Methoden}
+
+Die Entropie $H$ beschreibt den durchschnittlichen Informationsgehalt einer Nachricht $X$ für alle Symbole $x \in X$ mit den relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols in der Einheit $\frac{\text{Bit}}{\text{Symbol}}$.
+\[H(X) = - \sum_{i=1}^{n}p_i \cdot \log_2p_i\]
+Sie ist maximal, wenn alle Symbole mit der gleichen Wahrscheinlichkeit $\frac{1}{n}$ auftreten.
+
+Für den in \ref{Cigar_Speicher} genannten CIGAR-String ergibt sich eine Entropie von
+
+\begin{tabular}{rcl}
+	\centering
+	$H(\mathit{Cigar})$ &$=$& $-(\frac{10}{38} \cdot \log_2\frac{10}{38} + \frac{5}{38} \cdot \log_2\frac{5}{38} + \frac{4}{38} \cdot \log_2\frac{4}{38} + \frac{13}{38} \cdot \log_2\frac{13}{38} + \frac{2}{38} \cdot$\\
+	&&$\log_2\frac{2}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38})$\\
+	&$\approx$& $2.54\ \frac{\text{Bit}}{\text{Symbol}}$
+\end{tabular}
+
+Die in \ref{Differenzen-Kodierung} genannten Trace Point Differenzen des selben Alignments ergeben analog
+
+\begin{tabular}{rcl}
+	\centering
+	$H(\mathit{Diff})$ &$=$& $-(\frac{5}{8} \cdot \log_2\frac{5}{8} + \frac{2}{8} \cdot \log_2\frac{2}{8} + \frac{1}{8} \cdot \log_2\frac{1}{8})$\\
+	&$\approx$& $1.30\ \frac{\text{Bit}}{\text{Symbol}}$
+\end{tabular}
+
 \chapter{Resultate}
-%TODO hier soll neutral und ohne Wertung beschrieben werden, was in den Testläufen herausgekommen ist. Die ganzen Grafiken sollen hier gezeigt werden
-
-\section{Entropie der Repräsentationen}
-
-%TODO Entropie beschreiben mit Quelle von Prof Mail
-
-Die folgenden Grafiken zeigen unabhängig vom Kodierungsverfahren die Entropie der CIGAR-Strings und Trace Point Differenzen von 10.000 zufällig generierten Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=13cm]{coding/cig-ent-10000-1000-d100}
-	\caption{Entropie des CIGAR-Strings}
-	\label{cig-ent}
-\end{figure}
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=13cm]{coding/diff-ent-10000-1000-d100}
-	\caption{Entropie der Trace Point Differenzen}
-	\label{diff-ent}
-\end{figure}
-
-Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{cig-ent} zu erkennen ist, zwischen $110$ und $520$ Bit, wobei der Durchschnittswert bei $310.17$ Bit liegt. Es fällt auf, dass die meisten Werte nur einmal vorkommen und im gesamten Intervall zwischen $110$ und $520$ Bit auftreten. Für die weiteren Sequenzpaare, welche $2$- bis $9$-fach auftreten, wird das Intervall pyramidisch kleiner, bis das Maximum bei $12$ Sequenzpaaren, welche mit etwa $280$ Bit kodiert wurden, erreicht ist.
-
-Die Differenzen der Trace Points weisen hingegen wie in Abbildung \ref{diff-ent} verdeutlicht eine Entropie im Bereich von $8$ bis $32$ Bit auf, wobei der Durchschnittswert von $21.70$ Bit nur etwa $7$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der nahezu normalverteilten Entopie-Werte liegt hier bei $24.80$ Bit, mit welchem etwa $850$ Sequenzpaare kodiert wurden.
 
 \section{Testläufe CIGAR Kodierung}\label{Cigar_Testläufe}
 
@@ -501,7 +498,6 @@ Für die unäre Kodierung der Differenzen der Trace Points wird, wie in Abbildung 
 
 Die Huffman-Kodierung kodiert, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $3$ bis $30$ Bit, wobei hier das Maximum bei $2600$ Sequenzpaaren mit $15$ Bit liegt. Sie verbraucht durchschnittlich nur $13.90$ Bit und damit nur etwa $56.75$\% des Speicherbedarfs der unären und $34.74$\% der naiven binären Kodierung.
 
-%TODO alle zusammen
 %Cigar Binary Mean: 294.265
 %Cigar Unary Mean: 275.7039
 %Cigar Huffman Mean: 166.7186
@@ -525,6 +521,33 @@ Die Huffman-Kodierung kodiert, wie in Abbildung \ref{fig:diff-huf} zu sehen ist,
 %Unterschied Bin: 0.135931898119
 %Unterschied Una: 0.0888228276785
 %Unterschied Huf: 0.0833530271967
+
+\section{Testläufe Entropie der Repräsentationen}
+
+Die folgenden Grafiken zeigen unabhängig vom Kodierungsverfahren die Entropie der CIGAR-Strings und Trace Point Differenzen von 10.000 zufällig generierten Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100.
+
+%Cig Entropy Mean: 323.981150901
+%Diff Entropy Mean: 21.5313812847
+%cig/diff: 15.0469283237
+%diff/cig: 0.0664587468278
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-ent-10000-1000-d100}
+	\caption{Entropie des CIGAR-Strings}
+	\label{cig-ent}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-ent-10000-1000-d100}
+	\caption{Entropie der Trace Point Differenzen}
+	\label{diff-ent}
+\end{figure}
+
+Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{cig-ent} zu erkennen ist, zwischen $110$ und $580$ Bit, wobei der Durchschnittswert bei $323.98$ Bit liegt. Die Werte sind normalverteilt, wobei das Maximum bei $700$ Sequenzpaaren, welche mit etwa $320$ Bit kodiert wurden, liegt.
+
+Die Differenzen der Trace Points weisen hingegen, wie in Abbildung \ref{diff-ent} verdeutlicht, eine Entropie im Bereich von $6$ bis $30$ Bit auf, wobei der Durchschnittswert von $21.53$ Bit nur etwa $7$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der nahezu normalverteilten Entopie-Werte liegt hier bei etwa $21$ Bit, mit welchem  $4000$ Sequenzpaare kodiert wurden.
 
 
 \chapter{Diskussion}
@@ -550,6 +573,10 @@ Unterschied Huffman-Kodierung:\\ Differenzen benötigen $8.34$\% des Speicherbeda
 \section{Bewertung Kodierung der Differenzen der Trace Points}
 
 %Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
+
+\section{Bewertung Entropie beider Methoden}
+
+%Entropie pro Symbol * #Symbole, daher CIGAR Entropie größer, weil die länger sind
 
 \chapter{Programm}
 
