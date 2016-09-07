@@ -5,7 +5,7 @@ Ein Sequenzalignment wird in der Bioinformatik dazu verwendet, zwei oder mehrere
 Um die verschiedenen Sequenzen vergleichen zu können, berechnet man einen Score oder die Kosten, um den Aufwand, den man betreiben muss, um die gegebenene Sequenz in die Zielsequenz umzuwandeln, beschreiben zu können. Hierbei wird jeweils das Optimum, also entweder der maximale Score oder die minimalen Kosten gesucht.
 Die verschiedenen Schritte, um die Symbole der Strings zu verändern, sind bei Gleichheit ein 'match', bei der Substitution ein 'mismatch', bei der Löschung eine 'deletion' und bei der Einfügung eine 'insertion', welche je nach Verfahren unterschiedlich gewichtet werden können. Hierbei haben ähnliche Sequenzen einen hohen Score und geringe Kosten und unterschiedliche Sequenzen analog einen kleinen Score und hohe Kosten.
 
-Ziel dieser Bachelorarbeit ist es, eine speichereffiziente Repräsentation von paarweisen Sequenzalignments zu implementieren und die Funktionsweise, sowie Vergleiche zu anderen Verfahren zu diskutieren.
+Ziel dieser Bachelorarbeit ist es, verschiedene Repräsentationen von paarweisen Sequenzalignments und deren Kodierungen zu beschreiben und zu vergleichen, sowie basierend auf einer eigenen Implementierung einer speichereffizienten Repräsentation Unterschiede zu diskutieren.
 
 \section*{Die Edit-Operationen}
 
@@ -41,7 +41,7 @@ Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
 Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
 Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
 
-Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
+%Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
 
 \chapter{Methoden}
 
@@ -92,7 +92,7 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 \end{verbatim}
 gegeben, welches durch den CIGAR-String \texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M\\1D7M1D5M1I4M} repräsentiert werden kann.
 
-Sei das Alphabet $\cal{A}$$_s$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_c$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x_s \in$ $\cal{A}$$_s,\ x_c \in$ $\ \cal{A}$$_c$ gegeben.
+Sei das Alphabet $\cal{A}$$_s$ $= \{$M, I, D$\}$, welches alle Symbole aus dem CIGAR-String enthält, das Alphabet $\cal{A}$$_c$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält, sowie die relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x_s \in$ $\cal{A}$$_s,\ x_c \in$ $\ \cal{A}$$_c$ wie in Tabelle \ref{cigar-prob} dargestellt, gegeben.
 
 \begin{table}[t]
 	\centering
@@ -116,14 +116,13 @@ Sei das Alphabet $\cal{A}$$_s$ $= \{$M, I, D$\}$, welches alle Symbole aus dem C
 	$8$ & $1$ & $\frac{1}{38}$
 \end{tabular}
 \caption{Relative Wahrscheinlichkeiten CIGAR-String}
+\label{cigar-prob}
 \end{table}
 
 Bei einer naiven binären Kodierung wird jedes Symbol $x_i \in \cal{A}$$_i$ mit $\lceil \log_2n
 \rceil, n = |\cal{A}|$ Bit kodiert, also $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol. Insgesamt ergibt das somit $19 \cdot 2 + 19 \cdot 3 = 95$ Bit.
 
-Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'1'$-Bits, gefolgt von einem $'0'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'0'$, das zweithäufigste mit $'10'$, das dritthäufigste mit $'110'$ usw. kodiert \cite[S. 29-30]{coding}.
-
-Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
+Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'1'$-Bits, gefolgt von einem $'0'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'0'$, das zweithäufigste mit $'10'$, das dritthäufigste mit $'110'$ usw. kodiert \cite[S. 29-30]{coding}. Der oben genannte CIGAR-String wird demnach wie in Tabelle \ref{cigar-unary} beschrieben unär kodiert.
 
 \begin{table}[t]
 	\centering
@@ -151,19 +150,20 @@ Der oben genannte CIGAR-String wird demnach wie folgt unär kodiert:
 	\multicolumn{2}{l}{}&$35$
 \end{tabular}
 \caption{Unäre Kodierung des CIGAR-Strings}
+\label{cigar-unary}
 \end{table}
 
 Insgesamt benötigt die unäre Kodierung also $32 + 35 = 67$ Bit.
 
-Der durchschnittliche Bedarf für ein Symbol beträgt 
-\[\frac{67}{38} \approx 1.76 \ \frac{\text{Bit}}{\text{Symbol}}\]
+%Der durchschnittliche Bedarf für ein Symbol beträgt 
+%\[\frac{67}{38} \approx 1.76 \ \frac{\text{Bit}}{\text{Symbol}}\]
 
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}. Eine sparsamere Variante des regulären Huffman-Algorithmus ist der Kanonische Huffman-Algorithmus, welcher im Gegensatz zu der ursprünglichen Variante eine eindeutige Menge von Codewörtern liefert und keinen vollständigen Huffman-Baum, sondern lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren. %TODO cite
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der relativen Wahrscheinlichkeit des Symbols im Alphabet angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht \cite[S. 53-57]{coding}. Eine sparsamere Variante des regulären Huffman-Algorithmus ist der Kanonische Huffman-Algorithmus, welcher im Gegensatz zu der ursprünglichen Variante eine eindeutige Menge von Codewörtern liefert und keinen vollständigen Huffman-Baum, sondern lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren \cite{canonical}. 
 
-Der kanonische Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{cig-huf-coding} beschrieben kodieren. Die Huffman-Bäume beider Alphabete sind in Abbildung \ref{Huff-Tree-Cig} dargestellt. Für die Dekodierung sind somit zusätzlich die Listen $(1,2),($M$, $D$, $I$)$ und $(0,2,4),(1,4,2,5,7,8)$ zu speichern.
+Der kanonische Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{cig-huf-coding} beschrieben kodieren. Die Huffman-Bäume beider Alphabete sind in Abbildung \ref{Huff-Tree-Cig} dargestellt. Für die Dekodierung sind somit zusätzlich die Listen $(1,2),($M$, $D$, $I$)$ und $(0,2,4),(1,4,2,5,7,8)$ zu speichern. Diese können als sogenannter 'Header' am Anfang der kodierten Datei unär kodiert werden. In diesem Fall würde der Header als $10110;1110$,$011011110;1111110$ kodiert werden, wobei jeweils der erste Teil die Häufigkeiten der Code-Längen und der zweite Teil die Gesamtanzahl der Symbole kodiert.
 
-Die Größe dieser Kodierung ist demnach $28 + 42 = 70$ Bit und der durchschnittliche Bedarf für ein Symbol beträgt 
-\[\frac{70}{38} \approx 1.84 \ \frac{\text{Bit}}{\text{Symbol}}.\]
+Die Größe dieser Kodierung ist demnach $28 + 42 + 9 + 16 = 95$ Bit.% und der durchschnittliche Bedarf für ein Symbol beträgt 
+%\[\frac{70}{38} \approx 1.84 \ \frac{\text{Bit}}{\text{Symbol}}.\]
 
 \begin{table}[t]
 	\centering
@@ -309,14 +309,21 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 
 wie in Abschnitt \ref{Cigar_Speicher} mit den dazugehörigen TracePoints $5, 10, 15, 20, 24, 28$ und $34$ gegeben. Es ergibt sich somit das Alphabet $\cal{A}$ $= \{5, 10, 15, 20, 24, 28, 34\}$ mit ausschließlich positiven und aufsteigenden Werten.
 
-Für die Trace Point Darstellung ist somit eine Differenzen-Kodierung möglich. Als neue Liste zu kodierender Werte ergibt sich nach \ref{Differenzen-Kodierung} $L_{\mathit{diff}} = (5, 5, 5, 5, 4, 4, 6)$.
+Für die Trace Point Darstellung ist somit eine Differenzen-Kodierung möglich.
+
+Als neue Liste zu kodierender Werte ergibt sich nach \ref{Differenzen-Kodierung} $L_{\mathit{diff}} = (5, 5, 5, 5, 4, 4, 6)$.
 
 Um aus den Trace Points ein neues Alignment rekonstruieren zu können, benötigt man zusätzlich mindestens den $\Delta$-Wert, damit die Grenzen der Substrings beider Sequenzen berechnet werden können. Hierfür muss also der $\Delta$-Wert zu $L_{\mathit{diff}}$ hinzugefügt werden.
 
 Für das oben genannten Beispiel ergibt sich somit
-\[L_{\mathit{diff}} = (\Delta, a_1, (a_2-a_1), (a_3-a_2), ... , (a_{n}-a_{n-1})) = (5, 5, 5, 5, 5, 4, 4, 6).\]
+\begin{center}
+\begin{tabular}{rcl}
+	$L_{\mathit{diff}}$ &$=$& $(\Delta, a_1, (a_2-a_1), (a_3-a_2), ... , (a_{n}-a_{n-1}))$\\
+	&$=$ & $(5, 5, 5, 5, 5, 4, 4, 6)$.
+\end{tabular}
+\end{center}
 
-Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_{\mathit{diff}}$, sowie die relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x \in$ $\cal{A}$ gegeben. 
+Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_{\mathit{diff}}$, sowie die relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols $x \in$ $\cal{A}$ wie in Tabelle \ref{diff-prob} dargestellt, gegeben. 
 
 \begin{table}[t]
 	\centering
@@ -327,12 +334,16 @@ Sei das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ für $L_{\mathit{diff}}$, sowie die re
 		$4$ & $2$ & $\frac{2}{8}$\\
 		$6$ & $1$ & $\frac{1}{8}$
 	\end{tabular}
-	\caption{Relative Wahrscheinlichkeiten der Delta-Kodierung}
+	\caption{Relative Wahrscheinlichkeiten der Differenzen-Kodierung}
+	\label{diff-prob}
 \end{table}
 
 Bei der naiven binären Kodierung ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_28\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt und damit nur  $\frac{24}{95} = 25.26$\% der binären Kodierung für den CIGAR-String.
 
-Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
+Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} beschriebene Kodierung. Die Größe dieser Kodierung ist demnach $12$ Bit
+% mit einem durchschnittlichen Bedarf pro Symbol von
+%\[\frac{12}{8} \approx 1.5 \frac{\text{Bit}}{\text{Symbol}}\]
+und benötigt damit nur $\frac{12}{67} = 17.91$\% der unären Kodierung für den CIGAR-String.
 
 \begin{table}[t]
 	\centering
@@ -345,18 +356,15 @@ Die unäre Kodierung ergibt für dieses Beispiel die folgende Kodierung:
 		\hline
 		\multicolumn{2}{l}{Gesamtanzahl:}&$12$
 	\end{tabular}
-	\caption{Unäre Kodierung der Delta-Kodierung}
+	\caption{Unäre Kodierung der Differenzen-Kodierung}
+	\label{diff-unary}
 \end{table}
 
-Die Größe dieser Kodierung ist demnach $12$ Bit mit einem durchschnittlichen Bedarf pro Symbol von
-\[\frac{12}{8} \approx 1.5 \frac{\text{Bit}}{\text{Symbol}}\]
-und damit nur $\frac{12}{67} = 17.91$\% der unären Kodierung für den CIGAR-String.
+Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $10110;1110$ im Header kodiert werden, nötig.
 
-Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$ nötig.
-
-Die Größe der Huffman-Kodierung ist demnach $11$ Bit mit einem durchschnittlichen Bedarf pro Symbol von 
-\[\frac{11}{8} \approx 1.38 \ \frac{\text{Bit}}{\text{Symbol}}\]
-und damit nur $\frac{11}{70} = 15.71$\% der Huffman-Kodierung für den CIGAR-String.
+Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 10 = 21$ Bit % mit einem durchschnittlichen Bedarf pro Symbol von 
+%\[\frac{11}{8} \approx 1.38 \ \frac{\text{Bit}}{\text{Symbol}}\]
+und benötigt damit nur $\frac{21}{70} = 30$\% der Huffman-Kodierung für den CIGAR-String.
 
 \begin{table}
 	\centering
@@ -369,7 +377,7 @@ und damit nur $\frac{11}{70} = 15.71$\% der Huffman-Kodierung für den CIGAR-Stri
 		\hline
 		\multicolumn{2}{l}{Gesamtanzahl:}&$11$
 	\end{tabular}
-	\caption{Huffman-Kodierung der Delta-Kodierung}
+	\caption{Huffman-Kodierung der Differenzen-Kodierung}
 	\label{Diff-Huff}
 \end{table}
 
@@ -384,7 +392,7 @@ und damit nur $\frac{11}{70} = 15.71$\% der Huffman-Kodierung für den CIGAR-Stri
 		[$5$, edge label={node[midway,left,font=\scriptsize]{0}}]
 		]
 	\end{forest}
-	\caption{Huffman-Baum der Delta-Kodierung}
+	\caption{Huffman-Baum der Differenzen-Kodierung}
 	\label{Huff-Tree-Diff}
 \end{figure}
 \end{bsp}
@@ -393,30 +401,33 @@ und damit nur $\frac{11}{70} = 15.71$\% der Huffman-Kodierung für den CIGAR-Stri
 
 Die Entropie $H$ beschreibt den durchschnittlichen Informationsgehalt einer Nachricht $X$ für alle Symbole $x \in X$ mit den relativen Wahrscheinlichkeiten $p(x)$ jeden Symbols in der Einheit $\frac{\text{Bit}}{\text{Symbol}}$.
 \[H(X) = - \sum_{i=1}^{n}p_i \cdot \log_2p_i\]
-Sie ist maximal, wenn alle Symbole mit der gleichen Wahrscheinlichkeit $\frac{1}{n}$ auftreten.
+Sie ist maximal, wenn alle Symbole mit der gleichen Wahrscheinlichkeit $\frac{1}{n}$ auftreten \cite{entropy}.
 
 Für den in \ref{Cigar_Speicher} genannten CIGAR-String ergibt sich eine Entropie von
 
+\begin{center}
 \begin{tabular}{rcl}
-	\centering
 	$H(\mathit{Cigar})$ &$=$& $-(\frac{10}{38} \cdot \log_2\frac{10}{38} + \frac{5}{38} \cdot \log_2\frac{5}{38} + \frac{4}{38} \cdot \log_2\frac{4}{38} + \frac{13}{38} \cdot \log_2\frac{13}{38} + \frac{2}{38} \cdot$\\
 	&&$\log_2\frac{2}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38} + \frac{1}{38} \cdot \log_2\frac{1}{38})$\\
 	&$\approx$& $2.54\ \frac{\text{Bit}}{\text{Symbol}}$
 \end{tabular}
+\end{center}
 
 Die in \ref{Differenzen-Kodierung} genannten Trace Point Differenzen des selben Alignments ergeben analog
 
+\begin{center}
 \begin{tabular}{rcl}
-	\centering
 	$H(\mathit{Diff})$ &$=$& $-(\frac{5}{8} \cdot \log_2\frac{5}{8} + \frac{2}{8} \cdot \log_2\frac{2}{8} + \frac{1}{8} \cdot \log_2\frac{1}{8})$\\
 	&$\approx$& $1.30\ \frac{\text{Bit}}{\text{Symbol}}$
 \end{tabular}
+\end{center}
 
 \chapter{Resultate}
 
 \section{Testläufe CIGAR Kodierung}\label{Cigar_Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet und auf 10 Bit gerundet.
+Die ersten drei der folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet und auf 10 Bit gerundet.
+Die letzten drei der Grafiken wurden mit jeweils $100$ zufällig generierten Sequenzpaaren mit je etwa $10.000$ Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$ berechnet und auf 10 Bit gerundet.
 
 %Cigar Binary Mean: 294.265
 %Cigar Unary Mean: 275.7039
@@ -441,34 +452,73 @@ Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaar
 	\caption{Größe der unären Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{fig:cig-una}
 \end{figure}
 
-\FloatBarrier
-
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-huf-10000-1000-d100}
+	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-huf-10000-1000-d100-canon}
 	\caption{Größe der Huffman-Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{fig:cig-huf}
 \end{figure}
 
-Die naive binäre Kodierung der CIGAR-Strings benötigt wie in Abbildung \ref{fig:cig-bin} dargestellt im Mittel $294.27$ Bit, wobei Werte zwischen $50$ und $900$ Bit erreicht werden. Diese bilden zwei Maxima bei $1800$ Sequenzpaaren mit jeweils etwa $120$ Bit als globales Maximum und $700$ Sequenzpaaren mit jeweils etwa $450$ Bit als lokales Maximum.
+%Huffman Mean: 387.3798
 
-Wie in Abbildung \ref{fig:cig-una} zu erkennen ist, ähnelt die Anzahl der Bits für die unäre Kodierung der CIGAR-Strings der der naiven binären Kodierung. Hier werden ebenfalls zwei Maxima erreicht, wobei hier das globale Maximum bei $1900$ Sequenzpaaren mit etwa $150$ Bit und das lokale Maximum bei $500$ Sequenzpaaren mit etwa $450$ Bit liegt. Für die unäre Kodierung wird im Mittel $275.70$ Bit für die Kodierung eines CIGAR-Strings und damit nur etwa $6.3$\% weniger als bei der naiven binären Kodierung benötigt.
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-bin-100-10000-d100-canon}
+	\caption{Größe der binären Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{big-cig-bin}
+\end{figure}
 
-Die Huffman-Kodierung kodiert wie in Abbildung \ref{fig:cig-huf} zu erkennen ist zwischen $70$ und $250$ Bit für die Kodierung der CIGAR-Strings. Die Bitanzahl ist hier nahezu normalverteilt mit einem Maximum von $2500$ Sequenzpaaren für etwa $165$ Bit, was in etwa dem Durchschnitt von $166.72$ Bit entspricht. Die Huffman-Kodierung benötigt somit für die Kodierung im Schnitt nur $60.47$\% der Bitanzahl der unären und $56.66$\% der naiven binären Kodierung.
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-una-100-10000-d100-canon}
+	\caption{Größe der unären Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{big-cig-una}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-huf-100-10000-d100-canon}
+	\caption{Größe der Huffman-Kodierung für einen CIGAR-String eines paarweisen Sequenz-Alignments in Bit}\label{big-cig-huf}
+\end{figure}
+
+%TODO Text letzten drei Grafiken
+%TODO diese Grafiken neu machen mit 50er Buckets, oder 100er, brauchen aber 7390 Sekunden
+\FloatBarrier
+
+%TODO neu mit 10er Bucket
+%100 10000 d100 ergab:
+%Binary Mean: 3942.06
+%Unary Mean: 4797.495
+%Huffman Mean: 1734.18
+
+%Bin/Una: 0.821691320158
+%Una/Bin: 1.21700202432
+%Bin/Huf: 2.27315503581
+%Huf/Bin: 0.439917200651
+%Huf/Una: 0.361476145363
+%Una/Huf: 2.76643428018
+
+Die naive binäre Kodierung der CIGAR-Strings benötigt wie in Abbildung \ref{fig:cig-bin} dargestellt für $10000$ Sequenzpaare mit je $1000$ Basen im Mittel $294.27$ Bit, wobei Werte zwischen $50$ und $900$ Bit erreicht werden. Diese bilden zwei Maxima bei $1800$ Sequenzpaaren mit jeweils etwa $120$ Bit als globales Maximum und $700$ Sequenzpaaren mit jeweils etwa $450$ Bit als lokales Maximum. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-bin} zu sehen ist, Werte zwischen $900$ und $7500$ Bit mit einem Mittelwert von $3942.06$ Bit erreicht, wobei hier eine ähnliche Verteilung wie in Abbildung \ref{fig:cig-bin} auftritt. Die Maxima liegen hier bei $8$ Sequenzpaaren mit $1100$ Bit und $5$ Sequenzpaare mit $6700$ Bit.
+
+Wie in Abbildung \ref{fig:cig-una} zu erkennen ist, ähnelt die Anzahl der Bits für die unäre Kodierung der CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen der der naiven binären Kodierung. Hier werden ebenfalls zwei Maxima erreicht, wobei hier das globale Maximum bei $1900$ Sequenzpaaren mit etwa $150$ Bit und das lokale Maximum bei $500$ Sequenzpaaren mit etwa $450$ Bit liegt. Für die unäre Kodierung wird im Mittel $275.70$ Bit für die Kodierung eines CIGAR-Strings und damit nur etwa $6.3$\% weniger als bei der naiven binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-una} dargestellt, ebenfalls zwei Maxima erreicht, einmal bei $9$ Sequenzpaaren zu $1700$ Bit und $4$ Sequenzpaare mit $8500$ Bit. Der Mittelwert liegt hier bei $4794.50$ Bit.
+
+Die Huffman-Kodierung kodiert wie in Abbildung \ref{fig:cig-huf} zu erkennen ist die CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen zwischen $200$ und $550$ Bit. Die Bitanzahl ist hier nahezu normalverteilt mit einem Maximum von $1500$ Sequenzpaaren für etwa $390$ Bit, was in etwa dem Durchschnitt von $387.38$ Bit entspricht. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-huf} zu sehen ist, zwischen $1500$ und $1900$ Bit benötigt, wobei das Maximum bei $11$ Sequenzpaaren mit $1750$ Bit liegt und damit dem Mittelwert von $1734.18$ Bit entspricht.
+
+
 
 \section{Testläufe Differenzen Kodierung}\label{Diff-Testläufe}
 
-Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100 berechnet und auf 3 Bit gerundet.
+Die ersten beiden der folgenden Grafiken wurden mit jeweils $10.000$ zufällig generierte Sequenzpaaren mit je etwa $1.000$ Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$ berechnet und auf $3$ Bit gerundet.
+Die letzten beiden Grafiken wurden mit jeweils $100$ zufällig generierte Sequenzpaaren mit je etwa $10.000$ Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$ berechnet und auf $3$ Bit gerundet.
 
-%Diff Binary Mean: 40.0
-%Diff Unary Mean: 24.4888
-%Diff Huffman Mean: 13.8965
+%neu mit canonical
+%Binary Mean: 40.0
+%Unary Mean: 24.5165
+%Huffman Mean: 37.9864
 
-%Diff Bin/Una: 1.63339975826
-%Diff Una/Bin: 0.61222
-%Diff Bin/Huf: 2.8784226244
-%Diff Huf/Bin: 0.3474125
-%Diff Huf/Una: 0.567463493515
-%Diff Una/Huf: 1.76222789911
+%Bin/Una: 1.63155425938
+%Una/Bin: 0.6129125
+%Bin/Huf: 1.05300844513
+%Huf/Bin: 0.94966
+%Huf/Una: 1.54942181796
+%Una/Huf: 0.645402038624
 
 %\begin{figure}[t]
 %	\centering
@@ -478,25 +528,48 @@ Die folgenden Grafiken wurden mit jeweils 10.000 zufällig generierte Sequenzpaar
 
 \FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-una-10000-1000-d100}
+	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-una-10000-1000-d100-canon}
 	\caption{Größe der unären Kodierung für die Differenzen der Trace Points eines paarweisen Sequenz-Alignments in Bit}\label{fig:diff-una}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-huf-10000-1000-d100}
+	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-huf-10000-1000-d100-canon}
 	\caption{Größe der Huffman-Kodierung für die Differenzen der Trace Points eines paarweisen Sequenz-Alignments in Bit}\label{fig:diff-huf}
 \end{figure}
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-una-100-10000-d100}
+	\caption{Größe der unären Kodierung für die Differenzen der Trace Points eines paarweisen Sequenz-Alignments in Bit}\label{big-diff-una}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-huf-100-10000-d100}
+	\caption{Größe der Huffman-Kodierung für die Differenzen der Trace Points eines paarweisen Sequenz-Alignments in Bit}\label{big-diff-huf}
+\end{figure}
+
+%Binary Mean: 700.0
+%Unary Mean: 323.2
+%Huffman Mean: 115.04
+
+%Bin/Una: 2.16584158416
+%Una/Bin: 0.461714285714
+%Bin/Huf: 6.08484005563
+%Huf/Bin: 0.164342857143
+%Huf/Una: 0.355940594059
+%Una/Huf: 2.80945757997
+
 \FloatBarrier
 
-Die naive binäre Kodierung benötigt in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit.
+Die naive binäre Kodierung benötigt für $10000$ Sequenzpaare mit $1000$ Basen und einem $\Delta$-Wert von $100$ in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit. Für $100$ Sequenzpaare mit $10000$ und einem $\Delta$-Wert von $100$ werden in jedem Durchlauf und im Mittel $700$ Bit verbraucht, da $\lceil \log_2100 \rceil \cdot 100 = 700$ Bit für die binäre Kodierung benötigt werden.
 
-Für die unäre Kodierung der Differenzen der Trace Points wird, wie in Abbildung \ref{fig:diff-una} verdeutlicht, zwischen $12$ und $45$ Bit benötigt. Die Bitanzahl ist in etwa normalverteilt, wobei das Maximum bei $3050$ Sequenzpaaren mit $26$ Bit liegt. Im Mittel  wird für diese Kodierung $24.49$ Bit und damit nur etwa $61.22$\% der binären Kodierung benötigt.
+Für die unäre Kodierung der Differenzen der Trace Points wird für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-una} verdeutlicht, zwischen $12$ und $45$ Bit benötigt. Die Bitanzahl ist in etwa normalverteilt, wobei das Maximum bei $3050$ Sequenzpaaren mit $26$ Bit liegt. Im Mittel  wird für diese Kodierung $24.49$ Bit und damit nur etwa $61.22$\% der binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-diff-una} dargestellt, zwischen $290$ und $390$ Bit mit einem Maximum bei $8$ Sequenzpaaren und $320$ Bit benötigt, wobei der Mittelwert bei $323.2$ Bit liegt.
 
-Die Huffman-Kodierung kodiert, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $3$ bis $30$ Bit, wobei hier das Maximum bei $2600$ Sequenzpaaren mit $15$ Bit liegt. Sie verbraucht durchschnittlich nur $13.90$ Bit und damit nur etwa $56.75$\% des Speicherbedarfs der unären und $34.74$\% der naiven binären Kodierung.
+Die Huffman-Kodierung kodiert für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $3$ bis $30$ Bit, wobei hier das Maximum bei $2600$ Sequenzpaaren mit $15$ Bit liegt. Sie verbraucht durchschnittlich nur $13.90$ Bit und damit nur etwa $56.75$\% des Speicherbedarfs der unären und $34.74$\% der naiven binären Kodierung. Für $100$ Sequenzpaare mit $10000$ Basen wird, wie in Abbildung \ref{big-diff-huf} dargestellt, zwischen $70$ und $170$ Bit benötigt, wobei das Maximum bei $20$ Sequenzpaaren mit $110$ Bit und der Mittelwert bei $114.04$ Bit liegt.
 
 %Cigar Binary Mean: 294.265
 %Cigar Unary Mean: 275.7039
@@ -524,7 +597,7 @@ Die Huffman-Kodierung kodiert, wie in Abbildung \ref{fig:diff-huf} zu sehen ist,
 
 \section{Testläufe Entropie der Repräsentationen}
 
-Die folgenden Grafiken zeigen unabhängig vom Kodierungsverfahren die Entropie der CIGAR-Strings und Trace Point Differenzen von 10.000 zufällig generierten Sequenzpaaren mit je etwa 1.000 Basen, einer Fehlerrate von 15\% und einem $\Delta$-Wert von 100.
+Die folgenden Grafiken zeigen unabhängig vom Kodierungsverfahren die Entropie der CIGAR-Strings und Trace Point Differenzen von $10.000$ zufällig generierten Sequenzpaaren mit je etwa $1.000$ Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$.
 
 %Cig Entropy Mean: 323.981150901
 %Diff Entropy Mean: 21.5313812847
@@ -552,15 +625,7 @@ Die Differenzen der Trace Points weisen hingegen, wie in Abbildung \ref{diff-ent
 
 \chapter{Diskussion}
 %TODO hier soll wertend beschrieben werden, was die Resultate bedeuten und wie sich bestimmte Werte erklären lassen
-
-%Unterschied Bin: 0.135931898119
-%Unterschied Una: 0.0888228276785
-%Unterschied Huf: 0.0833530271967
-Unterschied binäre Kodierung:\\ Differenzen benötigen $13.59$\% des Speicherbedarfs der CIGAR-Strings für dieselben Sequenzpaare.
-
-Unterschied unäre Kodierung:\\ Differenzen benötigen $8.88$\% des Speicherbedarfs der CIGAR-Strings für dieselben Sequenzpaare.
-
-Unterschied Huffman-Kodierung:\\ Differenzen benötigen $8.34$\% des Speicherbedarfs der CIGAR-Strings für dieselben Sequenzpaare.
+TODO
 
 \section{Bewertung CIGAR-Kodierung}
 
@@ -581,10 +646,51 @@ Unterschied Huffman-Kodierung:\\ Differenzen benötigen $8.34$\% des Speicherbeda
 \chapter{Programm}
 
 \section{Aufbau}
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\textwidth]{images/UML}
-	\caption{UML-Diagramm}
+\begin{figure}[h]
+\begin{tikzpicture}
+\begin{class}[text width=7cm]{Cigar Pattern}{0,-15}
+\attribute{annualInteresRate : Percentage}
+\operation{depositMonthlyInterest()}
+\operation{withdrawal(amount : Dollars)}
+\end{class}
+
+\begin{class}[text width=5cm]{Alignment}{5,-5.3}
+\inherit{Cigar Pattern}
+\attribute{seq1 : string}
+\attribute{seq2 : string}
+\attribute{start\_seq1 : int}
+\attribute{end\_seq1 : int}
+\attribute{start\_seq2 : int}
+\attribute{end\_seq2 : int}
+\operation{calc\_cigar(seq1, seq2)}
+\operation{cigar\_to\_aln(seq1, seq2, cigar)}
+\operation{show\_aln()}
+\end{class}
+
+\begin{class}[text width=5cm]{TracePointAlignment}{-5,-5}
+\inherit{Alignment}
+\inherit{Cigar Pattern}
+\attribute{seq1 : string}
+\attribute{seq2 : string}
+\attribute{start\_seq1 : int}
+\attribute{end\_seq1 : int}
+\attribute{start\_seq2 : int}
+\attribute{end\_seq2 : int}
+\attribute{delta : int}
+\attribute{cigar=\textit{None} : string}
+\operation{encode()}
+\operation{decode()}
+\operation{store\_tp\_aln()}
+\end{class}
+
+\begin{class}[text width=10.5cm]{Main}{0,0}
+\inherit{TracePointAlignment}
+\inherit{Alignment}
+\operation{random\_sequences(amount,length,error\_rate,alphabet)}
+\operation{read\_files(seq\_file, aln\_file)}
+\end{class}
+\end{tikzpicture}
+\caption{UML-Diagramm}
 \end{figure}
 
 \clearpage

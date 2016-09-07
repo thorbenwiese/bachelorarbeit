@@ -101,9 +101,9 @@ def bucket(bit_sum, base):
   return bucket
 
 def multiplot(bs1, bs2, bs3, t, method):
-  counter1 = collections.Counter(bucket(bs1,3))
-  counter2 = collections.Counter(bucket(bs2,3))
-  counter3 = collections.Counter(bucket(bs3,3))
+  counter1 = collections.Counter(bucket(bs1,10))
+  counter2 = collections.Counter(bucket(bs2,10))
+  counter3 = collections.Counter(bucket(bs3,10))
 
   bin_mean = una_mean = huf_mean = 0
 
@@ -121,6 +121,7 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-bin-1000-1000-d100" % method)
+  print "Figure 1 complete.."
 
   plt.figure(2)
   plt.ylabel('Anzahl der Sequenzpaare')
@@ -136,6 +137,7 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-una-1000-1000-d100" % method)
+  print "Figure 2 complete.."
 
   plt.figure(3)
   plt.ylabel('Anzahl der Sequenzpaare')
@@ -151,6 +153,7 @@ def multiplot(bs1, bs2, bs3, t, method):
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/%s-huf-1000-1000-d100" % method)
+  print "Figure 3 complete.."
 
   print counter1
   print counter2
@@ -166,6 +169,55 @@ def multiplot(bs1, bs2, bs3, t, method):
   print "Huf/Bin:",float(huf_mean)/bin_mean
   print "Huf/Una:",float(huf_mean)/una_mean
   print "Una/Huf:",float(una_mean)/huf_mean
+
+  print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
+  plt.show()
+
+def multiple_delta(a, b, c, t):
+  counter1 = collections.Counter(bucket(a,3))
+  counter2 = collections.Counter(bucket(b,3))
+  counter3 = collections.Counter(bucket(c,3))
+
+  mean1 = mean2 = mean3 = 0
+
+  plt.ylabel('Anzahl der Sequenzpaare')
+  plt.xlabel('Größe der Kodierung in Bit')
+  plt.axis([0, max(counter2.keys())*1.2, 0, counter2.most_common(1)[0][1] * 1.2])
+  plt.plot(counter1.keys(), counter1.values(),'bo', 
+           label="Delta 50")
+  mean1 = float(sum(a))/len(a)
+  y = list(range(counter1.most_common(1)[0][1]))
+  x = [mean1] * counter1.most_common(1)[0][1]
+
+  print "Mean1:", mean1
+  plt.plot(x,y, 'b--',label='Mean1')
+
+  plt.plot(counter2.keys(), counter2.values(),'go', 
+           label="Delta 100")
+  mean2 = float(sum(b))/len(b)
+  y = list(range(counter2.most_common(1)[0][1]))
+  x = [mean2] * counter2.most_common(1)[0][1]
+
+  print "Mean2:", mean2
+  plt.plot(x,y, 'g--',label='Mean2')
+
+  plt.plot(counter3.keys(), counter3.values(),'ro', 
+           label="Delta 200")
+  mean3 = float(sum(c))/len(c)
+  y = list(range(counter3.most_common(1)[0][1]))
+  x = [mean3] * counter3.most_common(1)[0][1]
+
+  print "Mean3:", mean3
+  plt.plot(x,y, 'r--',label='Mean3')
+
+  plt.legend(loc='upper right')
+
+  print "Unterschied 1/2:", float(mean1)/mean2
+  print "Unterschied 2/1:", float(mean2)/mean1
+  print "Unterschied 1/3:", float(mean1)/mean3
+  print "Unterschied 2/3:", float(mean2)/mean3
+  print "Unterschied 3/1:", float(mean3)/mean1
+  print "Unterschied 3/2:", float(mean3)/mean2
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
@@ -235,18 +287,12 @@ def canonical(huf):
       del vals[i]
     elif vals[i] != 0:
       break
-  #TODO hier nicht einfach binaer sondern irgendwie anders...
-  binvals = []
-  for a in vals:binvals.append(bin(a)[2:])
-  symvals = []
-  for b in ls3:symvals.append(bin(b)[2:])
+  size_header = 0
+  for element in ls1:
+    size_header+=(element+1)
+  size_header+=(len(ls3))
   
-  #print [binvals, symvals]
-  mem = 0
-  for c in binvals:mem+=len(c)
-  for d in symvals:mem+=len(d)
-
-  return mem
+  return size_header
 
 def unary(code):
   symb2freq = defaultdict(int)
@@ -339,12 +385,12 @@ def entropy(amount, random_length, error_rate, alphabet, delta):
   plt.axis([0, max(diff_counter.keys())*1.2, 0, 
             diff_counter.most_common(1)[0][1] * 1.2])
   plt.plot(diff_counter.keys(), diff_counter.values(), 
-           'ro', label="Differences Entropy")
+           'bo', label="Differences Entropy")
   diff_mean = float(sum(diff_ent_sum))/len(diff_ent_sum)
   y = list(range(diff_counter.most_common(1)[0][1]))
   x = [diff_mean] * diff_counter.most_common(1)[0][1]
   print "Diff Entropy Mean:", diff_mean
-  plt.plot(x,y, 'r--',label='Mean')
+  plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
   plt.savefig("runs/diff_entropy")
 
@@ -503,6 +549,7 @@ def megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t):
 def main():
 
   t = time.clock()
+  print "Läuft..."
   """ 
   bs1 = calc_bits("cigar","binary",10000,1000,0.15,"acgt",100,"cig-bin-10-1000-d100")
   bs2 = calc_bits("cigar","unary",10000,1000,0.15,"acgt",100,"cig-una-10-1000-d100")
@@ -530,17 +577,27 @@ def main():
 
   multiplot(thislist1, thislist2, thislist3, t, "cig")
   """
-  
-  bs4 = calc_bits("tracepoint","binary",1,1000,0.15,"acgt",100,
+   
+  bs4 = calc_bits("cigar","binary",100,10000,0.15,"acgt",100,
             "diff-bin-10-1000-d100")
 
-  bs5 = calc_bits("tracepoint","unary",1,1000,0.15,"acgt",100,
+  bs5 = calc_bits("cigar","unary",100,10000,0.15,"acgt",100,
             "diff-una-10-1000-d100")
 
-  bs6 = calc_bits("tracepoint","huffman",100,1000,0.15,"acgt",100,
+  bs6 = calc_bits("cigar","huffman",100,10000,0.15,"acgt",100,
             "diff-huf-10-1000-d100")
-  multiplot(bs4, bs5, bs6, t, "diff")
-  
+  multiplot(bs4, bs5, bs6, t, "cig")
+
+  # multiple delta values
+  """
+  del50 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",50,
+                    "diff-una-d50-1000-1000")
+  del100 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",100,
+                    "diff-una-d100-1000-1000")
+  del200 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",200,
+                    "diff-una-d200-1000-1000")
+  multiple_delta(del50, del100, del200, t)
+  """ 
   #megaplot(bs1, bs2, bs3, bs4, bs5, bs6, t)
   
   #entropy(10000,1000,0.15,"acgt",100)
