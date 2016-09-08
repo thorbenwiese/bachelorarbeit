@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -std=c99 -Wall -Wextra -O2 -ggdb
+CFLAGS = -std=c99 -Wall -Wextra -O2 -ggdb -lm
 
 # Rule to create *.o from *.c
 .c.o:
