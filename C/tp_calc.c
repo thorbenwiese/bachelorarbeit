@@ -29,6 +29,16 @@ int main(){
                                    &tp_aln.start_seq2, &tp_aln.end_seq2,
                                    &tp_aln.delta, cigar_arr);
 
+  // check input
+  assert(seq1_arr[0] != 0);
+  assert(seq2_arr[0] != 0);
+  assert(tp_aln.start_seq1 >= 0);
+  assert(tp_aln.end_seq1 >= 1);
+  assert(tp_aln.start_seq2 >= 0);
+  assert(tp_aln.end_seq2 >= 1);
+  assert(tp_aln.delta > 0);
+  assert(cigar_arr[0] != 0);
+
   // pointer to malloc storage for seq1, seq2, cigar
   char *seq1;
   char *seq2;
