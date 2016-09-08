@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <assert.h>
 #include <math.h>
+// ctype.h for isdigit()
 #include <ctype.h>
 
 #include "TracePoint.h"
@@ -20,7 +21,7 @@ int main(){
 
   // struct to store input
   struct TracePointAlignment tp_aln;
-  printf("Seq1, Seq2, Start1, End1, Start2 ,End2, Delta, Cigar\n");
+  printf("Enter Seq1, Seq2, Start1, End1, Start2 ,End2, Delta, Cigar:\n");
 
   // read input and store integers in struct and strings in char arrays
   scanf("%s %s %d %d %d %d %d %s", seq1_arr, seq2_arr, 
