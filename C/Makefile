@@ -7,12 +7,12 @@ CFLAGS = -std=c99 -Wall -Wextra -O2 -ggdb
 	$(CC) -c $(CFLAGS) $*.c
 
 #Targets
-all: test
+all: tp_calc
 
-test: test.c Makefile
+test: tp_calc.c Makefile
 
-	$(CC) $(CFLAGS) test.c -o test
+	$(CC) $(CFLAGS) tp_calc.c -o tp_calc
 
 clean:
-	$(RM) *.o test
-	$(RM) -r test.dSYM
+	$(RM) *.o tp_calc
+	$(RM) -r tp_calc.dSYM
