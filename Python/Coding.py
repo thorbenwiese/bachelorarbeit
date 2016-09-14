@@ -20,30 +20,55 @@ sys.setdefaultencoding('utf8')
 from heapq import heappush, heappop, heapify
 from collections import defaultdict
 
-def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
-              filename):
+def create_aln_cigars(amount, random_length, error_rate, alphabet, delta, method):
   start_seq1 = start_seq2 = 0
   random_seq_list = tp_calc.random_sequences(amount,random_length,error_rate,
                     alphabet)
 
+  if method == "cigar":
+    ciglist = []
+    for i in range(0, len(random_seq_list), 2):
+      end_seq1 = len(random_seq_list[i])
+      end_seq2 = len(random_seq_list[i+1]) 
+      aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
+                      start_seq1, end_seq1, start_seq2, end_seq2)
+
+      ciglist.append(aln.calc_cigar(aln.seq1, aln.seq2))
+
+    return [ciglist, delta]
+    #return ["4M1I1M1I1M1I1M2D1M1D1M1I8M1D7M1D5M1I4M"]
+
+  else:
+    
+    for i in range(0, len(random_seq_list), 2):
+      end_seq1 = len(random_seq_list[i])
+      end_seq2 = len(random_seq_list[i+1]) 
+      aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
+                      start_seq1, end_seq1, start_seq2, end_seq2)
+      cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, 
+                      start_seq1, end_seq1, start_seq2, end_seq2, delta, cigar)
+
+      # store differences between Trace Points and Delta Value in List
+      TP = [delta, tp_aln.tp[0]]
+      for j in range(1,len(tp_aln.tp)):
+        TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
+    return[TP,delta]
+
+def kodierung(method, mode, delta, ciglist=None, TP=None):
+
   bit_sum = []
-
   cig_count_sum = []
-  for i in range(0, len(random_seq_list), 2):
-    end_seq1 = len(random_seq_list[i])
-    end_seq2 = len(random_seq_list[i+1]) 
-    aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
-                    start_seq1, end_seq1, start_seq2, end_seq2)
 
-    cigar = aln.calc_cigar(aln.seq1, aln.seq2)
+  for cigar in ciglist:
     # huffman coding for cigar
     if method == "cigar":
       if mode == "huffman":
         for cig_count, cig_symbol in Cigar_Pattern.parse_cigar(cigar):
           if cig_symbol == 'M':
-            cig_count_sum.append(1)
+            bit_sum.append(1)
           else:
-            cig_count_sum.append(2)
+            bit_sum.append(2)
           cig_count_sum.append(cig_count)
         bit_sum.append(huffman(cig_count_sum))
         cig_count_sum = []
@@ -73,14 +98,6 @@ def calc_bits(method, mode, amount, random_length, error_rate, alphabet, delta,
           bit_sum.append(m_count + d_count * 2 + i_count * 3)
         cig_count_sum = []
     else:
-      tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
-                                            end_seq1, start_seq2, end_seq2, 
-                                            delta, cigar)
-
-      # store differences between Trace Points and Delta Value in List
-      TP = [delta, tp_aln.tp[0]]
-      for j in range(1,len(tp_aln.tp)):
-        TP.append(tp_aln.tp[j]-tp_aln.tp[j-1])
       if mode == "binary":
         # naiive binary coding for differences
         bit_sum.append(int(math.ceil(math.log(len(TP),2)))*len(TP))
@@ -100,30 +117,96 @@ def bucket(bit_sum, base):
 
   return bucket
 
-def multiplot(bs1, bs2, bs3, t, method):
-  counter1 = collections.Counter(bucket(bs1,10))
-  counter2 = collections.Counter(bucket(bs2,10))
-  counter3 = collections.Counter(bucket(bs3,10))
+def multiplot(bs1, bs2, bs3, t, buck, method):
+
+  counter1 = collections.Counter(bucket(bs1,buck))
+  counter2 = collections.Counter(bucket(bs2,buck))
+  counter3 = collections.Counter(bucket(bs3,buck))
 
   bin_mean = una_mean = huf_mean = 0
 
-  plt.figure(1)
-  plt.ylabel('Anzahl der Sequenzpaare')
-  plt.xlabel('Größe der Kodierung in Bit')
-  plt.axis([0, max(counter1.keys())*1.2, 0, counter1.most_common(1)[0][1] * 1.2])
-  plt.plot(counter1.keys(), counter1.values(),'bo', 
-           label="Binary Coding")
+  if method == "tracepoint":
+
+    plt.figure(1)
+    plt.ylabel('Anzahl der Sequenzpaare')
+    plt.xlabel('Größe der Kodierung in Bit')
+
+    maxkey = max(max(counter2.keys()),max(counter3.keys()))
+    maxend = max(counter2.most_common(1)[0][1],
+               counter3.most_common(1)[0][1])
+    plt.axis([0, maxkey * 1.2, 0, maxend * 1.2])
+  
+    plt.plot(counter2.keys(), counter2.values(), 'co', 
+           label="Unär")
+    plt.plot(counter3.keys(), counter3.values(), 'ro', 
+           label="Huffman")
+    plt.legend(loc='upper right')
+
+  else:
+    plt.figure(1)
+    plt.ylabel('Anzahl der Sequenzpaare')
+    plt.xlabel('Größe der Kodierung in Bit')
+
+    #maxkey = max(max(counter1.keys()),max(counter2.keys()),max(counter3.keys()))
+    #maxend = max(counter1.most_common(1)[0][1],counter2.most_common(1)[0][1],
+    #           counter3.most_common(1)[0][1])
+    maxkey = max(max(counter1.keys()),max(counter2.keys()))
+    maxend = max(counter1.most_common(1)[0][1],counter2.most_common(1)[0][1])
+    plt.axis([0, maxkey * 1.2, 0, maxend * 1.2])
+  
+    plt.plot(counter1.keys(), counter1.values(),'bo', 
+           label="Binär")
+    plt.plot(counter2.keys(), counter2.values(), 'co', 
+           label="Unär")
+    plt.legend(loc='upper right')
+
+    plt.figure(2)
+    plt.ylabel('Anzahl der Sequenzpaare')
+    plt.xlabel('Größe der Kodierung in Bit')
+    plt.axis([0, max(counter3.keys()) * 1.2, 
+              0, counter3.most_common(1)[0][1] * 1.2])
+
+    plt.plot(counter3.keys(), counter3.values(), 'ro', 
+           label="Huffman")
+    plt.legend(loc='upper right')
+  
+
   bin_mean = float(sum(bs1))/len(bs1)
+  una_mean = float(sum(bs2))/len(bs2)
+  huf_mean = float(sum(bs3))/len(bs3)
+
+  print "Binary Mean:", bin_mean
+  print "Unary Mean:", una_mean
+  print "Huffman Mean:", huf_mean
+
+  print counter1
+  print counter2
+  print counter3
+  print "##########################"
+  print counter1.keys()
+  print counter2.keys()
+  print counter3.keys()
+
+  print "Bin/Una:",float(bin_mean)/una_mean
+  print "Una/Bin:",float(una_mean)/bin_mean
+  print "Bin/Huf:",float(bin_mean)/huf_mean
+  print "Huf/Bin:",float(huf_mean)/bin_mean
+  print "Huf/Una:",float(huf_mean)/una_mean
+  print "Una/Huf:",float(una_mean)/huf_mean
+
+  print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
+  plt.show()
+
+  """
   y = list(range(counter1.most_common(1)[0][1]))
   x = [bin_mean] * counter1.most_common(1)[0][1]
 
   print "Binary Mean:", bin_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
-  plt.savefig("runs/%s-bin-1000-1000-d100" % method)
   print "Figure 1 complete.."
 
-  plt.figure(2)
+  #plt.figure(2)
   plt.ylabel('Anzahl der Sequenzpaare')
   plt.xlabel('Größe der Kodierung in Bit')
   plt.axis([0, max(counter2.keys())*1.2, 0, counter2.most_common(1)[0][1] * 1.2])
@@ -136,10 +219,9 @@ def multiplot(bs1, bs2, bs3, t, method):
   print "Unary Mean:", una_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
-  plt.savefig("runs/%s-una-1000-1000-d100" % method)
   print "Figure 2 complete.."
 
-  plt.figure(3)
+  #plt.figure(3)
   plt.ylabel('Anzahl der Sequenzpaare')
   plt.xlabel('Größe der Kodierung in Bit')
   plt.axis([0, max(counter3.keys())*1.2, 0, counter3.most_common(1)[0][1] * 1.2])
@@ -152,7 +234,6 @@ def multiplot(bs1, bs2, bs3, t, method):
   print "Huffman Mean:", huf_mean
   plt.plot(x,y, 'b--',label='Mean')
   plt.legend(loc='upper right')
-  plt.savefig("runs/%s-huf-1000-1000-d100" % method)
   print "Figure 3 complete.."
 
   print counter1
@@ -172,6 +253,7 @@ def multiplot(bs1, bs2, bs3, t, method):
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
+  """
 
 def multiple_delta(a, b, c, t):
   counter1 = collections.Counter(bucket(a,3))
@@ -241,7 +323,7 @@ def huffman(code):
   for ch in code:
     symb2freq[ch] += 1
   huff = encode(symb2freq)
-  bits = avg = 0
+  bits = 0
   canon = []
   #print "Symbol\tWeight\tHuffman Code"
   for p in huff:
@@ -550,6 +632,52 @@ def main():
 
   t = time.clock()
   print "Läuft..."
+  amount = 100
+  length = 1000
+  delta = 100
+  err_rate = 0.15
+  
+  """
+  # CIGAR
+
+  ciglist, delta = create_aln_cigars(amount,length,err_rate,"acgt",delta, "cigar")
+
+  print "LÄNGE:", len(ciglist)
+
+  bs1 = kodierung("cigar","binary", delta, ciglist, [])
+  bs2 = kodierung("cigar","unary", delta, ciglist, [])
+  bs3 = kodierung("cigar","huffman", delta, ciglist, [])
+
+  multiplot(bs1, bs2, bs3, t, 10, "cigar")
+  """
+  # Differenzen
+
+  TP, delta = create_aln_cigars(amount,length,err_rate,"acgt",delta, "tracepoint")
+
+  print "LÄNGE:", len(ciglist)
+
+  bs1 = kodierung("tracepoint","binary", delta, [], TP)
+  bs2 = kodierung("tracepoint","unary", delta, [], TP)
+  bs3 = kodierung("tracepoint","huffman", delta, [], TP)
+
+  multiplot(bs1, bs2, bs3, t, 3, "tracepoint")
+
+  """
+  # Entropy
+  entropy(100,1000,0.15,"acgt",100)
+  """
+
+
+
+
+
+
+
+
+
+
+
+
   """ 
   bs1 = calc_bits("cigar","binary",10000,1000,0.15,"acgt",100,"cig-bin-10-1000-d100")
   bs2 = calc_bits("cigar","unary",10000,1000,0.15,"acgt",100,"cig-una-10-1000-d100")
@@ -557,8 +685,6 @@ def main():
   
   #multiplot(bs1, bs2, bs3, t, "cig")
 
-  """
-  """
   thislist1 = []
   for key,value in counter11.items():
     print key, value
@@ -576,20 +702,18 @@ def main():
       thislist3.append(key)
 
   multiplot(thislist1, thislist2, thislist3, t, "cig")
-  """
    
-  bs4 = calc_bits("cigar","binary",100,10000,0.15,"acgt",100,
+  bs4 = calc_bits("cigar","binary",10000,1000,0.15,"acgt",100,
             "diff-bin-10-1000-d100")
 
-  bs5 = calc_bits("cigar","unary",100,10000,0.15,"acgt",100,
+  bs5 = calc_bits("cigar","unary",10000,10000,0.15,"acgt",100,
             "diff-una-10-1000-d100")
 
-  bs6 = calc_bits("cigar","huffman",100,10000,0.15,"acgt",100,
+  bs6 = calc_bits("cigar","huffman",10000,10000,0.15,"acgt",100,
             "diff-huf-10-1000-d100")
   multiplot(bs4, bs5, bs6, t, "cig")
 
   # multiple delta values
-  """
   del50 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",50,
                     "diff-una-d50-1000-1000")
   del100 = calc_bits("tracepoint","unary",1000,1000,0.15,"acgt",100,
