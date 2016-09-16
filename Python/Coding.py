@@ -20,7 +20,7 @@ sys.setdefaultencoding('utf8')
 from heapq import heappush, heappop, heapify
 from collections import defaultdict
 
-def create_aln_cigars(amount, random_length, error_rate, alphabet, delta, method):
+def create_cigars_or_tp(amount, random_length, error_rate, alphabet, delta, method):
   start_seq1 = start_seq2 = 0
   random_seq_list = tp_calc.random_sequences(amount,random_length,error_rate,
                     alphabet)
@@ -113,7 +113,11 @@ def bucket(bit_sum, base):
 
   bucket = []
   for element in bit_sum:
-    bucket.append(int(base * round(float(element)/base)))
+    r = int(base * round(float(element)/base))
+    if r == 0:
+      bucket.append(element)
+    else:
+      bucket.append(r)
 
   return bucket
 
@@ -175,10 +179,6 @@ def multiplot(bs1, bs2, bs3, t, buck, method):
   una_mean = float(sum(bs2))/len(bs2)
   huf_mean = float(sum(bs3))/len(bs3)
 
-  print "Binary Mean:", bin_mean
-  print "Unary Mean:", una_mean
-  print "Huffman Mean:", huf_mean
-
   print counter1
   print counter2
   print counter3
@@ -189,10 +189,28 @@ def multiplot(bs1, bs2, bs3, t, buck, method):
 
   print "Bin/Una:",float(bin_mean)/una_mean
   print "Una/Bin:",float(una_mean)/bin_mean
+
   print "Bin/Huf:",float(bin_mean)/huf_mean
   print "Huf/Bin:",float(huf_mean)/bin_mean
+
   print "Huf/Una:",float(huf_mean)/una_mean
   print "Una/Huf:",float(una_mean)/huf_mean
+
+
+  print "MAX Bin:", max(counter1.keys())
+  print "MIN Bin:", min(counter1.keys())
+  print "Binary Mean:", bin_mean
+  print ""
+
+  print "MAX Una:", max(counter2.keys())
+  print "MIN Una:", min(counter2.keys())
+  print "Unary Mean:", una_mean
+  print ""
+
+  print "MAX Huf:", max(counter3.keys())
+  print "MIN Huf:", min(counter3.keys())
+  print "Huffman Mean:", huf_mean
+  print ""
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
@@ -637,10 +655,9 @@ def main():
   delta = 100
   err_rate = 0.15
   
-  """
   # CIGAR
 
-  ciglist, delta = create_aln_cigars(amount,length,err_rate,"acgt",delta, "cigar")
+  ciglist, delta = create_cigars_or_tp(amount,length,err_rate,"acgt",delta, "cigar")
 
   print "LÄNGE:", len(ciglist)
 
@@ -652,16 +669,16 @@ def main():
   """
   # Differenzen
 
-  TP, delta = create_aln_cigars(amount,length,err_rate,"acgt",delta, "tracepoint")
+  TP, delta = create_cigars_or_tp(amount,length,err_rate,"acgt",delta, "tracepoint")
 
-  print "LÄNGE:", len(ciglist)
+  print "LÄNGE:", len(TP)
 
   bs1 = kodierung("tracepoint","binary", delta, [], TP)
   bs2 = kodierung("tracepoint","unary", delta, [], TP)
   bs3 = kodierung("tracepoint","huffman", delta, [], TP)
 
   multiplot(bs1, bs2, bs3, t, 3, "tracepoint")
-
+  """
   """
   # Entropy
   entropy(100,1000,0.15,"acgt",100)
