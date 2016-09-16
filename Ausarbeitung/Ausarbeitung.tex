@@ -60,6 +60,29 @@ Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Lev
 
 %Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
 
+\chapter{Kodierung}
+
+Das effiziente Speichern der Alignments wird durch die Kodierung der Daten maßgebend beeinflusst. Drei der gängigsten Kodierungsverfahren, welche in diesem Kapitel beschrieben werden, sind die naive binäre Kodierung, die unäre Kodierung und die Huffman-Kodierung. 
+
+\section{Naive Binäre Kodierung}
+
+Bei einer naiven binären Kodierung wird jedes Symbol $a$ aus dem Alphabet der zu kodierenden Symbole $\cal{A}$ mit $\lceil \log_2$$|\cal{A}|$$\rceil$ Bit kodiert, was den Vorteil hat, dass alle Codewörter die gleiche Länge haben.
+
+\section{Unäre Kodierung}
+
+Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort die Größe $1$, was den Vorteil hat, dass lediglich die Länge variiert.
+
+\section{Huffman-Kodierung}
+%TODO Skript Mail Prof
+
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes, was den Code präfixfrei macht und die Codewörter somit eindeutig zugeordnet werden können \cite[S. 53-57]{coding}. 
+
+Als Datenstruktur wird hierbei eine priorisierte Queue verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. Der Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird rekursiv ein Baum aufgebaut, welcher am Ende durch das Hinzufügen von den Kantengewichten $0$ und $1$ die Kodierungen der einzelnen Symbole bestimmt.
+
+Immer wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Beispielsweise können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Hierdurch wird die  Kodierungen eindeutig. Diese Art der Kodierung nennt man eine 'kanonischen' Kodierung.
+
+Der 'kanonische' Huffman-Algorithmus benötigt aufgrund der oben genannten Eigenschaften lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren \cite{canonical}.
+
 \chapter{Methoden}
 
 \section{CIGAR-Strings}
@@ -89,25 +112,6 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert \c
 Für die Kodierung eines CIGAR-Strings ist es sinnvoll, alle Quantitäten und Symbole seperat zu kodieren, um so mit kleineren Alphabeten für die zu kodierenden Symbole arbeiten zu können.
 
 $\cal{A}$$_s = \{M, I, D\}$ und $\cal{A}$$_c = \{s_i \mid 1 \leq i \leq n\}$ sind somit die Alphabete der zu kodierenden Symbole eines CIGAR-Strings.
-
-Drei der gängigsten Kodierungsverfahren sind die naive binäre Kodierung, die unäre Kodierung und die Huffman-Kodierung.
-
-%binär
-Bei einer naiven binären Kodierung wird jedes Symbol $a \in \cal{A}$ mit $\lceil \log_2$$|\cal{A}|$
-$\rceil$ Bit kodiert, was den Vorteil hat, dass alle Codewörter die gleiche Länge haben.
-
-%unär
-Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort die Größe $1$, was den Vorteil hat, dass lediglich die Länge variiert.
-
-%TODO Skript Mail Prof
-%canonical Huffman
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes, was den Code präfixfrei macht und die Codewörter somit eindeutig zugeordnet werden können \cite[S. 53-57]{coding}. 
-
-Als Datenstruktur wird hierbei eine priorisierte Queue verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. Der Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird rekursiv ein Baum aufgebaut, welcher am Ende durch das Hinzufügen von den Kantengewichten $0$ und $1$ die Kodierungen der einzelnen Symbole bestimmt.
-
-Immer wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Zum Beispiel können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Hierdurch vermeidet man die generierung unterschiedlicher Kodierungen.
-
-Dieser 'kanonische' Huffman-Algorithmus benötigt aufgrund der oben genannten  Eigenschaften lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren \cite{canonical}. 
 
 Im Folgenden vergleiche ich ausführlich für den CIGAR-String eines Alignments die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
 
