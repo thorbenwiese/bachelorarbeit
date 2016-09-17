@@ -1,4 +1,6 @@
 import Cigar_Pattern
+import sys
+sys.path.append('biopython')
 from Bio import pairwise2
 
 # Alignment structure with CIGAR-String
