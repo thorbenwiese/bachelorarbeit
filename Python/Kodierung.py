@@ -277,12 +277,9 @@ def tp_kodierung(TP, mode):
     bit_sum.append(huffman(TP))
   return bit_sum
 
-def multiplot(bs1, bs2, bs3, buck, method, t):
+def multiplot(bs1, bs2, bs3, buck1, buck2, buck3, method, t):
 
   
-  buck1 = 130
-  buck2 = 100
-  buck3 = 30
   counter1 = collections.Counter(bucket(bs1, buck1))
   counter2 = collections.Counter(bucket(bs2, buck2))
   counter3 = collections.Counter(bucket(bs3, buck3))
@@ -347,6 +344,7 @@ def multiplot(bs1, bs2, bs3, buck, method, t):
   print "Binärer Counter:\t", counter1
   print ""
   print "Unärer Counter:\t\t", counter2
+  print "Unäre BITSUM:\t\t", bs2
   print ""
   print "Huffman Counter:\t", counter3
   print "##########################"
@@ -394,8 +392,8 @@ def multiplot(bs1, bs2, bs3, buck, method, t):
 
 def main():
 
-  METHOD = "cigar" 
-  # METHOD = "tracepoint"
+ #  METHOD = "cigar" 
+  METHOD = "tracepoint"
   # METHOD = "entropy"
   start_seq1 = start_seq2 = 0
 
@@ -403,8 +401,12 @@ def main():
   print "Läuft..."
   amount = 100
   length = 5000
-  delta = length * 0.1
+  delta = 100
   err_rate = 0.15
+  bs1 = []
+  bs2 = []
+  bs3 = []
+  TP = []
 
   random_seq_list = tp_calc.random_sequences(amount, length, err_rate, "acgt")
 
@@ -423,6 +425,16 @@ def main():
       # CIGAR
 
       ciglist.append(aln.calc_cigar(aln.seq1, aln.seq2))
+
+      if i == len(random_seq_list) - 2:
+        
+        print "LÄNGE:", len(ciglist)
+
+        bs1 = cigar_kodierung(ciglist, "binary")
+        bs2 = cigar_kodierung(ciglist, "unary")
+        bs3 = cigar_kodierung(ciglist, "huffman")
+
+        multiplot(bs1, bs2, bs3, 140, 100, 25, METHOD, t)
   
     elif METHOD == "tracepoint":
 
@@ -432,35 +444,22 @@ def main():
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
                                 end_seq1, start_seq2, end_seq2, delta, cigar)
 
-      if i == 0:
-        TP = [delta, tp_aln.tp[0]]
-      for i in range(1, len(tp_aln.tp)):
-        TP.append(tp_aln.tp[i] - tp_aln.tp[i - 1])
+      if i == len(random_seq_list) - 2:
+        multiplot(bs1, bs2, bs3, 1, 500, 25, METHOD, t)
+      else:
+        TP.append(delta)
+        TP.append(tp_aln.tp[0])
+        for j in range(1, len(tp_aln.tp)):
+          TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
+
+        for a in tp_kodierung(TP, "binary"): bs1.append(a)
+        for b in tp_kodierung(TP, "unary"): bs2.append(b)
+        for c in tp_kodierung(TP, "tracepoint"): bs3.append(c)
   
     else:
 
       # Entropy
       entropy(amount,length,err_rate,"acgt",delta)
-
-  if METHOD == "cigar":
-
-    print "LÄNGE:", len(ciglist)
-
-    bs1 = cigar_kodierung(ciglist, "binary")
-    bs2 = cigar_kodierung(ciglist, "unary")
-    bs3 = cigar_kodierung(ciglist, "huffman")
-
-    multiplot(bs1, bs2, bs3, 50, METHOD, t)
-
-  elif METHOD == "tracepoint":
-
-    print "LÄNGE:", len(TP)
-
-    bs1 = tp_kodierung(TP, "binary")
-    bs2 = tp_kodierung(TP, "unary")
-    bs3 = tp_kodierung(TP, "tracepoint")
-
-    multiplot(bs1, bs2, bs3, 1, METHOD, t)
 
 if __name__ == "__main__":
   main()
