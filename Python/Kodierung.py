@@ -24,6 +24,8 @@ def bucket(bit_sum, base):
 
   bucket = []
   for element in bit_sum:
+    if element < base:
+      base = base / 2
     r = int(base * round(float(element)/base))
     if r == 0:
       bucket.append(element)
@@ -445,7 +447,7 @@ def main():
                                 end_seq1, start_seq2, end_seq2, delta, cigar)
 
       if i == len(random_seq_list) - 2:
-        multiplot(bs1, bs2, bs3, 1, 500, 25, METHOD, t)
+        multiplot(bs1, bs2, bs3, 1, 2000, 25, METHOD, t)
       else:
         TP.append(delta)
         TP.append(tp_aln.tp[0])
