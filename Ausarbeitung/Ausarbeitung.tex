@@ -1,5 +1,4 @@
 \chapter{Einleitung}
-%TODO ausführlicher
 
 Ein Sequenzalignment wird in der Bioinformatik dazu verwendet, zwei oder mehrere Sequenzen von zum Beispiel DNA-Strängen oder Proteinsequenzen miteinander zu vergleichen und die Verwandtschaft zu bestimmen. Ein Alignment ist das Ergebnis eines solchen Vergleichs. Bei einem globalen Alignment wird jeweils die gesamte Sequenz betrachtet, bei einem lokalen Alignment lediglich Teilabschnitte der beiden Sequenzen.
 Um die verschiedenen Sequenzen vergleichen zu können, berechnet man einen Score oder die Kosten, um den Aufwand, den man betreiben muss, um die gegebenene Sequenz in die Zielsequenz umzuwandeln, beschreiben zu können. Hierbei wird jeweils das Optimum, also entweder der maximale Score oder die minimalen Kosten gesucht.
@@ -39,7 +38,6 @@ Ein Alignment von zwei Sequenzen $u$ und $v$ lässt sich nun als eine Sequenz $(\
 	\end{center}
 	\label{Bsp1}
 \end{bsp}
-%TODO noch was?
 
 \section*{Die Edit-Distanz}
 
@@ -58,8 +56,6 @@ Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
 Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
 Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
 
-%Ein Alignment kann für eine Edit-Distanz $e$ mit der Einheitskostenfunktion in $O(e)$ Zeit berechnet werden \cite[S. 41-42]{gsa-skript}.
-
 \chapter{Kodierung}
 
 Das effiziente Speichern der Alignments wird durch die Kodierung der Daten maßgebend beeinflusst. Drei der gängigsten Kodierungsverfahren, welche in diesem Kapitel beschrieben werden, sind die naive binäre Kodierung, die unäre Kodierung und die Huffman-Kodierung. 
@@ -73,15 +69,46 @@ Bei einer naiven binären Kodierung wird jedes Symbol $a$ aus dem Alphabet der zu
 Die unäre Kodierung kodiert jedes Symbol nach der Häufigkeit des Auftretens im Alphabet mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort die Größe $1$, was den Vorteil hat, dass lediglich die Länge variiert.
 
 \section{Huffman-Kodierung}
-%TODO Skript Mail Prof
 
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz angepasst. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes, was den Code präfixfrei macht und die Codewörter somit eindeutig zugeordnet werden können \cite[S. 53-57]{coding}. 
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz angepasst. Hierbei werden häufig vorkommende Symbole kurzen Codewörtern zugeordnet und weniger häufige Symbole längeren Codewörtern. Somit lässt sich eine Kodierung ermöglichen, welche im Durchschnitt weniger Bit pro Symbol beansprucht. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes, was den Code präfixfrei macht und die Codewörter somit eindeutig zugeordnet werden können \cite[S. 53-57]{coding}. 
 
-Als Datenstruktur wird hierbei eine priorisierte Queue verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. Der Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird rekursiv ein Baum aufgebaut, welcher am Ende durch das Hinzufügen von den Kantengewichten $0$ und $1$ die Kodierungen der einzelnen Symbole bestimmt.
+Als Datenstruktur wird hierbei eine priorisierte Queue verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. Der Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird rekursiv ein Baum aufgebaut, welcher am Ende durch das Hinzufügen von den Kantengewichten $0$ und $1$ die Kodierungen der einzelnen Symbole bestimmt. Der Pseudocode des Algorithmus ist in Algorithmus $1$ dargestellt \cite{fastq-compress}.
 
 Immer wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Beispielsweise können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Hierdurch wird die  Kodierungen eindeutig. Diese Art der Kodierung nennt man eine 'kanonischen' Kodierung.
 
 Der 'kanonische' Huffman-Algorithmus benötigt aufgrund der oben genannten Eigenschaften lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole benötigt, um die Informationen zu dekodieren \cite{canonical}.
+
+\begin{algorithm}
+	\caption{Pseudocode des Huffman-Algorithmus}
+	\noindent\begin{tabular}{@{}l@{~}l}
+		\textbf{Parameter}:
+		& $\cal{A}$ ist das Alphabet der zu kodierenden Symbole mit den Häufigkeiten \\
+		& $p(a)$ für alle $a \in \ $$\cal{A}$.
+	\end{tabular}
+	\medskip
+	\begin{algorithmic}[1]
+		\Function{\textit{Huffman}}{$\cal{A}$$ , p(a)$}
+		\State assert(\Size{$\cal{A}$}$ > 0$)
+		\State assert($p(a) > 0$)
+		\State \Assign{Q}{\emptyset \textit{ als leere priorisierte Queue}}
+		\For{\textbf{all} $a \in $$\cal{A}$}
+		\State erzeuge neuen Knoten $z$
+		\State $(z.\textit{links}, z.\textit{rechts}, z.\textit{char}, z.\textit{count}) = ($nil, nil, $a, p(a))$
+		\State füge $z$ in $Q$ ein
+		\EndFor
+		\While{$\Size{Q} \geq 2$}
+		\State \Assign{x}{extractmin(Q)}
+		\State \Assign{y}{extractmin(Q)}
+		\State erzeuge neuen Knoten $z$
+		\State \Assign{(z.\textit{links}, z.\textit{rechts}}{(y, x)}
+		\State \Assign{z.\textit{char}}{x.\textit{char} < y.\textit{char} \text{ ? } y.\textit{char} \text{ : } x.\textit{char}}
+		\State \Assign{z.\textit{count}}{x.\textit{count} + y.\textit{count}}
+		\State füge $z$ in $Q$ ein
+		\EndWhile
+		\State \Assign{root}{z}
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
 
 \chapter{Methoden}
 
@@ -143,11 +170,9 @@ Die unäre Kodierung des oben genannte CIGAR-Strings ist in Tabelle \ref{cigar-un
 		M & $10$ & $1$ & $10 \cdot 1 = 10$\\
 		D & $5$ & $01$ & $5 \cdot 2 = 10$\\
 		I & $4$ & $001$ & $4 \cdot 3 = 12$\\
-		&&&\\
-		&&&\\
-		&&&\\
 		\hline
-		\multicolumn{3}{l}{Gesamtanzahl:}&$32$
+		\multicolumn{3}{l}{Gesamtanzahl:}&$32$\\
+		&&
 	\end{tabular}
 	
 	\begin{tabular}{cccr}
@@ -178,11 +203,9 @@ Die Größe dieser Kodierung ist demnach $28 + 33 + 9 + 17 = 87$ Bit.
 		M & $10$ &$0$ & $10 \cdot 1 = 10$\\
 		D & $5$ &$10$ & $5 \cdot 2 = 10$\\
 		I & $4$ &$11$ & $4 \cdot 2 =\ \ 8$\\
-		&&&\\
-		&&&\\
-		&&&\\
 		\hline
-		\multicolumn{3}{l}{Gesamtanzahl:}&$28$
+		\multicolumn{3}{l}{Gesamtanzahl:}&$28$\\
+		&&&
 	\end{tabular}
 	
 	\begin{tabular}{cccr}
@@ -240,9 +263,17 @@ Die Größe dieser Kodierung ist demnach $28 + 33 + 9 + 17 = 87$ Bit.
 
 Ein neuer Ansatz der speichereffizienten Repräsentation von Alignments wurde von Gene Myers in \cite{myers} beschrieben und basiert auf dem Konzept der Trace Points.
 
-%TODO Idee beschreiben
+Der Grundgedanke dieser Methode ist es, das Alignment zweier gegebener Sequenzen nicht als solches kodiert abzuspeichern, sondern stattdessen die erste Sequenz in gleich große Abschnitte zu unterteilen und die Endpunkte, sogenannte Trace Points, von Teilabschnitten des Alignments in der zweiten Sequenz abzuspeichern. So kann für jeden Teilabschnitt jeweils ein Teilalignment berechnet werden. Für die Unterteilung der ersten Sequenz wird der positive Parameter $\Delta$ verwendet. Die Teilalignments können dann zu einem Gesamtalignment konkateniert werden.
 
-Sei $A$ ein Alignment von $u[i...j]$ und $v[k...\ell]$ mit $i < j$ und $k < l$ und sei $\Delta \in \mathbb{N}$. Sei $p = \left \lceil\frac{i}{\Delta}\right \rceil$. Man unterteilt $u[i...j]$ in $\tau = \left \lceil\frac{j}{\Delta}\right \rceil - \left \lfloor\frac{i}{\Delta}\right \rfloor$ Substrings $u_0, u_1, ... , u_{\tau -1}$ mit
+Das Verfahren bietet den Vorteil, durch die Größe der Teilabschnitte die Anzahl der Trace Points und somit den Speicherbedarf, sowie die Zeit, die für die Berechnung der Teilalignments benötigt wird, anpassen zu können.
+
+Sei $A$ ein Alignment von $u[i...j]$ und $v[k...\ell]$ mit $i < j$ und $k < l$ und sei $\Delta \in \mathbb{N}$. Sei außerdem für die dynamische Anpassung der Intervallgrenzen der Parameter $p$ gegeben mit
+\[ p = \begin{cases}
+\left \lceil\frac{i}{\Delta}\right \rceil & \text{falls } i > 0\\
+1 & \text{falls }i = 0.
+\end{cases}\]
+
+Man unterteilt $u[i...j]$ in $\tau = \left \lceil\frac{j}{\Delta}\right \rceil - \left \lfloor\frac{i}{\Delta}\right \rfloor$ Substrings $u_0, u_1, ... , u_{\tau -1}$ mit
 \[  
 u_q =
 \begin{cases} 
@@ -256,6 +287,7 @@ Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings
 
 Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$, berechnet hierfür jeweils ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
 
+%TODO Seitenumbruch beachten
 \begin{bsp}
 
 Sei $\Delta = 15$ und folgendes Alignment gegeben:
@@ -269,40 +301,28 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 \end{verbatim}
 
 Beide Sequenzen seien in dem Intervall $0...37$. Das Alignment wird wie oben beschrieben in $\tau = \left \lceil\frac{37}{15}\right \rceil - \left \lfloor\frac{0}{15}\right \rfloor = 3 - 0 = 3$ Abschnitte unterteilt. Der erste Abschnitt ist in $u$ von $0$ bis $14$ und in $v$ von $0$ bis $15$.
-
 \begin{verbatim}
 gagc-a-t-gttgcc-tgg
 || | | | |  | | |||
 gaccaagtag--g-cgtgg
 \end{verbatim}
-
 Der zweite Abschnitt ist in $u$ von $15$ bis $29$ und in $v$ von $16$ bis $28$.
-
 \begin{verbatim}
 tcctttgctaggtac
 |||| ||| ||| |
 acctt-gctcggt-c
 \end{verbatim}
-
 Der dritte Abschnitt ist in $u$ von $30$ bis $37$ und in $v$ von $29$ bis $37$.
-
 \begin{verbatim}
 tgta-gaga
 |||| ||||
 tgtaagaga
 \end{verbatim}
-
-Somit ergeben sich als Endpunkte aller Abschnitte außer dem letzten die Trace Points $15$ und $28$.
+Somit ergeben sich als Endpunkte aller Abschnitte außer dem letzten Abschnitt die Trace Points $15$ und $28$.
 \end{bsp}
-
-%\subsection{Komplexität}
-
-%TODO ausführlicher
-%Für die Trace-Point Repräsentation wird für eine Edit-Distanz $e$ mit Einheitskosten als Kostenfunktion $\delta$ wie oben beschrieben lediglich $O(e^2)$ Zeit pro Teilalignment benötigt, wobei bei einer erwarteten Fehlerrate $\varepsilon$ des Alignments die Edit-Distanz immer höchstens so groß ist wie die Anzahl der Fehler im Teilalignment \cite[S.41-42]{gsa-skript}.
 
 \subsection{Differenzen-Kodierung}\label{Differenzen-Kodierung}
 
-%TODO Quellen
 Gegeben sei eine Liste $L = (a_1, a_2, ... , a_n)$ mit $a_i < a_{i+1}, 0 < i < n$.
 
 Anstatt jeden Wert $a \in L$ als solchen abzuspeichern, kann alternativ die Differenz eines Wertes $a_i$ zu dem nachfolgenden Wert $a_{i+1}$ abgespeichert werden. Lediglich der erste (oder letzte) Wert aus $L$ wird benötigt, um später sukzessive die ursprüngliche Liste rekonstruieren zu können.
@@ -410,6 +430,8 @@ Für den in \ref{Cigar_Speicher} genannten CIGAR-String ergibt sich eine Entropie
 \end{tabular}
 \end{center}
 
+und somit eine Gesamtentropie von $2.54 \cdot 38 = 96.52$ Bit.
+
 Die in \ref{Differenzen-Kodierung} genannten Trace Point Differenzen des selben Alignments ergeben analog
 
 \begin{center}
@@ -419,11 +441,44 @@ Die in \ref{Differenzen-Kodierung} genannten Trace Point Differenzen des selben 
 \end{tabular}
 \end{center}
 
+und somit eine Gesamtentropie von $1.30 \cdot 8 = 10.4$ Bit.
+
 %TODO Tabelle mit Bits
 
 \chapter{Resultate}
 
 \section{CIGAR Kodierung}\label{Cigar_Testläufe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TODO Werte für Text und Tabelle
+%Bin/Una: 1.5370764008
+%Una/Bin: 0.650585748036
+
+%Bin/Huf: 4.52358671737
+%Huf/Bin: 0.221063519389
+
+%Huf/Una: 0.339791518729
+%Una/Huf: 2.94298104832
+
+%MAX Bin: 9100
+%MIN Bin: 4480
+%Binary Mean: 6595.498
+
+%MAX Una: 5100
+%MIN Una: 3500
+%Unary Mean: 4290.937
+
+%MAX Huf: 1625
+%MIN Huf: 1300
+%Huffman Mean: 1458.024
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/new/cigar-1000-5000-d100}
+	\caption{Häufigkeitsverteilung der Kodierungen für \numprint{1000} CIGAR-Strings von DNA Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%.} \label{cigar-coding}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %TODO das in die Caption
 Die ersten drei der folgenden Grafiken wurden mit jeweils \numprint{10000} zufällig generierte Sequenzpaaren mit je etwa \numprint{1000} Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$ berechnet und auf $10$ Bit gerundet.
@@ -500,8 +555,6 @@ Die naive binäre Kodierung der CIGAR-Strings benötigt wie in Abbildung \ref{fig:
 Wie in Abbildung \ref{fig:cig-una} zu erkennen ist, ähnelt die Anzahl der Bits für die unäre Kodierung der CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen der der naiven binären Kodierung. Hier werden ebenfalls zwei Maxima erreicht, wobei hier das globale Maximum bei $1900$ Sequenzpaaren mit etwa $150$ Bit und das lokale Maximum bei $500$ Sequenzpaaren mit etwa $450$ Bit liegt. Für die unäre Kodierung wird im Mittel $275.70$ Bit für die Kodierung eines CIGAR-Strings und damit nur etwa $6.3$\% weniger als bei der naiven binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-una} dargestellt, ebenfalls zwei Maxima erreicht, einmal bei $9$ Sequenzpaaren zu $1700$ Bit und $4$ Sequenzpaare mit $8500$ Bit. Der Mittelwert liegt hier bei $4794.50$ Bit.
 
 Die Huffman-Kodierung kodiert wie in Abbildung \ref{fig:cig-huf} zu erkennen ist die CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen zwischen $200$ und $550$ Bit. Die Bitanzahl ist hier nahezu normalverteilt mit einem Maximum von $1500$ Sequenzpaaren für etwa $390$ Bit, was in etwa dem Durchschnitt von $387.38$ Bit entspricht. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-huf} zu sehen ist, zwischen $1500$ und $1900$ Bit benötigt, wobei das Maximum bei $11$ Sequenzpaaren mit $1750$ Bit liegt und damit dem Mittelwert von $1734.18$ Bit entspricht.
-
-
 
 \section{Differenzen Kodierung}\label{Diff-Testläufe}
 
@@ -717,11 +770,6 @@ TODO
 		\State \Assign{uTP}{\text{Array for interval termini in the first sequence}}
 		\For{\Assign{i}{0} \Upto \(\Size{\tau}\)}
 		\State \Assign{uTP[i]}{(p + i) \cdot (\Delta - 1)}
-			%\begin{cases}
-			%	start\_seq1, p \cdot \Delta - 1&\text{ if } i = 0\\
-			%	(p + i - 1) \cdot \Delta, (p + i) \cdot \Delta - 1&\text{ if } 0 < i < \Size{\tau}\\
-			%	(p + i - 1) \cdot \Delta, end\_seq1 - 1&\text{ else.}
-			%\end{cases}}
 			\EndFor
 			\State \Assign{uChars, vChars, count}{0}
 			\State \Assign{TP}{\text{Array for Trace Points}}
@@ -734,7 +782,6 @@ TODO
 			\Else
 			\State increment $uChars, vChars$
 			\EndIf
-			
 			\If{$uChars = uTP[count]$}
 			\State $TP$.append($vChars$)
 			\EndIf
@@ -748,7 +795,6 @@ TODO
 			\EndFunction
 		\end{algorithmic}
 	\end{algorithm}
-	
 
 \subsection{Informationsverlust bei der encode()-Funktion}
 	Die encode-Funktion extrahiert aus dem gegebenen CIGAR-String die Trace Points, welche dann zusammen mit dem $\Delta$-Wert und den Start- und Endpositionen der Sequenzabschnitte gespeichert werden. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren.
