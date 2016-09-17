@@ -379,7 +379,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} b
 	\label{diff-unary}
 \end{table}
 
-Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $10110;1110$ im Header kodiert werden, nötig.
+Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $01001;0001$ im Header kodiert werden, nötig.
 
 Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 10 = 21$ Bit und benötigt damit nur $\frac{21}{70} = 30$\% der Huffman-Kodierung für den CIGAR-String.
 
@@ -466,48 +466,38 @@ Zusammenfassend ergibt sich für das Alignment aus Beispiel \ref{Bsp1} die folgen
 
 \section{CIGAR Kodierung}\label{Cigar_Testläufe}
 
-Für die Kodierung der CIGAR-Strings wird zunächst eine zufällig angeordnete DNA-Sequenz  und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Dieser wird dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung grafisch dargestellt.
+Für die Kodierung der CIGAR-Strings wird zunächst eine zufällig angeordnete DNA-Sequenz  und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Dieser wird dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung in Abbildung \ref{cigar-coding} grafisch dargestellt. Die gemessenen Werte sind in Tabelle \ref{cigar-result} verdeutlicht.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%TODO Werte für Text und Tabelle
-%Bin/Una: 1.5370764008
-%Una/Bin: 0.650585748036
-
-%Bin/Huf: 4.52358671737
-%Huf/Bin: 0.221063519389
-
-%Huf/Una: 0.339791518729
-%Una/Huf: 2.94298104832
-
-%MAX Bin: 9100
-%MIN Bin: 4480
-%Binary Mean: 6595.498
-
-%MAX Una: 5100
-%MIN Una: 3500
-%Unary Mean: 4290.937
-
-%MAX Huf: 1625
-%MIN Huf: 1300
-%Huffman Mean: 1458.024
-
-\begin{figure}[t]
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=13cm]{coding/new/cigar-1000-5000-d100}
 	\caption{Häufigkeitsverteilung der Kodierungen für \numprint{1000} CIGAR-Strings von DNA Sequenzen mit je \numprint{5000} Basenpaaren und einer Fehlerrate von $15$\%.} \label{cigar-coding}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		&Minimum&Maximum&$\diameter$\\
+		\hline
+		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}\\
+		\hline
+		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}\\
+		\hline
+		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}\\
+		\hline
+	\end{tabular}
+	\caption{Anzahl der Bits für die Kodierungen der CIGAR-Strings}
+	\label{cigar-result}
+\end{figure}
 
 \FloatBarrier
 
-\iffalse
-Die naive binäre Kodierung der CIGAR-Strings benötigt wie in Abbildung \ref{fig:cig-bin} dargestellt für $10000$ Sequenzpaare mit je $1000$ Basen im Mittel $294.27$ Bit, wobei Werte zwischen $50$ und $900$ Bit erreicht werden. Diese bilden zwei Maxima bei $1800$ Sequenzpaaren mit jeweils etwa $120$ Bit als globales Maximum und $700$ Sequenzpaaren mit jeweils etwa $450$ Bit als lokales Maximum. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-bin} zu sehen ist, Werte zwischen $900$ und $7500$ Bit mit einem Mittelwert von $3942.06$ Bit erreicht, wobei hier eine ähnliche Verteilung wie in Abbildung \ref{fig:cig-bin} auftritt. Die Maxima liegen hier bei $8$ Sequenzpaaren mit $1100$ Bit und $5$ Sequenzpaare mit $6700$ Bit.
+Die naive binäre Kodierung der CIGAR-Strings benötigt, wie in Abbildung \ref{cigar-result} dargestellt, für \numprint{1000} Sequenzpaare mit je \numprint{5000} Basen im Mittel \numprint{6595.50} Bit, wobei Werte zwischen \numprint{4480} und \numprint{9100} Bit erreicht werden. Diese bilden ein Maximum bei $120$ Sequenzpaaren mit jeweils etwa \numprint{6500} Bit.
 
-Wie in Abbildung \ref{fig:cig-una} zu erkennen ist, ähnelt die Anzahl der Bits für die unäre Kodierung der CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen der der naiven binären Kodierung. Hier werden ebenfalls zwei Maxima erreicht, wobei hier das globale Maximum bei $1900$ Sequenzpaaren mit etwa $150$ Bit und das lokale Maximum bei $500$ Sequenzpaaren mit etwa $450$ Bit liegt. Für die unäre Kodierung wird im Mittel $275.70$ Bit für die Kodierung eines CIGAR-Strings und damit nur etwa $6.3$\% weniger als bei der naiven binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-una} dargestellt, ebenfalls zwei Maxima erreicht, einmal bei $9$ Sequenzpaaren zu $1700$ Bit und $4$ Sequenzpaare mit $8500$ Bit. Der Mittelwert liegt hier bei $4794.50$ Bit.
+Für die unäre Kodierung der selben CIGAR-Strings werden Werte zwischen \numprint{3500} und \numprint{5100} Bit erreicht, wobei der Durchschnitt bei \numprint{4290.94} und damit etwa $35$\% unter dem der naiven binären Kodierung liegt. Das Maximum liegt hier bei $155$ Sequenzpaaren, deren CIGAR-Strings mit je etwa $4200$ Bit kodiert werden.
 
-Die Huffman-Kodierung kodiert wie in Abbildung \ref{fig:cig-huf} zu erkennen ist die CIGAR-Strings für $10000$ Sequenzpaare mit je $1000$ Basen zwischen $200$ und $550$ Bit. Die Bitanzahl ist hier nahezu normalverteilt mit einem Maximum von $1500$ Sequenzpaaren für etwa $390$ Bit, was in etwa dem Durchschnitt von $387.38$ Bit entspricht. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-cig-huf} zu sehen ist, zwischen $1500$ und $1900$ Bit benötigt, wobei das Maximum bei $11$ Sequenzpaaren mit $1750$ Bit liegt und damit dem Mittelwert von $1734.18$ Bit entspricht.
-\fi
+Die Huffman-Kodierung kodiert die CIGAR-Strings zwischen \numprint{1300} und \numprint{1625} Bit, wobei das Maximum von $180$ Sequenzpaaren mit \numprint{1500} Bit erreicht wird. Der Mittelwert liegt hier bei \numprint{1458.02} Bit und damit etwa $78$\% unter dem der naiven binären Kodierung und etwa $66$\% unter dem der unären Kodierung.
 
 \section{Differenzen Kodierung}\label{Diff-Testläufe}
 
@@ -551,7 +541,7 @@ Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenz
 
 Die Differenzen der Trace Points weisen hingegen, wie in Abbildung \ref{diff-ent} verdeutlicht, eine Entropie im Bereich von $6$ bis $30$ Bit auf, wobei der Durchschnittswert von $21.53$ Bit nur etwa $7$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der nahezu normalverteilten Entopie-Werte liegt hier bei etwa $21$ Bit, mit welchem  $4000$ Sequenzpaare kodiert wurden.
 
-%TODO
+%TODO CIGAR mit rein? ist ja schon oben mit dabei...
 \clearpage
 Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 \begin{figure}[h]
@@ -559,7 +549,7 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
 		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen}\\
-		&Min&Max&Mean&Min&Max&Mean\\
+		&Min&Max&$\diameter$&Min&Max&$\diameter$\\
 		\hline
 		Binäre Kodierung&&&&&&\\
 		\hline
