@@ -466,7 +466,7 @@ Zusammenfassend ergibt sich für das Alignment aus Beispiel \ref{Bsp1} die folgen
 
 \section{CIGAR Kodierung}\label{Cigar_Testläufe}
 
-Für die Kodierung der CIGAR-Strings wird zunächst eine zufällig angeordnete DNA-Sequenz  und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Dieser wird dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung in Abbildung \ref{cigar-coding} grafisch dargestellt. Die gemessenen Werte sind in Tabelle \ref{cigar-result} verdeutlicht.
+Für die Kodierung der CIGAR-Strings wird zunächst eine zufällig angeordnete DNA-Sequenz und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Dieser wird dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung in Abbildung \ref{cigar-coding} grafisch dargestellt. Die gemessenen Werte sind in Tabelle \ref{cigar-result} verdeutlicht.
 
 \begin{figure}[h]
 	\centering
@@ -505,7 +505,6 @@ Für die Kodierung der Trace Point Differenzen wird zunächst eine zufällig angeor
 
 \FloatBarrier
 
-
 \iffalse
 Die naive binäre Kodierung benötigt für $10000$ Sequenzpaare mit $1000$ Basen und einem $\Delta$-Wert von $100$ in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit. Für $100$ Sequenzpaare mit $10000$ und einem $\Delta$-Wert von $100$ werden in jedem Durchlauf und im Mittel $700$ Bit benötigt, da $\lceil \log_2100 \rceil \cdot 100 = 700$ Bit für die binäre Kodierung benötigt werden.
 
@@ -516,32 +515,22 @@ Die Huffman-Kodierung kodiert für $10000$ Sequenzpaare mit $1000$ Basen, wie in 
 
 \section{Entropie der Repräsentationen}
 
-Die folgenden Grafiken zeigen die Entropie der CIGAR-Strings und Trace Point Differenzen von $10.000$ zufällig generierten Sequenzpaaren mit je etwa $1.000$ Basen, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $100$.
+%Cig Entropy Mean: 1755.79258069
+%Diff Entropy Mean: 134.698836842
+%cig/diff: 13.0349498321
+%diff/cig: 0.0767168276731
 
-%Cig Entropy Mean: 323.981150901
-%Diff Entropy Mean: 21.5313812847
-%cig/diff: 15.0469283237
-%diff/cig: 0.0664587468278
-
-\begin{figure}[t]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=13cm]{coding/Buckets/bucket10-cig-ent-10000-1000-d100}
-	\caption{Entropie des CIGAR-Strings}
-	\label{cig-ent}
+	\includegraphics[width=13cm]{coding/new/entropy-1000-5000-d100}
+	\caption{Entropie von \numprint{1000} CIGAR-Strings von DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%}
+	\label{entropy}
 \end{figure}
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=13cm]{coding/Buckets/bucket3-diff-ent-10000-1000-d100}
-	\caption{Entropie der Trace Point Differenzen}
-	\label{diff-ent}
-\end{figure}
+Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{entropy} zu erkennen ist, zwischen \numprint{1280} und \numprint{2280}Bit, wobei der Durchschnittswert bei \numprint{1755.79} Bit liegt. Die Werte sind normalverteilt, wobei das Maximum bei $225$ Sequenzpaaren mit etwa \numprint{1800} Bit liegt.
 
-Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{cig-ent} zu erkennen ist, zwischen $110$ und $580$ Bit, wobei der Durchschnittswert bei $323.98$ Bit liegt. Die Werte sind normalverteilt, wobei das Maximum bei $700$ Sequenzpaaren, welche mit etwa $320$ Bit kodiert wurden, liegt.
+Die Differenzen der Trace Points weisen hingegen eine Entropie im Bereich von $91$ bis $212$ Bit auf, wobei der Durchschnittswert von $134.69$ Bit nur etwa $7.6$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der Entopie-Werte liegt hier bei etwa bei $220$ Sequenzpaaren mit $130$ Bit.
 
-Die Differenzen der Trace Points weisen hingegen, wie in Abbildung \ref{diff-ent} verdeutlicht, eine Entropie im Bereich von $6$ bis $30$ Bit auf, wobei der Durchschnittswert von $21.53$ Bit nur etwa $7$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der nahezu normalverteilten Entopie-Werte liegt hier bei etwa $21$ Bit, mit welchem  $4000$ Sequenzpaare kodiert wurden.
-
-%TODO CIGAR mit rein? ist ja schon oben mit dabei...
 \clearpage
 Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 \begin{figure}[h]
@@ -551,13 +540,13 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen}\\
 		&Min&Max&$\diameter$&Min&Max&$\diameter$\\
 		\hline
-		Binäre Kodierung&&&&&&\\
+		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&&&\\
 		\hline
-		Unäre Kodierung&&&&&&\\
+		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}&&&\\
 		\hline
-		Huffman-Kodierung&&&&&&\\
+		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}&&&\\
 		\hline
-		Entropie&&&&&&\\
+		Entropie&\numprint{1280}&\numprint{2280}&\numprint{1755.79}& $91$&$212$&$134.69$\\
 		\hline
 	\end{tabular}
 	\caption{Anzahl der Bits für die Kodierungen und Entropie}
