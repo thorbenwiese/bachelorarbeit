@@ -1,3 +1,5 @@
+#ifndef ALIGNMENT_H
+#define ALIGNMENT_H
 //Alignment file
 
 struct Alignment {
@@ -9,3 +11,4 @@ struct Alignment {
   int end_seq2;
 };
 
+#endif

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
 #include <assert.h>
 #include <math.h>
 // ctype.h for isdigit()
@@ -11,71 +10,56 @@
 #include "Alignment.h"
 #include "Cigar_Pattern.h"
 
-# define LEN 100000
+int main(int argc, char *argv[]){
 
-char seq1_arr[LEN];
-char seq2_arr[LEN];
-char cigar_arr[LEN];
+  unsigned char *useq, *vseq, *cig;
 
-int main(){
-
+  if (argc != 9){
+    fprintf(stderr,"Usage: %s <sequence1> <sequence2> <start1> <end1> <start2> <end2> <delta> <cigar>\n", argv[0]);
+    exit(EXIT_FAILURE);
+  }
+  
+  useq = (unsigned char *) strdup(argv[1]);
+  int ulen = strlen(argv[1]);
+  vseq = (unsigned char *) strdup(argv[2]);
+  int vlen = strlen(argv[2]);
+  int start1 = atoi(argv[3]);
+  int end1 = atoi(argv[4]);
+  int start2 = atoi(argv[5]);
+  int end2 = atoi(argv[6]);
+  int delta = atoi(argv[7]);
+  cig = (unsigned char *) strdup(argv[8]);
+  int ciglen = strlen(argv[8]);
+  
   // struct to store input
   struct TracePointAlignment tp_aln;
-  printf("Enter Seq1, Seq2, Start1, End1, Start2 ,End2, Delta, Cigar:\n");
 
-  // read input and store integers in struct and strings in char arrays
-  scanf("%s %s %d %d %d %d %d %s", seq1_arr, seq2_arr, 
-                                   &tp_aln.start_seq1, &tp_aln.end_seq1,
-                                   &tp_aln.start_seq2, &tp_aln.end_seq2,
-                                   &tp_aln.delta, cigar_arr);
-
-  // check input
-  assert(seq1_arr[0] != 0);
-  assert(seq2_arr[0] != 0);
-  assert(tp_aln.start_seq1 >= 0);
-  assert(tp_aln.end_seq1 >= 1);
-  assert(tp_aln.start_seq2 >= 0);
-  assert(tp_aln.end_seq2 >= 1);
-  assert(tp_aln.delta > 0);
-  assert(cigar_arr[0] != 0);
-
-  // pointer to malloc storage for seq1, seq2, cigar
-  char *seq1;
-  char *seq2;
-  char *cigar;
-
-  // len of seq1, seq2, cigar + null character
-  int seq1len = strlen(seq1_arr) + 1;
-  int seq2len = strlen(seq2_arr) + 1;
-  int cigarlen = strlen(cigar_arr) + 1;
-
-  // copy seq1, seq2, cigar into dynamically allocated storage
-  seq1 = (char*)malloc(seq1len * sizeof(char));
-  memcpy(seq1, &seq1_arr[tp_aln.start_seq1], 
-         tp_aln.end_seq1 - tp_aln.start_seq1 + 1);
-  seq2 = (char*)malloc(seq2len * sizeof(char));
-  memcpy(seq2, &seq2_arr[tp_aln.start_seq2], 
-         tp_aln.end_seq2 - tp_aln.start_seq2 + 1);
-  cigar = (char*)malloc(cigarlen * sizeof(char));
-  strcpy(cigar, cigar_arr);
-
-  // store in struct
-  tp_aln.seq1 = seq1;
-  tp_aln.seq2 = seq2;
-  tp_aln.cigar = cigar;
+  tp_aln.useq = useq;
+  tp_aln.ulen = ulen;
+  tp_aln.vseq = vseq;
+  tp_aln.vlen = vlen;
+  tp_aln.start1 = start1;
+  tp_aln.end1 = end1;
+  tp_aln.start2 = start2;
+  tp_aln.end2 = end2;
+  tp_aln.delta = delta;
+  tp_aln.cigar = cig;
+  tp_aln.ciglen = ciglen;
 
   // print struct
-  printf("\nSequenz 1: \t%s\n", tp_aln.seq1);
-  printf("Sequenz 2: \t%s\n", tp_aln.seq2);
-  printf("Start 1: \t%d\n", tp_aln.start_seq1);
-  printf("Ende 1: \t%d\n", tp_aln.end_seq1);
-  printf("Start 2: \t%d\n", tp_aln.start_seq2);
-  printf("Ende 2: \t%d\n", tp_aln.end_seq2);
-  printf("Delta: \t\t%d\n", tp_aln.delta);
-  printf("CIGAR: \t\t%s\n", tp_aln.cigar);
+  printf("\nSequenz 1: \t\t%s\n", tp_aln.useq);
+  printf("Länge Sequenz 1: \t%d\n", tp_aln.ulen);
+  printf("Sequenz 2: \t\t%s\n", tp_aln.vseq);
+  printf("Länge Sequenz 2: \t%d\n", tp_aln.vlen);
+  printf("Start 1: \t\t%d\n", tp_aln.start1);
+  printf("Ende 1: \t\t%d\n", tp_aln.end1);
+  printf("Start 2: \t\t%d\n", tp_aln.start2);
+  printf("Ende 2: \t\t%d\n", tp_aln.end2);
+  printf("Delta: \t\t\t%d\n", tp_aln.delta);
+  printf("CIGAR: \t\t\t%s\n", tp_aln.cigar);
+  printf("Länge CIGAR: \t\t%d\n", tp_aln.ciglen);
   printf("\n");
 
-  // encode alignment
   encode(tp_aln);
   
   return 0;
