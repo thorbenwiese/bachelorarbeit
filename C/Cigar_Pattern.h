@@ -1,1 +1,0 @@
-//Cigar Pattern header file
