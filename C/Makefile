@@ -1,18 +1,18 @@
-CC = gcc
+CC?=gcc
 
-CFLAGS = -std=c99 -Wall -Werror -O3 -g -Wunused-parameter -Wpointer-arith -fno-strict-aliasing -lm
+CFLAGS=-Wall -Werror -O3 -g -Wunused-parameter -Wpointer-arith -fno-strict-aliasing -lm
 
 # Rule to create *.o from *.c
 .c.o:
 	$(CC) -c $(CFLAGS) $*.c
 
 #Targets
-all: tp_calc
+all: main
 
-test: tp_calc.c Makefile
+test: main.c Makefile
 
-	$(CC) $(CFLAGS) tp_calc.c -o tp_calc
+	$(CC) $(CFLAGS) main.c -o main
 
 clean:
-	$(RM) *.o tp_calc
+	$(RM) *.o main
 	$(RM) -r tp_calc.dSYM
