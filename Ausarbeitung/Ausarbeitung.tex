@@ -504,6 +504,26 @@ Die Huffman-Kodierung kodiert die CIGAR-Strings zwischen \numprint{1300} und \nu
 Für die Kodierung der Trace Point Differenzen wird zunächst eine zufällig angeordnete DNA-Sequenz und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Aus diesem werden die Trace Points anhand des $\Delta$-Wertes ausgelesen und die Differenzen der Trace Points bestimmt. Diese werden dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung grafisch dargestellt.
 
 \FloatBarrier
+%MAX 50: 1328
+%MIN 50: 88
+%Mean1: 1243.63
+
+%MAX 100: 726
+%MIN 100: 98
+%Mean2: 533.238
+
+%MAX 200: 396
+%MIN 200: 84
+%Mean3: 345.424
+
+%MAX 500: 483
+%MIN 500: 64
+%Mean4: 441.16016016
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{coding/new/deltas-1000-5000-015}
+	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und $\Delta$-Werten von $50$, $100$, $200$ und $500$.} \label{deltas}
+\end{figure}
 
 \iffalse
 Die naive binäre Kodierung benötigt für $10000$ Sequenzpaare mit $1000$ Basen und einem $\Delta$-Wert von $100$ in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit. Für $100$ Sequenzpaare mit $10000$ und einem $\Delta$-Wert von $100$ werden in jedem Durchlauf und im Mittel $700$ Bit benötigt, da $\lceil \log_2100 \rceil \cdot 100 = 700$ Bit für die binäre Kodierung benötigt werden.
@@ -537,7 +557,7 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
-		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen}\\
+		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen ($\Delta = 200$)}\\
 		&Min&Max&$\diameter$&Min&Max&$\diameter$\\
 		\hline
 		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&&&\\
