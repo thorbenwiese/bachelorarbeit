@@ -14,15 +14,15 @@
 
 int main(int argc, char *argv[]){
 
-  unsigned char *useq, *vseq, *cig;
-  GtUword ulen, vlen, edist, start1, end1, start2, end2, delta, ciglen;
+  unsigned char *useq, *vseq;//, *cig;
+  GtUword ulen, vlen, edist, start1, end1, start2, end2, delta;//, ciglen;
   FrontEdistTrace *fet;
   GtEoplist *eoplist;
   GtEoplistReader *eoplist_reader;
   GtCigarOp co;
 
-  if (argc != 9){
-    fprintf(stderr,"Usage: %s <sequence1> <sequence2> <start1> <end1> <start2> <end2> <delta> <cigar>\n", argv[0]);
+  if (argc != 8){
+    fprintf(stderr,"Usage: %s <sequence1> <sequence2> <start1> <end1> <start2> <end2> <delta>\n", argv[0]);
     exit(EXIT_FAILURE);
   }
   
@@ -35,8 +35,31 @@ int main(int argc, char *argv[]){
   start2 = atoi(argv[5]);
   end2 = atoi(argv[6]);
   delta = atoi(argv[7]);
-  cig = (unsigned char *) strdup(argv[8]);
-  ciglen = strlen(argv[8]);
+
+  // struct to store input
+  TracePointData *tp_data;
+  tp_data = tracepoint_data_new();
+
+  printf("START1 %c\n",tp_data->start1);
+  /*
+  tp_data->useq = useq;
+  tp_data->ulen = ulen;
+  tp_data->vseq = vseq;
+  tp_data->vlen = vlen;
+  tp_data->start1 = start1;
+  tp_data->end1 = end1;
+  tp_data->start2 = start2;
+  tp_data->end2 = end2;
+  tp_data->delta = delta;
+  */
+  GtUword *TP = encode(*tp_data);
+  printf("TP\n");
+  printf("Trace Point 1: %d\n",  TP[0]);
+
+  //cig = (unsigned char *) strdup(argv[8]);
+  //ciglen = strlen(argv[8]);
+
+  // create CIGAR String
   fet = front_edist_trace_new();
   eoplist = gt_eoplist_new();
   edist = front_edist_trace_eoplist(eoplist,
@@ -53,6 +76,7 @@ int main(int argc, char *argv[]){
   {
     printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
   }
+  printf("\n");
   /* 
   // struct to store input
   TracePointAlignment tp_aln;

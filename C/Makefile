@@ -1,18 +1,20 @@
 CC?=gcc
+CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wunused-parameter -Wpointer-arith
 
-CFLAGS=-Wall -Werror -O3 -g -Wunused-parameter -Wpointer-arith -fno-strict-aliasing -lm
+OBJ=front-with-trace.o tracer.o eoplist.o
 
-# Rule to create *.o from *.c
-.c.o:
-	$(CC) -c $(CFLAGS) $*.c
+all: main.x
 
-#Targets
-all: main
+# generic compilation rule which creates dependency file on the fly
+%.o: %.c
+	$(CC) -c $< -o $@ $(CFLAGS) -MT $@ -MMD -MP -MF $(@:.o=.d)
 
-test: main.c Makefile
+main:${OBJ} main.o
+	${CC} main.o ${OBJ} -lm -o $@
 
-	$(CC) $(CFLAGS) main.c -o main
+# read dependencies
+-include $(wildcard *.d)
 
+.PHONY:clean
 clean:
-	$(RM) *.o main
-	$(RM) -r tp_calc.dSYM
+	$(RM) *.[oxd]
