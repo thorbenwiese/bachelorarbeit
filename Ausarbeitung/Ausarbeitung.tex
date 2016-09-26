@@ -526,6 +526,35 @@ Für die Kodierung der Trace Point Differenzen wird zunächst eine zufällig angeor
 \end{figure}
 
 \iffalse
+Bin/Una: 3.30705367562
+Una/Bin: 0.302383964122
+
+Bin/Huf: 671.077133108
+Huf/Bin: 0.00149014167025
+
+Huf/Una: 0.00492797848782
+Una/Huf: 202.922963741
+
+MAX Bin: 374625
+MIN Bin: 125
+Binary Mean: 180336.361361
+
+MAX Una: 108700
+MIN Una: 100
+Unary Mean: 54530.8238238
+
+MAX Huf: 300
+MIN Huf: 75
+Huffman Mean: 268.726726727
+\fi
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{coding/new/tracepoint-1000-5000-d200-015}
+	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $200$.} \label{tracepoint-d200}
+\end{figure}
+
+\iffalse
 Die naive binäre Kodierung benötigt für $10000$ Sequenzpaare mit $1000$ Basen und einem $\Delta$-Wert von $100$ in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit. Für $100$ Sequenzpaare mit $10000$ und einem $\Delta$-Wert von $100$ werden in jedem Durchlauf und im Mittel $700$ Bit benötigt, da $\lceil \log_2100 \rceil \cdot 100 = 700$ Bit für die binäre Kodierung benötigt werden.
 
 Für die unäre Kodierung der Differenzen der Trace Points wird für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-una} verdeutlicht, zwischen $12$ und $45$ Bit benötigt. Die Bitanzahl ist in etwa normalverteilt, wobei das Maximum bei $3050$ Sequenzpaaren mit $26$ Bit liegt. Im Mittel  wird für diese Kodierung $24.49$ Bit und damit nur etwa $61.22$\% der binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-diff-una} dargestellt, zwischen $290$ und $390$ Bit mit einem Maximum bei $8$ Sequenzpaaren und $320$ Bit benötigt, wobei der Mittelwert bei $323.2$ Bit liegt.
@@ -560,13 +589,13 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen ($\Delta = 200$)}\\
 		&Min&Max&$\diameter$&Min&Max&$\diameter$\\
 		\hline
-		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&&&\\
+		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&125&\numprint{374625}&\numprint{180336.36}\\
 		\hline
-		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}&&&\\
+		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}&94&\numprint{99784}&\numprint{5453.82}\\
 		\hline
-		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}&&&\\
+		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}&80&300&268.73\\
 		\hline
-		Entropie&\numprint{1280}&\numprint{2280}&\numprint{1755.79}& $91$&$212$&$134.69$\\
+		Entropie&\numprint{1280}&\numprint{2280}&\numprint{1755.79}& 91&212&134.69\\
 		\hline
 	\end{tabular}
 	\caption{Anzahl der Bits für die Kodierungen und Entropie}
