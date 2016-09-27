@@ -13,5 +13,5 @@ void gt_tracepoint_data_delete(TracePointData *tp_data);
 void gt_tracepoint_data_reset(TracePointData *tp_data);
 
 /* encode function to generate TracePoint Array */
-void encode(const TracePointData *tp_data);
+GtUword encode(const TracePointData *tp_data);
 #endif

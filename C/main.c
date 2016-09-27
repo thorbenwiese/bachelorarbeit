@@ -26,6 +26,9 @@ int main(int argc, char *argv[]){
     exit(EXIT_FAILURE);
   }
   
+  TracePointData *tp_data;
+  tp_data = tracepoint_data_new();
+
   useq = (unsigned char *) strdup(argv[1]);
   ulen = strlen(argv[1]);
   vseq = (unsigned char *) strdup(argv[2]);
@@ -36,11 +39,8 @@ int main(int argc, char *argv[]){
   end2 = atoi(argv[6]);
   delta = atoi(argv[7]);
 
-  // struct to store input
-  TracePointData *tp_data;
-  tp_data = tracepoint_data_new();
-
-  printf("START1 %c\n",tp_data->start1);
+  //tp_data->start1 = start1;  
+  //printf("START.11 %s\n",tp_data->start1);
   /*
   tp_data->useq = useq;
   tp_data->ulen = ulen;
@@ -52,9 +52,9 @@ int main(int argc, char *argv[]){
   tp_data->end2 = end2;
   tp_data->delta = delta;
   */
-  GtUword *TP = encode(*tp_data);
+  GtUword *TP = encode(tp_data);
   printf("TP\n");
-  printf("Trace Point 1: %d\n",  TP[0]);
+  printf("Trace Point 1: %lu\n",  TP[0]);
 
   //cig = (unsigned char *) strdup(argv[8]);
   //ciglen = strlen(argv[8]);
@@ -109,5 +109,6 @@ int main(int argc, char *argv[]){
   
   encode(tp_aln);
   */
+  gt_tracepoint_data_delete(tp_data);
   return 0;
 }

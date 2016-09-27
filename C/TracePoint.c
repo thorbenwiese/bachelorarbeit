@@ -90,6 +90,7 @@ void gt_tracepoint_data_reset(TracePointData *tp_data)
     tp_data->useq = NULL;
     tp_data->vseq = NULL;
     tp_data->start1 = 0;
+    printf("START.11 %s\n",tp_data->start1);
     tp_data->end1 = 0;
     tp_data->start2 = 0;
     tp_data->end2 = 0;

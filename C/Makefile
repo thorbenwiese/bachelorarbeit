@@ -9,7 +9,7 @@ all: main.x
 %.o: %.c
 	$(CC) -c $< -o $@ $(CFLAGS) -MT $@ -MMD -MP -MF $(@:.o=.d)
 
-main:${OBJ} main.o
+main.x:${OBJ} main.o
 	${CC} main.o ${OBJ} -lm -o $@
 
 # read dependencies
