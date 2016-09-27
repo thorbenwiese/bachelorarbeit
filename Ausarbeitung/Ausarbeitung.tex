@@ -562,6 +562,31 @@ Für die unäre Kodierung der Differenzen der Trace Points wird für $10000$ Sequen
 Die Huffman-Kodierung kodiert für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $3$ bis $30$ Bit, wobei hier das Maximum bei $2600$ Sequenzpaaren mit $15$ Bit liegt. Sie benötigt durchschnittlich nur $13.90$ Bit und damit nur etwa $56.75$\% des Speicherbedarfs der unären und $34.74$\% der naiven binären Kodierung. Für $100$ Sequenzpaare mit $10000$ Basen wird, wie in Abbildung \ref{big-diff-huf} dargestellt, zwischen $70$ und $170$ Bit benötigt, wobei das Maximum bei $20$ Sequenzpaaren mit $110$ Bit und der Mittelwert bei $114.04$ Bit liegt.
 \fi
 
+\iffalse
+MAX 0.05: 200
+MIN 0.05: 50
+Mean1: 186.75
+
+MAX 0.15: 300
+MIN 0.15: 100
+Mean2: 290.83
+
+MAX 0.30: 1620
+MIN 0.30: 180
+Mean3: 1312.91
+
+MAX 0.50: 3465
+MIN 0.50: 154
+Mean4: 3223.30930931
+
+\fi
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{coding/new/errs-1000-5000-d200}
+	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\%.} \label{errs-d200}
+\end{figure}
+
 \section{Entropie der Repräsentationen}
 
 %Cig Entropy Mean: 1755.79258069
