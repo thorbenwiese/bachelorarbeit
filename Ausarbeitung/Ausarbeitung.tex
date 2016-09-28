@@ -504,88 +504,96 @@ Die Huffman-Kodierung kodiert die CIGAR-Strings zwischen \numprint{1300} und \nu
 Für die Kodierung der Trace Point Differenzen wird zunächst eine zufällig angeordnete DNA-Sequenz und daraus mit der jeweiligen Fehlerrate eine abgewandelte Sequenz berechnet. Dieser Vorgang wiederholt sich mehrfach. Aus einem Sequenzpaar wird dann ein Alignment berechnet, aus dem der CIGAR-String extrahiert wird. Aus diesem werden die Trace Points anhand des $\Delta$-Wertes ausgelesen und die Differenzen der Trace Points bestimmt. Diese werden dann mit den oben beschriebenen Verfahren kodiert und die Anzahl der Bits, die für die jeweilige Kodierung benötigt werden, werden berechnet und deren Verteilung grafisch dargestellt.
 
 \FloatBarrier
-%MAX 50: 1328
-%MIN 50: 88
-%Mean1: 1243.63
-
-%MAX 100: 726
-%MIN 100: 98
-%Mean2: 533.238
-
-%MAX 200: 396
-%MIN 200: 84
-%Mean3: 345.424
-
-%MAX 500: 483
-%MIN 500: 64
-%Mean4: 441.16016016
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=13cm]{coding/new/deltas-1000-5000-015}
-	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und $\Delta$-Werten von $50$, $100$, $200$ und $500$.} \label{deltas}
-\end{figure}
-
 \iffalse
-Bin/Una: 3.30705367562
-Una/Bin: 0.302383964122
+Bin/Una: 1.37071633993
+Una/Bin: 0.729545545546
 
-Bin/Huf: 671.077133108
-Huf/Bin: 0.00149014167025
+Bin/Huf: 1.48491010274
+Huf/Bin: 0.673441441441
 
-Huf/Una: 0.00492797848782
-Una/Huf: 202.922963741
+Huf/Una: 0.923097187768
+Una/Huf: 1.08330955099
 
-MAX Bin: 374625
+MAX Bin: 125
 MIN Bin: 125
-Binary Mean: 180336.361361
+Binary Mean: 125.0
 
-MAX Una: 108700
-MIN Una: 100
-Unary Mean: 54530.8238238
+MAX Una: 132
+MIN Una: 60
+Unary Mean: 91.1931931932
 
-MAX Huf: 300
-MIN Huf: 75
-Huffman Mean: 268.726726727
+MAX Huf: 126
+MIN Huf: 42
+Huffman Mean: 84.1801801802
 \fi
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=13cm]{coding/new/tracepoint-1000-5000-d200-015}
 	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und einem $\Delta$-Wert von $200$.} \label{tracepoint-d200}
 \end{figure}
 
-\iffalse
-Die naive binäre Kodierung benötigt für $10000$ Sequenzpaare mit $1000$ Basen und einem $\Delta$-Wert von $100$ in jedem Durchlauf und somit auch im Mittel konstant $40$ Bit, da für jeden Durchlauf $9$ Trace Points und der $\Delta$-Wert gespeichert werden für $\lceil \log_210 \rceil \cdot 10 = 40$ Bit. Für $100$ Sequenzpaare mit $10000$ und einem $\Delta$-Wert von $100$ werden in jedem Durchlauf und im Mittel $700$ Bit benötigt, da $\lceil \log_2100 \rceil \cdot 100 = 700$ Bit für die binäre Kodierung benötigt werden.
+Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-Wert von $200$ bei jedem Durchlauf für $24$ Trace Points und den $\Delta$-Wert selbst insgesamt $\lceil \log_225$$\rceil = 125$ Bit benötigt.
 
-Für die unäre Kodierung der Differenzen der Trace Points wird für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-una} verdeutlicht, zwischen $12$ und $45$ Bit benötigt. Die Bitanzahl ist in etwa normalverteilt, wobei das Maximum bei $3050$ Sequenzpaaren mit $26$ Bit liegt. Im Mittel  wird für diese Kodierung $24.49$ Bit und damit nur etwa $61.22$\% der binären Kodierung benötigt. Für $100$ Sequenzpaare mit je $10000$ Basen werden, wie in Abbildung \ref{big-diff-una} dargestellt, zwischen $290$ und $390$ Bit mit einem Maximum bei $8$ Sequenzpaaren und $320$ Bit benötigt, wobei der Mittelwert bei $323.2$ Bit liegt.
-
-Die Huffman-Kodierung kodiert für $10000$ Sequenzpaare mit $1000$ Basen, wie in Abbildung \ref{fig:diff-huf} zu sehen ist, die Differenzen der Trace Points mit $3$ bis $30$ Bit, wobei hier das Maximum bei $2600$ Sequenzpaaren mit $15$ Bit liegt. Sie benötigt durchschnittlich nur $13.90$ Bit und damit nur etwa $56.75$\% des Speicherbedarfs der unären und $34.74$\% der naiven binären Kodierung. Für $100$ Sequenzpaare mit $10000$ Basen wird, wie in Abbildung \ref{big-diff-huf} dargestellt, zwischen $70$ und $170$ Bit benötigt, wobei das Maximum bei $20$ Sequenzpaaren mit $110$ Bit und der Mittelwert bei $114.04$ Bit liegt.
-\fi
+Die unäre und Huffman-Kodierungen der Trace Point Differenzen sind Abbildung \ref{tracepoint-d200} dargestellt. Es ist deutlich zu erkennen, dass beide Verteilungen ähnlich verlaufen. Die unäre Kodierung benötigt zwischen $60$ und $132$ Bit und somit $91.19$ Bit im Mittel. Bei der Huffman-Kodierung liegen die Werte zwischen $42$ und $126$ Bit bei einem Mittelwert von $84.18$ Bit. Somit benötigt die Huffman-Kodierung etwa $33$\% weniger Speicher als die binäre Kodierung und etwa $8$\% weniger als die unäre Kodierung.
 
 \iffalse
-MAX 0.05: 200
-MIN 0.05: 50
-Mean1: 186.75
+MAX 50: 130
+MIN 50: 45
+Mean1: 86.8
 
-MAX 0.15: 300
-MIN 0.15: 100
-Mean2: 290.83
+MAX 100: 126
+MIN 100: 42
+Mean2: 80.222
 
-MAX 0.30: 1620
-MIN 0.30: 180
-Mean3: 1312.91
+MAX 200: 138
+MIN 200: 36
+Mean3: 83.376
 
-MAX 0.50: 3465
-MIN 0.50: 154
-Mean4: 3223.30930931
-
+MAX 500: 90
+MIN 500: 25
+Mean4: 57.952
 \fi
 
-\begin{figure}[h]
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/new/deltas-1000-5000-015}
+	\caption{Häufigkeitsverteilung der Huffman-Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und $\Delta$-Werten von $50$, $100$, $200$ und $500$.} \label{deltas}
+\end{figure}
+
+Um die Auswirkungen der Wahl des $\Delta$-Parameters messen zu können, wurden, wie oben beschrieben, die Häufigkeitsverteilung der Huffman-Kodierung der Trace Point Differenzen für jeweils \numprint{1000} zufällige Sequenzpaare mit je \numprint{5000} Basenpaaren, einer Fehlerrate von $15$\% und $\Delta$-Werten von $50$, $100$, $200$ und $500$ berechnet. Wie in Abbildung \ref{deltas} zu erkennen ist, liegt die Größe der Kodierung für $\Delta = 50$ zwischen $45$ und $130$ Bit bei einem Mittelwert von $86.8$ Bit. Für $\Delta = 100$ liegen die Werte zwischen $42$ und $126$ Bit und der Mittelwert bei $80.22$ Bit. Weiterhin werden für $\Delta = 200$ Werte zwischen $42$ und $126$ Bit erreicht, bei einem Mittelwert von $84.18$ Bit. Abschließend erreicht die Kodierung für $\Delta = 500$ Werte im Bereich von $25$ und $90$ Bit. Hier liegt der Mittelwert bei $57.95$ Bit.
+
+Somit benötigt die Huffman-Kodierung bei einem groß gewählten $\Delta$ von $500$ etwa ein Drittel weniger Speicher als bei einem klein gewählten $\Delta$-Wert von $50$.
+
+\iffalse
+MAX 0.05: 96
+MIN 0.05: 24
+Mean1: 50.992
+
+MAX 0.15: 128
+MIN 0.15: 48
+Mean2: 83.032
+
+MAX 0.30: 168
+MIN 0.30: 56
+Mean3: 114.281
+
+MAX 0.50: 210
+MIN 0.50: 90
+Mean4: 151.883883884
+\fi
+
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=13cm]{coding/new/errs-1000-5000-d200}
-	\caption{Häufigkeitsverteilung der Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\%.} \label{errs-d200}
+	\caption{Häufigkeitsverteilung der Huffman-Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\%.} \label{errs-d200}
 \end{figure}
+
+Analog zu den verschiedenen $\Delta$-Werten sollte außerdem die Auswirkung der Fehlerrate gemessen werden. Hierfür wurde die Häufigkeitsverteilung der Huffman-Kodierung für \numprint{1000} Sequenzpaare mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\% berechnet und in Abbildung \ref{errs-d200} grafisch dargestellt.
+
+Wie in der Abbildung zu erkennen ist, werden für die Huffman-Kodierung mit einer Fehlerrate von $5$\% $24$ bis $96$ Bit benötigt, wobei der Mittelwert bei $50.99$ Bit liegt. Die Kodierung bei einer Fehlerrate von $15$\% benötigt zwischen $48$ und $128$ Bit bei einem Mittelwert von $83.03$ und bei einer Fehlerrate von $30$\% werden $56$ bis $168$ Bit benötigt, wobei der Mittelwert bei $114.28$ Bit liegt. Abschließend werden für eine Kodierung mit einer Fehlerrate von $50$\% zwischen $90$ und $210$ und im Mittel $151.88$ Bit benötigt.
+
+Bei einer geringen Fehlerrate von $5$\% werden somit $66.5$\% weniger Speicher benötigt, als bei einer hohen Fehlerrate von $50$\%.
 
 \section{Entropie der Repräsentationen}
 
@@ -601,7 +609,7 @@ Mean4: 3223.30930931
 	\label{entropy}
 \end{figure}
 
-Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{entropy} zu erkennen ist, zwischen \numprint{1280} und \numprint{2280}Bit, wobei der Durchschnittswert bei \numprint{1755.79} Bit liegt. Die Werte sind normalverteilt, wobei das Maximum bei $225$ Sequenzpaaren mit etwa \numprint{1800} Bit liegt.
+Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenzpaare, wie in Abbildung \ref{entropy} zu erkennen ist, zwischen \numprint{1280} und \numprint{2280} Bit, wobei der Durchschnittswert bei \numprint{1755.79} Bit liegt. Die Werte sind normalverteilt, wobei das Maximum bei $225$ Sequenzpaaren mit etwa \numprint{1800} Bit liegt.
 
 Die Differenzen der Trace Points weisen hingegen eine Entropie im Bereich von $91$ bis $212$ Bit auf, wobei der Durchschnittswert von $134.69$ Bit nur etwa $7.6$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der Entopie-Werte liegt hier bei etwa bei $220$ Sequenzpaaren mit $130$ Bit.
 
@@ -614,11 +622,11 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 		&\multicolumn{3}{c|}{CIGAR-String}&\multicolumn{3}{c|}{Trace Point Differenzen ($\Delta = 200$)}\\
 		&Min&Max&$\diameter$&Min&Max&$\diameter$\\
 		\hline
-		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&125&\numprint{374625}&\numprint{180336.36}\\
+		Binäre Kodierung&\numprint{4480}&\numprint{9100}&\numprint{6595.50}&125&125&125\\
 		\hline
-		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}&94&\numprint{99784}&\numprint{5453.82}\\
+		Unäre Kodierung&\numprint{3500}&\numprint{5100}&\numprint{4290.94}&60&132&90.19\\
 		\hline
-		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}&80&300&268.73\\
+		Huffman-Kodierung&\numprint{1300}&\numprint{1625}&\numprint{1458.02}&42&126&84.18\\
 		\hline
 		Entropie&\numprint{1280}&\numprint{2280}&\numprint{1755.79}& 91&212&134.69\\
 		\hline
@@ -645,8 +653,6 @@ TODO
 %Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
 
 \section{Bewertung Entropie beider Methoden}
-
-%Entropie pro Symbol * #Symbole, daher CIGAR Entropie größer, weil die länger sind
 
 \chapter{Programm}
 
