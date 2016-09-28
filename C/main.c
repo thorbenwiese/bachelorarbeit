@@ -56,6 +56,10 @@ int main(int argc, char *argv[])
   GtUword *TP;
   TP = encode(tp_data);
 
+  /* decode TracePoint Array and TracePointData to GtEoplist */
+  //GtEoplist *eoplist;
+  //eoplist = decode(TP, tp_data);
+
   gt_tracepoint_data_delete(tp_data);
   gt_free(useq);
   gt_free(vseq);

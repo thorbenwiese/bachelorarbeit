@@ -13,7 +13,7 @@ struct TracePointData
   GtUword ulen, vlen, start1, end1, start2, end2, delta;
 }; 
 
-
+/* function to create a TracePoint Array from TracePointData*/
 GtUword * encode(const TracePointData *tp_data)
 {
   FrontEdistTrace *fet;
@@ -104,6 +104,72 @@ GtUword * encode(const TracePointData *tp_data)
   exit(EXIT_FAILURE);
 }
 
+
+/* function to create a GtEoplist from TracePointData and TracePoint Array */
+/*
+GtEoplist * decode(const *GtUword TP, TracePointData *tp_data)
+{
+  fet = front_edist_trace_new();
+  eoplist = gt_eoplist_new();
+  edist = front_edist_trace_eoplist(eoplist,
+                                    fet,
+                                    tp_data->useq,
+                                    tp_data->ulen,
+                                    tp_data->vseq,
+                                    tp_data->vlen,
+                                    false);
+  gt_assert(edist == gt_eoplist_unit_cost(eoplist));
+  eoplist_reader = gt_eoplist_reader_new(eoplist);
+   
+  return eoplist;
+}
+*/
+
+/*
+# create new intervals from TracePoints and calculate new alignment
+  def decode(self, tp):
+
+    assert self.seq1, "First sequence for decode function is empty."
+    assert self.seq2, "Second sequence for decode function is empty."
+    assert self.delta > 0, "Delta for decode function is <= 0."
+    assert tp, "TracePoint Array for decode function is empty."
+    assert self.start_seq1 >= 0, \
+      "Starting position for first sequence in decode function is < 0."
+    assert self.start_seq2 >= 0, \
+      "Starting position for second sequence in decode function is < 0."
+    assert self.end_seq1 > 0, \
+      "End position for first sequence in decode function is <= 0."
+    assert self.end_seq2 > 0, \
+      "End position for second sequence in decode function is <= 0."
+
+    # calculate CIGAR of intervals
+    cigar = ""
+    
+    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1,
+                              self.end_seq1,self.start_seq2,self.end_seq2)
+
+    for i in range(0,len(tp)):
+
+      if i == 0:
+
+        cigar = aln.calc_cigar(self.seq1[0:self.delta], self.seq2[0:tp[i] + 1])
+      
+      elif i == len(tp) - 1:
+ 
+        cigar += aln.calc_cigar(self.seq1[i*self.delta:len(self.seq1)],
+                                self.seq2[tp[i - 1] + 1:len(self.seq2)])
+
+      else:
+        
+        cigar += aln.calc_cigar(self.seq1[i * self.delta:(i + 1) * self.delta],
+                                self.seq2[tp[i - 1] + 1:tp[i] + 1])
+
+    cigar = Cigar_Pattern.combine_cigar(cigar)
+
+    return cigar
+*/
+
+/* function to set TracePointData */
 void gt_tracepoint_data_set(TracePointData *tp_data, 
                             const GtUchar *useq,
                             const GtUchar *vseq,
@@ -126,20 +192,10 @@ void gt_tracepoint_data_set(TracePointData *tp_data,
     tp_data->start2 = start2;
     tp_data->end2 = end2;
     tp_data->delta = delta;
-    /*
-    printf("useq: %s\n",useq);
-    printf("vseq: %s\n",vseq);
-    printf("ulen: %lu\n",tp_data->ulen);
-    printf("vlen: %lu\n",tp_data->vlen);
-    printf("start1: %lu\n",tp_data->start1);
-    printf("end1: %lu\n",tp_data->end1);
-    printf("start2: %lu\n",tp_data->start2);
-    printf("end2: %lu\n",tp_data->end2);
-    printf("delta: %lu\n",tp_data->delta);
-    */
   }
 }
 
+/* function to reset TracePointData */
 void gt_tracepoint_data_reset(TracePointData *tp_data)
 {
   if(tp_data != NULL)
@@ -156,6 +212,7 @@ void gt_tracepoint_data_reset(TracePointData *tp_data)
   }
 }
 
+/* function to create new TracePointData */
 TracePointData *tracepoint_data_new(void)
 {
   TracePointData *tp_data = gt_malloc(sizeof *tp_data);
@@ -166,6 +223,7 @@ TracePointData *tracepoint_data_new(void)
   return tp_data;
 }
 
+/* function to delete and free TracePointData */
 void gt_tracepoint_data_delete(TracePointData *tp_data)
 {
   if(tp_data != NULL)
