@@ -640,19 +640,12 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 %TODO hier soll wertend beschrieben werden, was die Resultate bedeuten und wie sich bestimmte Werte erklären lassen
 TODO
 
-\section{Bewertung CIGAR-Kodierung}
+\section{CIGAR-Kodierung}
 
-%Die Abbildungen \ref{fig:cig-bin} und \ref{fig:cig-una} verdeutlichen, dass die binäre und unäre Kodierung deutliche Schwankungen im Bitverbrauch aufweisen, welche sich durch die zufällig generierten Sequenzpaare erklären lassen, deren Alignments unter Umständen sehr viele oder ausschließlich Matches bzw. sehr viele InDels aufweisen können. Die Abbildung \ref{fig:cig-huf} hingegen weist eine Normalverteilung des Bitverbrauchs für die Huffman-Kodierung auf.
 
-%In den dargestellten Testläufen verbraucht die Huffman-Kodierung somit durchschnittlich mit Abstand am wenigsten Speicher, obwohl in dem unter \ref{Cigar_Speicher} beschriebenen Beispiel die unäre Kodierung den CIGAR-String etwas effizienter kodiert. Der Grund hierfür ist die deutlich höhere Fehlerrate in \ref{Cigar_Speicher}, welche die Anzahl der zu kodierenden Symbole deutlich erhöht.
+\section{Kodierung der Differenzen der Trace Points}
 
-%Das CIGAR-Format benötigt folglich wenig Speicher für Alignments mit einer kleinen Edit-Distanz und deutlich mehr Speicher für Alignments mit einer großen Edit-Distanz, da in diesem Fall eine höhere Anzahl unterschiedlicher Symbole kodiert werden muss.
-
-\section{Bewertung Kodierung der Differenzen der Trace Points}
-
-%Es ist somit zu erkennen, dass die Kodierung der Differenzen der Trace Points mit den oben genannten Parametern der Testläufe in allen Kodierungen weniger Speicher benötigt, als die Kodierung eines CIGAR-Strings, wobei die Huffman-Kodierung mit Abstand am effizientesten ist. Hierbei ist jedoch zu beachten, dass der Speicherverbrauch der Trace Point Kodierung von der Wahl des $\Delta$-Wertes abhängt, da bei einem kleinen $\Delta$ mehr Trace Points und somit mehr Symbole gespeichert werden müssen, als bei einem großen $\Delta$-Wert.
-
-\section{Bewertung Entropie beider Methoden}
+\section{Entropie beider Methoden}
 
 \chapter{Programm}
 
@@ -664,7 +657,7 @@ TODO
 \operation{combine(cigar)}
 \end{class}
 
-\begin{class}[text width=5.5cm]{Alignment}{5,-5.3}
+\begin{class}[text width=5.5cm]{Alignment}{5,-5}
 \inherit{Cigar Pattern}
 \attribute{seq1 : string}
 \attribute{seq2 : string}
@@ -672,6 +665,7 @@ TODO
 \attribute{end\_seq1 : int}
 \attribute{start\_seq2 : int}
 \attribute{end\_seq2 : int}
+\attribute{cigar=\textit{None} : string}
 \operation{to\_cigar(seq1, seq2)}
 \operation{from\_cigar(seq1, seq2, cigar)}
 \operation{show\_aln()}
@@ -687,7 +681,6 @@ TODO
 \attribute{start\_seq2 : int}
 \attribute{end\_seq2 : int}
 \attribute{delta : int}
-\attribute{cigar=\textit{None} : string}
 \operation{encode()}
 \operation{decode()}
 \operation{store\_tp\_aln()}
