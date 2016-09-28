@@ -1,15 +1,15 @@
 CC?=gcc
 CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wunused-parameter -Wpointer-arith
 
-OBJ=front-with-trace.o tracer.o eoplist.o
+OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o
 
-all: main.x
+all:test.x
 
 # generic compilation rule which creates dependency file on the fly
 %.o: %.c
 	$(CC) -c $< -o $@ $(CFLAGS) -MT $@ -MMD -MP -MF $(@:.o=.d)
 
-main.x:${OBJ} main.o
+test.x:${OBJ} main.o
 	${CC} main.o ${OBJ} -lm -o $@
 
 # read dependencies

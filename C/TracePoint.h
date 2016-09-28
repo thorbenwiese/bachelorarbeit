@@ -1,5 +1,6 @@
 #ifndef TRACEPOINT_H
 #define TRACEPOINT_H
+#include "gt-defs.h"
 
 typedef struct TracePointData TracePointData;
 
@@ -13,5 +14,5 @@ void gt_tracepoint_data_delete(TracePointData *tp_data);
 void gt_tracepoint_data_reset(TracePointData *tp_data);
 
 /* encode function to generate TracePoint Array */
-GtUword encode(const TracePointData *tp_data);
+void encode(const TracePointData *tp_data);
 #endif
