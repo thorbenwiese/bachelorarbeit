@@ -86,11 +86,6 @@ GtUword * encode(const TracePointData *tp_data)
         // TODO do not increment count in the last interval
         if(count == tau - 1)
         {
-          GtUword i = 0;
-          for(i = 0; i <= tau - 1; i++)
-          {
-            printf("Trace Point %lu: %lu\n", i + 1, v_tp[i]);
-          }
           return v_tp;
         }
         else

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "TracePoint.h"
 #include "gt-alloc.h"
@@ -52,10 +53,19 @@ int main(int argc, char *argv[])
   gt_tracepoint_data_set(tp_data, useq, vseq, ulen, vlen, 
                          start1, end1, start2, end2, delta);
 
+  /* number of intervals */
+  GtUword tau = ceil(end1 / delta) - floor(start1 / delta);
+
   /* encode data to Trace Point Array */
   GtUword *TP;
+  GtUword i;
   TP = encode(tp_data);
-
+  printf("Trace Points: ");
+  for(i = 0; i < tau; i++)
+  {
+    printf("%lu ",TP[i]);
+  }
+  printf("\n");
   /* decode TracePoint Array and TracePointData to GtEoplist */
   //GtEoplist *eoplist;
   //eoplist = decode(TP, tp_data);
