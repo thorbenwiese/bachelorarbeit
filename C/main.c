@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "TracePoint.h"
+#include "gt-alloc.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,56 +18,47 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
   
-  TracePointData *tp_data;
-  tp_data = tracepoint_data_new();
-
+  /* read and check parameters */
   useq = (unsigned char *) strdup(argv[1]);
-  assert(useq != NULL);
+  gt_assert(useq != NULL);
 
   ulen = strlen(argv[1]);
-  assert(ulen > 0);
+  gt_assert(ulen > 0);
 
   vseq = (unsigned char *) strdup(argv[2]);
-  assert(vseq != NULL);
+  gt_assert(vseq != NULL);
 
   vlen = strlen(argv[2]);
-  assert(vlen > 0);
+  gt_assert(vlen > 0);
 
   start1 = atoi(argv[3]);
 
   end1 = atoi(argv[4]);
-  assert(end1 > 0);
-  assert(start1 < end1);
+  gt_assert(end1 > 0);
+  gt_assert(start1 < end1);
 
   start2 = atoi(argv[5]);
 
   end2 = atoi(argv[6]);
-  assert(end2 > 0);
-  assert(start2 < end2);
+  gt_assert(end2 > 0);
+  gt_assert(start2 < end2);
 
   delta = atoi(argv[7]);
-  assert(delta > 0);
+  gt_assert(delta > 0);
 
-  //tp_data->start1 = start1;  
-  //printf("START.11 %s\n",tp_data->start1);
-  /*
-  tp_data->useq = useq;
-  tp_data->ulen = ulen;
-  tp_data->vseq = vseq;
-  tp_data->vlen = vlen;
-  tp_data->start1 = start1;
-  tp_data->end1 = end1;
-  tp_data->start2 = start2;
-  tp_data->end2 = end2;
-  tp_data->delta = delta;
-  */
+  /* create TracePointData */
+  TracePointData *tp_data;
+  tp_data = tracepoint_data_new();
+  gt_tracepoint_data_set(tp_data, useq, vseq, ulen, vlen, 
+                         start1, end1, start2, end2, delta);
 
   //GtUword TP;
   //TP = encode(tp_data);
-  printf("encode\n");
-  //encode(tp_data);
+  encode(tp_data);
 
   gt_tracepoint_data_delete(tp_data);
+  gt_free(useq);
+  gt_free(vseq);
 
   return 0;
 }
