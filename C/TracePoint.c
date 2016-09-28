@@ -14,7 +14,7 @@ struct TracePointData
 }; 
 
 
-void encode(const TracePointData *tp_data)
+GtUword * encode(const TracePointData *tp_data)
 {
   FrontEdistTrace *fet;
   GtEoplist *eoplist;
@@ -24,16 +24,16 @@ void encode(const TracePointData *tp_data)
   GtUword q = 0, edist, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, 
           v_len = 0;
 
-  // p is a factor to dynamically adjust the interval borders
-  // if the sequence starts at pos 0 then p should be 1
+  /* p is a factor to dynamically adjust the interval borders */
+  /* if the sequence starts at pos 0 then p should be 1 */
   GtUword p = MAX(1,ceil(tp_data->start1/tp_data->delta));
 
-  // number of intervals
+  /* number of intervals */
   GtUword tau = ceil(tp_data->end1 / tp_data->delta) - floor(
             tp_data->start1 / tp_data->delta);
   
-  // Trace Points in u sequence
-  // tau - 1 because the last interval has no Trace Point
+  /* Trace Points in useq */
+  /* tau - 1 because the last interval has no Trace Point */
   gt_assert(tau > 1);
   GtUword *u_tp = gt_malloc((tau - 1) * sizeof *u_tp);
 
@@ -43,8 +43,8 @@ void encode(const TracePointData *tp_data)
     u_tp[q] = (p + q) * tp_data->delta - 1;
   }
 
-  // Trace Points in v sequence
-  // tau - 1 because the last interval has no Trace Point
+  /* Trace Points in v sequence */
+  /* tau - 1 because the last interval has no Trace Point */
   GtUword *v_tp = gt_malloc((tau - 1) * sizeof *v_tp);
 
   fet = front_edist_trace_new();
@@ -78,8 +78,7 @@ void encode(const TracePointData *tp_data)
         num_chars_in_v++;
         num_chars_in_u++;
       }
-      //printf("uchars: %lu, vchars: %lu\n",num_chars_in_u, num_chars_in_v);
-      //gt_assert(count < (tau - 1));
+      gt_assert(count <= tau - 1);
       if(num_chars_in_u == u_tp[count])
       {
         v_tp[v_len++] = num_chars_in_v;
@@ -87,15 +86,12 @@ void encode(const TracePointData *tp_data)
         // TODO do not increment count in the last interval
         if(count == tau - 1)
         {
-          //front_edist_trace_delete(fet);
-          //gt_eoplist_reader_delete(eoplist_reader);
-          //gt_eoplist_delete(eoplist);
           GtUword i = 0;
           for(i = 0; i <= tau - 1; i++)
           {
             printf("Trace Point %lu: %lu\n", i + 1, v_tp[i]);
           }
-          //return v_tp;
+          return v_tp;
         }
         else
         {
@@ -104,8 +100,8 @@ void encode(const TracePointData *tp_data)
       }
     }
   }
-  //fprintf(stderr, "Encode Failed.");
-  //exit(EXIT_FAILURE);
+  fprintf(stderr, "Encode Failed.\n");
+  exit(EXIT_FAILURE);
 }
 
 void gt_tracepoint_data_set(TracePointData *tp_data, 
@@ -130,6 +126,7 @@ void gt_tracepoint_data_set(TracePointData *tp_data,
     tp_data->start2 = start2;
     tp_data->end2 = end2;
     tp_data->delta = delta;
+    /*
     printf("useq: %s\n",useq);
     printf("vseq: %s\n",vseq);
     printf("ulen: %lu\n",tp_data->ulen);
@@ -139,6 +136,7 @@ void gt_tracepoint_data_set(TracePointData *tp_data,
     printf("start2: %lu\n",tp_data->start2);
     printf("end2: %lu\n",tp_data->end2);
     printf("delta: %lu\n",tp_data->delta);
+    */
   }
 }
 

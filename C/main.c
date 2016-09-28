@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
   gt_tracepoint_data_set(tp_data, useq, vseq, ulen, vlen, 
                          start1, end1, start2, end2, delta);
 
-  //GtUword TP;
-  //TP = encode(tp_data);
-  encode(tp_data);
+  /* encode data to Trace Point Array */
+  GtUword *TP;
+  TP = encode(tp_data);
 
   gt_tracepoint_data_delete(tp_data);
   gt_free(useq);

@@ -27,5 +27,5 @@ void gt_tracepoint_data_set(TracePointData *tp_data,
                             GtUword delta);
 
 /* encode function to generate TracePoint Array */
-void encode(const TracePointData *tp_data);
+GtUword * encode(const TracePointData *tp_data);
 #endif
