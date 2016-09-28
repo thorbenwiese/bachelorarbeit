@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//TODO nur fuer die Berechnung von tau fuer die Ausgabe der TPs
 #include <math.h>
 
 #include "TracePoint.h"
 #include "gt-alloc.h"
+#include "substring.h"
 
 int main(int argc, char *argv[])
 {
 
-  unsigned char *useq, *vseq;
+  GtUchar *long_useq, *long_vseq, *useq, *vseq;
   GtUword ulen, vlen, start1, end1, start2, end2, delta;
+  GtUword *TP;
+  TracePointData *tp_data;
 
   if (argc != 8)
   {
@@ -20,17 +24,17 @@ int main(int argc, char *argv[])
   }
   
   /* read and check parameters */
-  useq = (unsigned char *) strdup(argv[1]);
-  gt_assert(useq != NULL);
+  long_useq = (unsigned char *) strdup(argv[1]);
+  gt_assert(long_useq != NULL);
+
+  long_vseq = (unsigned char *) strdup(argv[2]);
+  gt_assert(long_vseq != NULL);
 
   ulen = strlen(argv[1]);
-  gt_assert(ulen > 0);
-
-  vseq = (unsigned char *) strdup(argv[2]);
-  gt_assert(vseq != NULL);
+  assert(ulen > 0);
 
   vlen = strlen(argv[2]);
-  gt_assert(vlen > 0);
+  assert(vlen > 0);
 
   start1 = atoi(argv[3]);
 
@@ -47,8 +51,10 @@ int main(int argc, char *argv[])
   delta = atoi(argv[7]);
   gt_assert(delta > 0);
 
+  useq = substring(long_useq, start1 + 1, start1 + end1 + 1);
+  vseq = substring(long_vseq, start2 + 1, start2 + end2 + 1);
+
   /* create TracePointData */
-  TracePointData *tp_data;
   tp_data = tracepoint_data_new();
   gt_tracepoint_data_set(tp_data, useq, vseq, ulen, vlen, 
                          start1, end1, start2, end2, delta);
@@ -57,7 +63,6 @@ int main(int argc, char *argv[])
   GtUword tau = ceil(end1 / delta) - floor(start1 / delta);
 
   /* encode data to Trace Point Array */
-  GtUword *TP;
   GtUword i;
   TP = encode(tp_data);
   printf("Trace Points: ");
@@ -68,7 +73,7 @@ int main(int argc, char *argv[])
   printf("\n");
   /* decode TracePoint Array and TracePointData to GtEoplist */
   //GtEoplist *eoplist;
-  //eoplist = decode(TP, tp_data);
+  //eoplist = decode(TP, tau - 1, tp_data);
 
   gt_tracepoint_data_delete(tp_data);
   gt_free(useq);

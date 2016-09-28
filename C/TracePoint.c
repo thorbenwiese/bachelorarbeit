@@ -5,6 +5,7 @@
 #include "gt-alloc.h"
 #include "front-with-trace.h"
 #include "TracePoint.h"
+#include "substring.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 struct TracePointData 
@@ -83,7 +84,7 @@ GtUword * encode(const TracePointData *tp_data)
       {
         v_tp[v_len++] = num_chars_in_v;
 
-        // TODO do not increment count in the last interval
+        // do not increment count in the last interval
         if(count == tau - 1)
         {
           return v_tp;
@@ -102,47 +103,49 @@ GtUword * encode(const TracePointData *tp_data)
 
 /* function to create a GtEoplist from TracePointData and TracePoint Array */
 /*
-GtEoplist * decode(const *GtUword TP, TracePointData *tp_data)
+GtEoplist * decode(const *GtUword TP, GtUword TPlen, TracePointData *tp_data)
 {
   fet = front_edist_trace_new();
   eoplist = gt_eoplist_new();
-  edist = front_edist_trace_eoplist(eoplist,
-                                    fet,
-                                    tp_data->useq,
-                                    tp_data->ulen,
-                                    tp_data->vseq,
-                                    tp_data->vlen,
-                                    false);
-  gt_assert(edist == gt_eoplist_unit_cost(eoplist));
-  eoplist_reader = gt_eoplist_reader_new(eoplist);
+
+  GtUchar *usub, *vsub;
+  GtUword i, usublen, vsublen;
+  for(i = 1; i <= TPlen; i++)
+  {
+    if(i == 0)
+    {
+      usub = substring(useq, 0, tp_data->delta);
+      vsub = substring(vseq, 0, TP[0] + 1);
+    }
+    else if(i == TPlen - 1)
+    {
+      usub = substring(useq, i * tp_data->delta, ulen);
+      vsub = substring(vseq, TP[i - 1] + 1, vlen);
+    }
+    else
+    {
+      usub = substring(useq, i * tp_data->delta, (i + 1) * tp_data->delta);
+      vsub = substring(vseq, TP[i - 1] + 1, TP[i] + 1);
+    }
+    usublen = strlen(usub);
+    vsublen = strlen(vsub);
+    edist = front_edist_trace_eoplist(eoplist,
+                                      fet,
+                                      tp_data->usub,
+                                      tp_data->usublen,
+                                      tp_data->vsub,
+                                      tp_data->vsublen,
+                                      false);
+    gt_assert(edist == gt_eoplist_unit_cost(eoplist));
+    eoplist_reader = gt_eoplist_reader_new(eoplist);
+    // ... read cigar and concatenate?
+  }
    
   return eoplist;
 }
 */
 
 /*
-# create new intervals from TracePoints and calculate new alignment
-  def decode(self, tp):
-
-    assert self.seq1, "First sequence for decode function is empty."
-    assert self.seq2, "Second sequence for decode function is empty."
-    assert self.delta > 0, "Delta for decode function is <= 0."
-    assert tp, "TracePoint Array for decode function is empty."
-    assert self.start_seq1 >= 0, \
-      "Starting position for first sequence in decode function is < 0."
-    assert self.start_seq2 >= 0, \
-      "Starting position for second sequence in decode function is < 0."
-    assert self.end_seq1 > 0, \
-      "End position for first sequence in decode function is <= 0."
-    assert self.end_seq2 > 0, \
-      "End position for second sequence in decode function is <= 0."
-
-    # calculate CIGAR of intervals
-    cigar = ""
-    
-    aln = Alignment.Alignment(self.seq1, self.seq2, self.start_seq1,
-                              self.end_seq1,self.start_seq2,self.end_seq2)
-
     for i in range(0,len(tp)):
 
       if i == 0:
