@@ -257,6 +257,7 @@ Die Größe dieser Kodierung ist demnach $28 + 33 + 9 + 17 = 87$ Bit.
 	\caption{Huffman-Bäume der Kodierung des CIGAR-Strings}
 	\label{Huff-Tree-Cig}
 \end{figure}
+\label{Alignment-bsp}
 \end{bsp}
 
 \section{Trace Point Konzept}
@@ -381,7 +382,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} b
 
 Die Ausführung des Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $01001;0001$ im Header kodiert werden, nötig.
 
-Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 10 = 21$ Bit und benötigt damit nur $\frac{21}{70} = 30$\% der Huffman-Kodierung für den CIGAR-String.
+Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und benötigt damit nur $\frac{20}{70} \approx 28$\% der Huffman-Kodierung für den CIGAR-String.
 
 \begin{table}
 	\centering
@@ -462,7 +463,11 @@ Zusammenfassend ergibt sich für das Alignment aus Beispiel \ref{Bsp1} die folgen
 	\caption{Anzahl der Bits für die Kodierung des Beispiel-Alignments}
 \end{figure}
 
-\chapter{Resultate}
+\chapter{Resultate} \label{Resultate}
+
+Um von den Kodierungen des Alignments aus Beispiel \ref{Alignment-bsp} auf die Verteilung einer großen Anzahl von Alignments schließen zu können, wurden die verschiedenen Kodierungen für jeweils CIGAR-Strings und Trace Point Differenzen mit unterschiedlichen Parametern, sowie die Verteilung der Entropie der zwei Verfahren berechnet und grafisch dargestellt.
+
+Die Resultate dieser Berechnungen werden in diesem Kapitel detailliert beschrieben.
 
 \section{CIGAR Kodierung}\label{Cigar_Testläufe}
 
@@ -613,9 +618,9 @@ Die Entropie für die CIGAR-String Repräsentation liegt für die gegebenen Sequenz
 
 Die Differenzen der Trace Points weisen hingegen eine Entropie im Bereich von $91$ bis $212$ Bit auf, wobei der Durchschnittswert von $134.69$ Bit nur etwa $7.6$\% des Durchschnittwertes der CIGAR-String Repräsentation ausmacht. Das Maximum der Entopie-Werte liegt hier bei etwa bei $220$ Sequenzpaaren mit $130$ Bit.
 
-\clearpage
-Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
-\begin{figure}[h]
+Zusammenfassend ergibt sich für die Resultate die Tabelle \ref{bits-result}.
+
+\begin{figure}[t]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
@@ -638,16 +643,37 @@ Zusammenfassend ergibt sich für die Resultate folgende Tabelle:
 
 \chapter{Diskussion}
 %TODO hier soll wertend beschrieben werden, was die Resultate bedeuten und wie sich bestimmte Werte erklären lassen
-TODO
+In diesem Kapitel werden die Resultate aus Kapitel \ref{Resultate} interpretiert und die Qualität der Kodierungen in Bezug auf eine speichereffiziente Repräsentation eines Alignments betrachtet.
 
 \section{CIGAR-Kodierung}
 
+Die Kodierungen der CIGAR-Strings, wie sie in Abbildung \ref{cigar-coding} grafisch und in Tabelle \ref{bits-result} numerisch dargestellt sind, zeigen, dass die Huffman-Kodierung mit \numprint{1458.02} Bit im Mittel deutlich weniger Speicher benötigt, als die unäre Kodierung mit \numprint{4290.94} Bit oder die binäre Kodierung mit \numprint{6595.50} Bit.
+
+In CIGAR-Strings von Alignments mit einer geringen Fehlerrate ist die Anzahl der Matches deutlich höher als die der Insertions oder Deletions, was zu großen Quantitäten der 'M'-Operation und kleinen Quantitäten der 'I'- und 'D'-Operationen führt. Insertions und Deletions trefen dazu selten hintereinander auf, was einen Schwerpunkt der Quantität '1' zufolge hat. Für so eine Art der Verteilung ist die binäre Kodierung weniger gut geeignet als die unäre oder Huffman-Kodierung, da sie keine Speicherersparnis aus häufig auftretenden Symbolen ziehen kann, sondern alle Symbole mit der selben Anzahl an Bits kodiert.
+
+Die unäre Kodierung benötigt bei kürzeren Sequenzen, wie bei denen aus Beispiel \ref{Alignment-bsp}, weniger Speicher als die Huffman-Kodierung, da diese für die Dekodierung jedes Mal den 'Header' mitspeichern muss und sich dieser zusätzliche Speicherverbrauch bei kürzeren Sequenzen stärker auswirkt, als bei längeren. In den Resultaten wurden deutlich längere Sequenzen verwendet, weshalb hier die Huffman-Kodierung wie oben beschrieben nur etwa $34$\% des Speicherbedarfs der unären Kodierung benötigt.
+
+Da kürzere Sequenzen hier nur für das Beispiel verwendet wurden und Alignments üblicherweise von längeren Sequenzabschnitten gebildet werden, ist somit die Huffman-Kodierung die speichereffizienteste der drei Verfahren.
 
 \section{Kodierung der Differenzen der Trace Points}
 
+Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und eine Fehlerrate von $15$\% in Abbildung \ref{tracepoint-d200} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben. In Abbildung \ref{deltas} sind die Auswirkungen der Wahl des $\Delta$-Parameters dargestellt und in Abbildung \ref{errs-d200} die Auswirkungen der Fehlerrate der Sequenzen.
+
+Für einen $\Delta$-Wert von $200$ benötigt die Huffman-Kodierung im Durchschnitt nur $84.18$ Bit und damit etwa $9.3$\% weniger Speicher, als die unäre Kodierung mit $90.19$ Bit. Die binäre Kodierung liegt mit durchschnittlich $125$ Bit deutlich über dem Bedarf der anderen beiden Kodierungen. Da die einzelnen Abschnitte in der $v$-Sequenz zu $\Delta$ großen Abschnitten der $u$-Sequenz aligniert werden, sind diese üblicherweise auch genauso oder ähnlich groß wie das $\Delta$. Das hat zur Folge, dass die Differenzen der Trace Points in einem ähnlichen Wertebereich liegen und die unäre und Huffman-Kodierung aus dieser Verteilung einen Vorteil ziehen können und daher speichereffizienter kodieren, wobei der Huffman-Algorithmus etwas besser abschneidet als die unäre Kodierung.
+
+Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. Bei einem großen $\Delta$ müssen weniger Symbole gespeichert werden und bei einem kleinen $\Delta$ analog mehr. So benötigt die Huffman-Kodierung für ein $\Delta = 500$ folglich nur etwa $66$\% des Speichers als für ein $\Delta = 50$. 
+
+Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung, da für sehr ähnliche Sequenzen mit einer hohen Anzahl an Matches die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind und daher deutlich weniger unterschiedliche Symbole kodiert werden müssen. So benötigt die Huffman-Kodierung mit $\Delta = 200$ für eine kleine Fehlerrate von $5$\% im Durchschnitt $50.99$ Bit und damit im Verhältnis zu einer hohen Fehlerrate von $50$\%, welche im Schnitt $151.88$ Bit benötigt, lediglich etwa ein Drittel des Speichers.
+
 \section{Entropie beider Methoden}
 
+Die Entropie der CIGAR-Strings und der Trace Point Differenzen sind in Abbildung \ref{entropy} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben.
+
+Sie gibt den Informationsgehalt einer Sequenz in Relation zu der Verteilung der Symbole an und wird deshalb in Bit pro Symbol berechnet und dann später mit der Anzahl der zu kodierenden Symbole multipliziert. Da ein CIGAR-String alle Edit-Operationen eines Alignments beschreibt und die Trace Point Differenzen lediglich die Abstände von einem zu alignierenden Abschnitt zu dem nächsten beschreiben, müssen in der Regel für CIGAR-Strings mehr Symbole kodiert werden, als für die Trace Point Differenzen. Diese Eigenschaft spiegelt sich auch in der Entropie beider Verfahren wieder. Die CIGAR-Strings weisen eine Entropie von durchschnittlich \numprint{1755,79} Bit auf, was etwa $13$ mal so viel ist wie die Entropie der Trace Point Differenzen, welche bei durchschnittlich $134.69$ Bit liegt.
+
 \chapter{Programm}
+
+TODO
 
 \section{Aufbau}
 \begin{figure}[h]
