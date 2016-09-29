@@ -301,7 +301,7 @@ gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 0    5    0    5    0    5    0    5    0    
 \end{verbatim}
 
-Beide Sequenzen seien in dem Intervall $0...37$. Das Alignment wird wie oben beschrieben in $\tau = \left \lceil\frac{37}{15}\right \rceil - \left \lfloor\frac{0}{15}\right \rfloor = 3 - 0 = 3$ Abschnitte unterteilt. Der erste Abschnitt ist in $u$ von $0$ bis $14$ und in $v$ von $0$ bis $15$.
+Beide Sequenzen seien in dem Intervall von $0$ bis $37$. Das Alignment wird wie oben beschrieben in $\tau = \left \lceil\frac{37}{15}\right \rceil - \left \lfloor\frac{0}{15}\right \rfloor = 3 - 0 = 3$ Abschnitte unterteilt. Der erste Abschnitt ist in $u$ von $0$ bis $14$ und in $v$ von $0$ bis $15$.
 \begin{verbatim}
 gagc-a-t-gttgcc-tgg
 || | | | |  | | |||
@@ -465,7 +465,7 @@ Zusammenfassend ergibt sich für das Alignment aus Beispiel \ref{Bsp1} die folgen
 
 \chapter{Resultate} \label{Resultate}
 
-Um von den Kodierungen des Alignments aus Beispiel \ref{Alignment-bsp} auf die Verteilung einer großen Anzahl von Alignments schließen zu können, wurden die verschiedenen Kodierungen für jeweils CIGAR-Strings und Trace Point Differenzen mit unterschiedlichen Parametern, sowie die Verteilung der Entropie der zwei Verfahren berechnet und grafisch dargestellt.
+Um von den Kodierungen des Alignments aus Beispiel \ref{Alignment-bsp} auf die Verteilung einer großen Anzahl von Alignments schließen zu können, habe ich die verschiedenen Kodierungen für jeweils CIGAR-Strings und Trace Point Differenzen mit unterschiedlichen Parametern, sowie die Verteilung der Entropie der zwei Verfahren berechnet und grafisch dargestellt.
 
 Die Resultate dieser Berechnungen werden in diesem Kapitel detailliert beschrieben.
 
@@ -594,7 +594,7 @@ Mean4: 151.883883884
 	\caption{Häufigkeitsverteilung der Huffman-Kodierungen der Trace Point Differenzen für \numprint{1000} DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\%.} \label{errs-d200}
 \end{figure}
 
-Analog zu den verschiedenen $\Delta$-Werten sollte außerdem die Auswirkung der Fehlerrate gemessen werden. Hierfür wurde die Häufigkeitsverteilung der Huffman-Kodierung für \numprint{1000} Sequenzpaare mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\% berechnet und in Abbildung \ref{errs-d200} grafisch dargestellt.
+Analog zu den verschiedenen $\Delta$-Werten wurde außerdem die Auswirkung der Fehlerrate gemessen. Hierfür wurde die Häufigkeitsverteilung der Huffman-Kodierung für \numprint{1000} Sequenzpaare mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\%, $15$\%, $30$\% und $50$\% berechnet und in Abbildung \ref{errs-d200} grafisch dargestellt.
 
 Wie in der Abbildung zu erkennen ist, werden für die Huffman-Kodierung mit einer Fehlerrate von $5$\% $24$ bis $96$ Bit benötigt, wobei der Mittelwert bei $50.99$ Bit liegt. Die Kodierung bei einer Fehlerrate von $15$\% benötigt zwischen $48$ und $128$ Bit bei einem Mittelwert von $83.03$ und bei einer Fehlerrate von $30$\% werden $56$ bis $168$ Bit benötigt, wobei der Mittelwert bei $114.28$ Bit liegt. Abschließend werden für eine Kodierung mit einer Fehlerrate von $50$\% zwischen $90$ und $210$ und im Mittel $151.88$ Bit benötigt.
 
@@ -649,7 +649,7 @@ In diesem Kapitel werden die Resultate aus Kapitel \ref{Resultate} interpretiert
 
 Die Kodierungen der CIGAR-Strings, wie sie in Abbildung \ref{cigar-coding} grafisch und in Tabelle \ref{bits-result} numerisch dargestellt sind, zeigen, dass die Huffman-Kodierung mit \numprint{1458.02} Bit im Mittel deutlich weniger Speicher benötigt, als die unäre Kodierung mit \numprint{4290.94} Bit oder die binäre Kodierung mit \numprint{6595.50} Bit.
 
-In CIGAR-Strings von Alignments mit einer geringen Fehlerrate ist die Anzahl der Matches deutlich höher als die der Insertions oder Deletions, was zu großen Quantitäten der 'M'-Operation und kleinen Quantitäten der 'I'- und 'D'-Operationen führt. Insertions und Deletions trefen dazu selten hintereinander auf, was einen Schwerpunkt der Quantität '1' zufolge hat. Für so eine Art der Verteilung ist die binäre Kodierung weniger gut geeignet als die unäre oder Huffman-Kodierung, da sie keine Speicherersparnis aus häufig auftretenden Symbolen ziehen kann, sondern alle Symbole mit der selben Anzahl an Bits kodiert.
+In CIGAR-Strings von Alignments mit einer geringen Fehlerrate ist die Anzahl der Matches deutlich höher als die der Insertions oder Deletions, was zu großen Quantitäten der 'M'-Operation und kleinen Quantitäten der 'I'- und 'D'-Operationen führt. Insertions und Deletions treffen dazu selten hintereinander auf, was einen Schwerpunkt der Quantität '1' zufolge hat. Für so eine Art der Verteilung ist die binäre Kodierung weniger gut geeignet als die unäre oder Huffman-Kodierung, da sie keine Speicherersparnis aus häufig auftretenden Symbolen ziehen kann, sondern alle Symbole mit der selben Anzahl an Bits kodiert.
 
 Die unäre Kodierung benötigt bei kürzeren Sequenzen, wie bei denen aus Beispiel \ref{Alignment-bsp}, weniger Speicher als die Huffman-Kodierung, da diese für die Dekodierung jedes Mal den 'Header' mitspeichern muss und sich dieser zusätzliche Speicherverbrauch bei kürzeren Sequenzen stärker auswirkt, als bei längeren. In den Resultaten wurden deutlich längere Sequenzen verwendet, weshalb hier die Huffman-Kodierung wie oben beschrieben nur etwa $34$\% des Speicherbedarfs der unären Kodierung benötigt.
 
@@ -673,9 +673,8 @@ Sie gibt den Informationsgehalt einer Sequenz in Relation zu der Verteilung der 
 
 \chapter{Programm}
 
-TODO
+Die Umsetzung des Trace Point Verfahrens, sowie die Berechnung der verschiedenen Größen der Kodierung ist im Rahmen dieser Arbeit zunächst als Python Implementierung und anschließend als C Implementierung realisiert worden \cite{git}. Der Aufbau als UML-Klassendiagramm ist in Abbildung \ref{UML} zu sehen.
 
-\section{Aufbau}
 \begin{figure}[h]
 \begin{tikzpicture}
 \begin{class}[text width=7cm]{Cigar Pattern}{0,-15}
@@ -720,11 +719,15 @@ TODO
 \end{class}
 \end{tikzpicture}
 \caption{UML-Diagramm}
+\label{UML}
 \end{figure}
 
-\clearpage
-
 \section{Funktionalität}
+
+Die entscheidenden Funktionen dieser Implementierung sind die encode()-Funktion, welche aus einem gegebenen CIGAR-String die Trace Points mit Hilfe des $\Delta$-Wertes extrahiert und die decode()-Funktion, welche für gegebene Trace Points und ein $\Delta$ einen CIGAR-String rekonstruiert. Der Pseudocode der encode()-Funktion ist in Algorithmus \ref{encode} und der Pseudocode der decode()-Funktion in Algorithmus \ref{decode} beschrieben. 
+
+Die encode-Funktion extrahiert aus dem gegebenen CIGAR-String die Trace Points, welche dann zusammen mit dem $\Delta$-Wert und den Start- und Endpositionen der Sequenzabschnitte gespeichert werden. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren.
+Um bestimmen zu können, wie die einzelnen Abschnitte zueinander aligniert werden, muss in der decode()-Funktion zunächst ein neues Alignment des jeweiligen Intervall-Paares errechnet werden und alle Teilalignments zu einem Gesamtalignment konkateniert werden. Hierbei ist jedoch nicht gewährleistet, dass das neue Alignment dem alten entspricht. Da das neue Alignment aus konkatenierten optimalen Alignments besteht, ist es ebenfalls optimal und hat daher mindestens die gleiche Edit-Distanz wie das alte Alignment.
 
 \begin{algorithm}[t]
 	\caption{Berechnung der Trace Points von einem gegebenen CIGAR-String}
@@ -772,10 +775,6 @@ TODO
 			\EndFunction
 		\end{algorithmic}
 	\end{algorithm}
-
-\subsection{Informationsverlust bei der encode()-Funktion}
-	Die encode-Funktion extrahiert aus dem gegebenen CIGAR-String die Trace Points, welche dann zusammen mit dem $\Delta$-Wert und den Start- und Endpositionen der Sequenzabschnitte gespeichert werden. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren.
-	Um bestimmen zu können, wie die einzelnen Abschnitte zueinander aligniert werden, muss in der decode()-Funktion zunächst ein neues Alignment des jeweiligen Intervall-Paares errechnet werden und alle Teilalignments zu einem Gesamtalignment konkateniert werden. Hierbei ist jedoch nicht gewährleistet, dass das neue Alignment dem alten entspricht. Da das neue Alignment aus konkatenierten optimalen Alignments besteht, ist es ebenfalls optimal und hat daher mindestens die gleiche Edit-Distanz wie das alte Alignment.
 	
 	\begin{algorithm}[t]
 		\caption{Berechnung eines CIGAR-Strings von einem gegebenen Trace Point Array}
