@@ -6,6 +6,7 @@
 #include "front-with-trace.h"
 #include "TracePoint.h"
 #include "substring.h"
+
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 struct TracePointData 
@@ -44,7 +45,7 @@ GtUword * encode(const TracePointData *tp_data)
     u_tp[q] = (p + q) * tp_data->delta - 1;
   }
 
-  /* Trace Points in v sequence */
+  /* Trace Points in vseq */
   /* tau - 1 because the last interval has no Trace Point */
   GtUword *v_tp = gt_malloc((tau - 1) * sizeof *v_tp);
 
@@ -62,7 +63,6 @@ GtUword * encode(const TracePointData *tp_data)
 
   while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
   {
-    //printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
     GtUword i;
     for(i = 0; i < co.iteration; i++)
     {
@@ -103,8 +103,11 @@ GtUword * encode(const TracePointData *tp_data)
 
 /* function to create a GtEoplist from TracePointData and TracePoint Array */
 /*
-GtEoplist * decode(const *GtUword TP, GtUword TPlen, TracePointData *tp_data)
+GtEoplist * decode(const GtUword *TP, GtUword TPlen, TracePointData *tp_data)
 {
+  FrontEdistTrace *fet;
+  GtEoplist *eoplist;
+
   fet = front_edist_trace_new();
   eoplist = gt_eoplist_new();
 
@@ -114,18 +117,18 @@ GtEoplist * decode(const *GtUword TP, GtUword TPlen, TracePointData *tp_data)
   {
     if(i == 0)
     {
-      usub = substring(useq, 0, tp_data->delta);
-      vsub = substring(vseq, 0, TP[0] + 1);
+      usub = substring(tp_data->useq, 0, tp_data->delta);
+      vsub = substring(tp_data->vseq, 0, TP[0] + 1);
     }
     else if(i == TPlen - 1)
     {
-      usub = substring(useq, i * tp_data->delta, ulen);
-      vsub = substring(vseq, TP[i - 1] + 1, vlen);
+      usub = substring(tp_data->useq, i * tp_data->delta, tp_data->ulen);
+      vsub = substring(tp_data->vseq, TP[i - 1] + 1, tp_data->vlen);
     }
     else
     {
-      usub = substring(useq, i * tp_data->delta, (i + 1) * tp_data->delta);
-      vsub = substring(vseq, TP[i - 1] + 1, TP[i] + 1);
+      usub = substring(tp_data->useq, i * tp_data->delta, (i + 1) * tp_data->delta);
+      vsub = substring(tp_data->vseq, TP[i - 1] + 1, TP[i] + 1);
     }
     usublen = strlen(usub);
     vsublen = strlen(vsub);
@@ -139,32 +142,13 @@ GtEoplist * decode(const *GtUword TP, GtUword TPlen, TracePointData *tp_data)
     gt_assert(edist == gt_eoplist_unit_cost(eoplist));
     eoplist_reader = gt_eoplist_reader_new(eoplist);
     // ... read cigar and concatenate?
-  }
+    while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
+    {
+      printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
+    }
    
   return eoplist;
 }
-*/
-
-/*
-    for i in range(0,len(tp)):
-
-      if i == 0:
-
-        cigar = aln.calc_cigar(self.seq1[0:self.delta], self.seq2[0:tp[i] + 1])
-      
-      elif i == len(tp) - 1:
- 
-        cigar += aln.calc_cigar(self.seq1[i*self.delta:len(self.seq1)],
-                                self.seq2[tp[i - 1] + 1:len(self.seq2)])
-
-      else:
-        
-        cigar += aln.calc_cigar(self.seq1[i * self.delta:(i + 1) * self.delta],
-                                self.seq2[tp[i - 1] + 1:tp[i] + 1])
-
-    cigar = Cigar_Pattern.combine_cigar(cigar)
-
-    return cigar
 */
 
 /* function to set TracePointData */
