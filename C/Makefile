@@ -4,6 +4,10 @@ CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wpointer-arith
 OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o substring.o
 
 all:test.x
+	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 37 0 37 10
+	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 23 0 22 5
+	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 0 20 0 19 5
+	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 10 20 5 15 5
 
 # generic compilation rule which creates dependency file on the fly
 %.o: %.c
