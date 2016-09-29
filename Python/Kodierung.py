@@ -321,7 +321,7 @@ def multiplot(bs1, bs2, bs3, buck1, buck2, buck3, method, t):
                  counter3.most_common(1)[0][1])
     plt.axis([0, maxkey * 1.2, 0, maxend * 1.2])
   
-    plt.plot(counter2.keys(), counter2.values(), 'co', 
+    plt.plot(counter2.keys(), counter2.values(), 'bo', 
              label="Unär")
     plt.plot(counter3.keys(), counter3.values(), 'ro', 
              label="Huffman")
@@ -435,13 +435,13 @@ def deltaplot(bs1, bs2, bs3, bs4, buck1, buck2, buck3, buck4, t):
   plt.axis([0, maxkey * 1.2, 0, maxend * 1.2])
 
   plt.plot(counter1.keys(), counter1.values(), 'bo',
-           label="0.05") 
+           label="50") 
   plt.plot(counter2.keys(), counter2.values(), 'co', 
-           label="0.15")
+           label="100")
   plt.plot(counter3.keys(), counter3.values(), 'ro', 
-           label="0.30")
+           label="200")
   plt.plot(counter4.keys(), counter4.values(), 'go', 
-           label="0.50")
+           label="500")
 
   plt.legend(loc='upper right')
 
@@ -585,8 +585,8 @@ def multierr(amount,length,e1,e2,e3,e4,delta,t):
 def main():
 
   # METHOD = "cigar" 
-  METHOD = "tracepoint"
-  # METHOD = "entropy"
+  # METHOD = "tracepoint"
+  METHOD = "entropy"
   manual = 0
   multidelta = 0
   multierr_rate = 0
@@ -594,7 +594,7 @@ def main():
 
   t = time.clock()
   print "Läuft..."
-  amount = 1000
+  amount = 10
   length = 5000
   delta = 200
   err_rate = 0.15
@@ -621,12 +621,9 @@ def main():
 
   if manual:
 
-    bs1 = []
-    bs2 = []
-    bs3 = []
-    bs4 = []
-
-    deltaplot(bs1, bs2, bs3, bs4, 50, 50, 180, 315, t)
+    #deltaplot(bs1, bs2, bs3, bs4, 50, 50, 180, 315, t)
+    #multiplot(bs1, bs2, bs3, 1, 6, 6, "tracepoint", t)
+    deltaplot(bs1, bs2, bs3, bs4, 5, 6, 6, 5, t)
 
 
   if multidelta:
