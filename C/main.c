@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 //TODO nur fuer die Berechnung von tau fuer die Ausgabe der TPs
 #include <math.h>
 
@@ -51,8 +52,9 @@ int main(int argc, char *argv[])
   delta = atoi(argv[7]);
   gt_assert(delta > 0);
 
-  useq = substring(long_useq, start1 + 1, start1 + end1 + 1);
-  vseq = substring(long_vseq, start2 + 1, start2 + end2 + 1);
+  /* get substring with regard to start and end of sequence */
+  useq = substring(long_useq, start1 + 1, end1 - start1 + 1);
+  vseq = substring(long_vseq, start2 + 1, end2 -start2 + 1);
 
   /* create TracePointData */
   tp_data = tracepoint_data_new();
@@ -71,9 +73,12 @@ int main(int argc, char *argv[])
     printf("%lu ",TP[i]);
   }
   printf("\n");
+
   /* decode TracePoint Array and TracePointData to GtEoplist */
-  //GtEoplist *eoplist;
-  //eoplist = decode(TP, tau - 1, tp_data);
+  /*
+  GtEoplist *eoplist;
+  eoplist = decode(TP, tau - 1, tp_data);
+  */
 
   gt_tracepoint_data_delete(tp_data);
   gt_free(useq);
