@@ -87,6 +87,9 @@ GtUword * encode(const TracePointData *tp_data)
         // do not increment count in the last interval
         if(count == tau - 1)
         {
+          gt_free(u_tp);
+          gt_eoplist_reader_delete(eoplist_reader);
+          gt_eoplist_delete(eoplist);
           return v_tp;
         }
         else
@@ -96,6 +99,9 @@ GtUword * encode(const TracePointData *tp_data)
       }
     }
   }
+  gt_free(u_tp);
+  gt_eoplist_reader_delete(eoplist_reader);
+  gt_eoplist_delete(eoplist);
   fprintf(stderr, "Encode Failed.\n");
   exit(EXIT_FAILURE);
 }

@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
   /* encode data to Trace Point Array */
   GtUword i;
   TP = encode(tp_data);
+
+  /* print Trace Points */
   printf("Trace Points: ");
   for(i = 0; i < tau; i++)
   {
