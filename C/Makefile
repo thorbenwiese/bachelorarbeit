@@ -1,7 +1,7 @@
 CC?=gcc
 CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wpointer-arith
 
-OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o substring.o
+OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o
 
 all:test.x
 

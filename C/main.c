@@ -1,21 +1,22 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
-//TODO nur fuer die Berechnung von tau fuer die Ausgabe der TPs
-#include <math.h>
-
+#include "eoplist.h"
 #include "TracePoint.h"
 #include "gt-alloc.h"
-#include "substring.h"
 
 int main(int argc, char *argv[])
 {
 
-  GtUchar *long_useq, *long_vseq, *useq, *vseq;
-  GtUword ulen, vlen, start1, end1, start2, end2, delta;
-  GtUword *TP;
-  TracePointData *tp_data;
+  GtUchar *long_useq, *long_vseq, *useq = NULL, *vseq = NULL;
+  GtUword TP_len = 0, start1, end1, start2, end2, delta;
+  GtUword *TP = NULL;
+  TracePointList *tp_list = NULL;
+  GtEoplist *eoplist = NULL;
+  long readstart1, readend1, readstart2, readend2, readdelta;
+  bool haserr = false;
 
   if (argc != 8)
   {
@@ -26,68 +27,68 @@ int main(int argc, char *argv[])
   
   /* read and check parameters */
   long_useq = (unsigned char *) strdup(argv[1]);
-  gt_assert(long_useq != NULL);
-
   long_vseq = (unsigned char *) strdup(argv[2]);
-  gt_assert(long_vseq != NULL);
 
-  ulen = strlen(argv[1]);
-  assert(ulen > 0);
+  if (sscanf(argv[3],"%ld",&readstart1) != 1 || readstart1 < 0)
+  {
+    fprintf(stderr,"%s: <start1> must be non-negative number\n",argv[0]);
+    haserr = true;
+  }
+  else if (sscanf(argv[4],"%ld",&readend1) != 1 || readend1 < readstart1)
+  {
+    fprintf(stderr,"%s: <end1> must be greater than <start1>\n",argv[0]);
+    haserr = true;
+  }
+  else if (sscanf(argv[5],"%ld",&readstart2) != 1 || readstart2 < 0)
+  {
+    fprintf(stderr,"%s: <start2> must be non-negative number\n",argv[0]);
+    haserr = true;
+  }
+  else if (sscanf(argv[6],"%ld",&readend2) != 1 || readend2 < readstart2)
+  {
+    fprintf(stderr,"%s: <end2> must be greater than <start2>\n",argv[0]);
+    haserr = true;
+  }
+  else if (sscanf(argv[7],"%ld",&readdelta) != 1 || readdelta < 0)
+  {
+    fprintf(stderr,"%s: <delta> must be non-negative number\n",argv[0]);
+    haserr = true;
+  }
+  if (!haserr)
+  {
+  start1 = (GtUword) readstart1;
+  end1 = (GtUword) readend1;
+  start2 = (GtUword) readstart2;
+  end2 = (GtUword) readend2;
+  delta = (GtUword) readdelta;
 
-  vlen = strlen(argv[2]);
-  assert(vlen > 0);
-
-  start1 = atoi(argv[3]);
-
-  end1 = atoi(argv[4]);
-  gt_assert(end1 > 0);
-  gt_assert(start1 < end1);
-
-  start2 = atoi(argv[5]);
-
-  end2 = atoi(argv[6]);
-  gt_assert(end2 > 0);
-  gt_assert(start2 < end2);
-
-  delta = atoi(argv[7]);
-  gt_assert(delta > 0);
-
-  /* get substring with regard to start and end of sequence */
-  useq = substring(long_useq, start1 + 1, end1 - start1 + 1);
-  vseq = substring(long_vseq, start2 + 1, end2 -start2 + 1);
+  /* get substring with regard to start of sequence */
+  useq = long_useq + start1;
+  vseq = long_vseq + start2;
 
   /* create TracePointData */
-  tp_data = tracepoint_data_new();
-  gt_tracepoint_data_set(tp_data, useq, vseq, ulen, vlen, 
-                         start1, end1, start2, end2, delta);
+  tp_list = gt_tracepoint_list_new();
+  gt_tracepoint_list_set(tp_list, useq, vseq, TP, TP_len, start1, end1, 
+                         start2, end2, delta);
 
-  /* number of intervals */
-  GtUword tau = ceil(end1 / delta) - floor(start1 / delta);
-
-  /* encode data to Trace Point Array */
-  GtUword i;
-  TP = encode(tp_data);
+  /* encode list to Trace Point Array */
+  eoplist = gt_eoplist_new();
+  gt_tracepoint_encode(tp_list, eoplist);
 
   /* print Trace Points */
-  printf("Trace Points: ");
-  for(i = 0; i < tau; i++)
-  {
-    printf("%lu ",TP[i]);
-  }
-  printf("\n");
+  gt_print_tracepoint_list(tp_list);
 
   /* decode TracePoint Array and TracePointData to GtEoplist */
   /*
   GtEoplist *eoplist;
-  eoplist = decode(TP, tau - 1, tp_data);
+  eoplist = decode(TP, tp_list);
   */
+  }
 
-  gt_tracepoint_data_delete(tp_data);
+  gt_tracepoint_list_delete(tp_list);
   gt_free(TP);
   gt_free(long_useq);
   gt_free(long_vseq);
-  gt_free(useq);
-  gt_free(vseq);
 
-  return 0;
+  return haserr ? EXIT_FAILURE : EXIT_SUCCESS;
 }
