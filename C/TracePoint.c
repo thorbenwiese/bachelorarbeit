@@ -95,6 +95,7 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
     }
   }
   gt_free(u_tp);
+  gt_free(v_tp);
   gt_eoplist_reader_delete(eoplist_reader);
   front_edist_trace_delete(fet);
 }
