@@ -19,10 +19,21 @@ struct TracePointList
 void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
 {
   GtEoplistReader *eoplist_reader;
+  FrontEdistTrace *fet;
   GtCigarOp co;
-  eoplist_reader = gt_eoplist_reader_new(eoplist);
   GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, 
-          v_len = 0;
+          v_len = 0, edist;
+
+  fet = front_edist_trace_new();
+  edist = front_edist_trace_eoplist(eoplist,                                                                                     
+                                    fet,                                         
+                                    tp_list->useq,                                        
+                                    tp_list->end1 - tp_list->start1,                                        
+                                    tp_list->vseq,                                        
+                                    tp_list->end2 - tp_list->start2,                                        
+                                    true);                                       
+  assert(edist == gt_eoplist_unit_cost(eoplist));
+  eoplist_reader = gt_eoplist_reader_new(eoplist);
 
   /* p is a factor to dynamically adjust the interval borders */
   /* if the sequence starts at pos 0 then p should be 1 */
@@ -33,19 +44,18 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
                      tp_list->start1 / tp_list->delta);
   
   /* Trace Points in useq */
-  /* tau - 1 because the last interval has no Trace Point */
   gt_assert(tau > 1);
-  GtUword *u_tp = gt_malloc((tau - 1) * sizeof *u_tp);
-
+  GtUword *u_tp = gt_malloc((tau) * sizeof *u_tp);
   gt_assert(u_tp != NULL);
-  for(q = 0; q < tau - 1; q++)
+
+  for(q = 0; q <= tau - 1; q++)
   {
     u_tp[q] = (p + q) * tp_list->delta - 1;
   }
 
   /* Trace Points in vseq */
-  /* tau - 1 because the last interval has no Trace Point */
-  GtUword *v_tp = gt_malloc((tau - 1) * sizeof *v_tp);
+  GtUword *v_tp = gt_malloc((tau) * sizeof *v_tp);
+  gt_assert(v_tp != NULL);
 
   while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
   {
@@ -65,7 +75,7 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
         num_chars_in_v++;
         num_chars_in_u++;
       }
-      gt_assert(count < tau - 1);
+      gt_assert(count < tau);
       if(num_chars_in_u == u_tp[count])
       {
         v_tp[v_len++] = num_chars_in_v;
@@ -73,7 +83,7 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
         // do not increment count in the last interval
         if(count == tau - 1)
         {
-          tp_list->TP_len = tau - 1;
+          tp_list->TP_len = v_len;
           tp_list->TP = v_tp;
           break;
         }
@@ -84,11 +94,9 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
       }
     }
   }
-  //gt_assert(sizeof(u_tp) == sizeop(v_tp));
   gt_free(u_tp);
   gt_eoplist_reader_delete(eoplist_reader);
   gt_eoplist_delete(eoplist);
-  return;
 }
 
 
