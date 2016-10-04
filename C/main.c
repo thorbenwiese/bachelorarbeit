@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
   }
 
   gt_tracepoint_list_delete(tp_list);
+  gt_eoplist_delete(eoplist);
   gt_free(TP);
   gt_free(long_useq);
   gt_free(long_vseq);
