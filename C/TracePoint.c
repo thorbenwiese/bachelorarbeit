@@ -94,6 +94,7 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
       }
     }
   }
+  printf("\n");
   front_edist_trace_delete(fet);
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
@@ -223,6 +224,7 @@ void gt_tracepoint_list_delete(TracePointList *tp_list)
 void gt_print_tracepoint_list(const TracePointList *tp_list)
 {
   GtUword i;
+  printf("%s\n%s\n", tp_list->useq, tp_list->vseq);
   printf("TP_len: %lu\n",tp_list->TP_len);
   printf("Trace Points: ");
   for(i = 0; i < tp_list->TP_len; i++)

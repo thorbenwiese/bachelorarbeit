@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
   }
   
   /* read and check parameters */
+  //TODO check if characters
   long_useq = (unsigned char *) strdup(argv[1]);
   long_vseq = (unsigned char *) strdup(argv[2]);
 
