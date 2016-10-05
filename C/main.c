@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     printf("DECODE\n");
-    GtEoplist *eoplist;
+    gt_eoplist_reset(eoplist);
     eoplist = gt_tracepoint_decode(tp_list);
     while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))                    
     {                                                                            
