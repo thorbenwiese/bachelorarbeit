@@ -91,11 +91,6 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
   gt_free(v_tp);
-  eoplist = gt_tracepoint_decode(tp_list);
-  while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
-  {
-    printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
-  }
 }
 
 
