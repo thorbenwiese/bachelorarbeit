@@ -6,14 +6,16 @@
 #include "eoplist.h"
 #include "TracePoint.h"
 #include "gt-alloc.h"
+#include "front-with-trace.h"
 
 int main(int argc, char *argv[])
 {
 
   GtUchar *long_useq, *long_vseq, *useq = NULL, *vseq = NULL;
-  GtUword start1, end1, start2, end2, delta;
+  GtUword start1, end1, start2, end2, delta, edist;
   TracePointList *tp_list = NULL;
   GtEoplist *eoplist = NULL;
+  FrontEdistTrace *fet = NULL;
   //GtEoplistReader *eoplist_reader = NULL;
   //GtCigarOp co;
   long readstart1, readend1, readstart2, readend2, readdelta;
@@ -76,10 +78,21 @@ int main(int argc, char *argv[])
     /* encode list to Trace Point Array */
     printf("ENCODE\n");
     eoplist = gt_eoplist_new();
+    fet = front_edist_trace_new();
+    edist = front_edist_trace_eoplist(eoplist,
+                                      fet,
+                                      useq,
+                                      end1 - start1,
+                                      vseq,
+                                      end2 - start2,
+                                      true);
+    assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
 
     /* print Trace Points */
     gt_print_tracepoint_list(tp_list);
+
+    front_edist_trace_delete(fet);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     printf("DECODE\n");

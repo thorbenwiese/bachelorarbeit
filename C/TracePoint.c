@@ -19,29 +19,19 @@ struct TracePointList
 void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
 {
   GtEoplistReader *eoplist_reader;
-  FrontEdistTrace *fet;
   GtCigarOp co;
   GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, 
-          v_len = 0, edist;
+          v_len = 0;
 
-  fet = front_edist_trace_new();
-  edist = front_edist_trace_eoplist(eoplist,                                                                                     
-                                    fet,                                         
-                                    tp_list->useq,                                        
-                                    tp_list->end1 - tp_list->start1,                                        
-                                    tp_list->vseq,                                        
-                                    tp_list->end2 - tp_list->start2,                                        
-                                    true);                                       
-  assert(edist == gt_eoplist_unit_cost(eoplist));
   eoplist_reader = gt_eoplist_reader_new(eoplist);
 
   /* p is a factor to dynamically adjust the interval borders */
   /* if the sequence starts at pos 0 then p should be 1 */
-  p = MAX(1,ceil(tp_list->start1 / tp_list->delta));
+  p = MAX(1, ceil(tp_list->start1 / tp_list->delta));
 
   /* number of intervals */
-  GtUword tau = ceil(tp_list->end1 / tp_list->delta) - floor(
-                     tp_list->start1 / tp_list->delta);
+  GtUword tau = ceil(tp_list->end1 / tp_list->delta) - 
+                floor(tp_list->start1 / tp_list->delta);
   
   /* Trace Points in useq */
   gt_assert(tau > 1);
@@ -94,7 +84,6 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
       }
     }
   }
-  front_edist_trace_delete(fet);
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
   gt_free(v_tp);
