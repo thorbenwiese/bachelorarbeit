@@ -75,7 +75,10 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
         {
           tp_list->TP_len = v_len;
           tp_list->TP = v_tp;
+
+          /* print Trace Points -> for debugging only */
           gt_print_tracepoint_list(tp_list);
+
           break;
         }
         else
