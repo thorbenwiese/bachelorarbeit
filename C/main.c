@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     gt_tracepoint_encode(tp_list, eoplist);
 
     /* print Trace Points */
-    gt_print_tracepoint_list(tp_list);
+    //gt_print_tracepoint_list(tp_list);
 
     front_edist_trace_delete(fet);
 

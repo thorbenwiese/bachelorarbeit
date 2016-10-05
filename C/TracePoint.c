@@ -75,6 +75,7 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
         {
           tp_list->TP_len = v_len;
           tp_list->TP = v_tp;
+          gt_print_tracepoint_list(tp_list);
           break;
         }
         else
@@ -240,13 +241,16 @@ void gt_tracepoint_list_delete(TracePointList *tp_list)
 
 void gt_print_tracepoint_list(const TracePointList *tp_list)
 {
-  GtUword i;
-  printf("%s\n%s\n", tp_list->useq, tp_list->vseq);
-  printf("TP_len: %lu\n",tp_list->TP_len);
-  printf("Trace Points: ");
-  for(i = 0; i < tp_list->TP_len; i++)
+  if(tp_list != NULL)
   {
-    printf("%lu ", tp_list->TP[i]);
+    GtUword i;
+    printf("%s\n%s\n", tp_list->useq, tp_list->vseq);
+    printf("TP_len: %lu\n",tp_list->TP_len);
+    printf("Trace Points: ");
+    for(i = 0; i < tp_list->TP_len; i++)
+    {
+      printf("%lu ", tp_list->TP[i]);
+    }
+    printf("\n");
   }
-  printf("\n");
 }
