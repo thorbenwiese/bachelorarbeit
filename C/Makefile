@@ -1,5 +1,5 @@
 CC?=gcc
-CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wpointer-arith
+CFLAGS=-Wall -Werror -O3 -g -fno-strict-aliasing -Wpointer-arith -Wunused-variable
 
 OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o
 
