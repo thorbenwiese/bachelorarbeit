@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
   GtUword start1, end1, start2, end2, delta;
   TracePointList *tp_list = NULL;
   GtEoplist *eoplist = NULL;
-  GtEoplistReader *eoplist_reader = NULL;
-  GtCigarOp co;
+  //GtEoplistReader *eoplist_reader = NULL;
+  //GtCigarOp co;
   long readstart1, readend1, readstart2, readend2, readdelta;
   bool haserr = false;
 
@@ -85,10 +85,12 @@ int main(int argc, char *argv[])
     printf("DECODE\n");
     gt_eoplist_reset(eoplist);
     eoplist = gt_tracepoint_decode(tp_list);
+    /*
     while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))                    
     {                                                                            
       printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));  
-    }      
+    } 
+    */     
   }
 
   gt_tracepoint_list_delete(tp_list);
