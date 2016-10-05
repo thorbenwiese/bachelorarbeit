@@ -107,22 +107,22 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
 
   gt_print_tracepoint_list(tp_list);
   printf("BEFORE FET\n");
-  printf("%s\n%s\n%lu %lu %lu %lu %lu %lu %lu\n", tp_list->useq, tp_list->vseq, tp_list->start1, tp_list->end1, tp_list->start2,
-                                            tp_list->end2, tp_list->delta, tp_list->TP_len, tp_list->TP[0]);
+  //printf("%s\n%s\n%lu %lu %lu %lu %lu %lu %lu\n", tp_list->useq, tp_list->vseq, tp_list->start1, tp_list->end1, tp_list->start2,
+  //                                          tp_list->end2, tp_list->delta, tp_list->TP_len, tp_list->TP[0]);
   //TP falsch
   fet = front_edist_trace_new();
   eoplist = gt_eoplist_new();
 
   printf("TRACE POINT ENCODE: ");
-  for(i = 0; i < tp_list->TP_len; i++)
-  {
-    printf("%lu ",tp_list->TP[i]);
-  }
+  //for(i = 0; i < tp_list->TP_len; i++)
+  //{
+  //  printf("%lu ",tp_list->TP[i]);
+  //}
   printf("\n");
   for(i = 0; i < tp_list->TP_len; i++)
   {
     printf("I: %lu\n", i);
-    printf("TP %lu\n", tp_list->TP[i]);
+    //printf("TP %lu\n", tp_list->TP[i]);
     if(i == 0)
     {
       usub = (unsigned char *) tp_list->useq;
@@ -141,9 +141,9 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
     }
     else
     {
-      printf("%s\n",tp_list->useq + (i * tp_list->delta));
-      printf("%lu\n", tp_list->TP[0]);
-      printf("%s\n",tp_list->vseq + (tp_list->TP[i - 1] + 1));
+      //printf("%s\n",tp_list->useq + (i * tp_list->delta));
+      //printf("%lu\n", tp_list->TP[0]);
+      //printf("%s\n",tp_list->vseq + (tp_list->TP[i - 1] + 1));
       usub = (unsigned char *) (tp_list->useq + (i * tp_list->delta));
       vsub = (unsigned char *) (tp_list->vseq + (tp_list->TP[i - 1] + 1));
       ulen = tp_list->end1 - (i+1) * tp_list->delta;
@@ -151,9 +151,9 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
       printf("i=... %s\n%s\n", usub, vsub);
     }
     printf("AFTER FET\n");
-    printf("%s\n%s\n%lu %lu %lu %lu %lu %lu %lu\n", tp_list->useq, tp_list->vseq, tp_list->start1, tp_list->end1, 
-                                                    tp_list->start2,tp_list->end2, tp_list->delta, tp_list->TP_len, 
-                                                    tp_list->TP[0]);
+    //printf("%s\n%s\n%lu %lu %lu %lu %lu %lu %lu\n", tp_list->useq, tp_list->vseq, tp_list->start1, tp_list->end1, 
+    //                                                tp_list->start2,tp_list->end2, tp_list->delta, tp_list->TP_len, 
+    //                                                tp_list->TP[0]);
     gt_print_tracepoint_list(tp_list);
 
     edist = front_edist_trace_eoplist(eoplist,
@@ -165,15 +165,20 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
                                       false);
 
     total_edist += edist;
-    gt_assert(total_edist == gt_eoplist_unit_cost(eoplist));
-    eoplist_reader = gt_eoplist_reader_new(eoplist);
-    // ... read cigar and concatenate?
-    while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
-    {
-      printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
-    }
-    printf("\n");
   } 
+  gt_assert(total_edist == gt_eoplist_unit_cost(eoplist));
+  eoplist_reader = gt_eoplist_reader_new(eoplist);
+  // ... read cigar and concatenate?
+  while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
+  {
+    printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
+  }
+  printf("\n");
+
+  gt_eoplist_reader_delete(eoplist_reader);
+  //gt_free(usub);
+  //gt_free(vsub);
+
   return eoplist;
 }
 
