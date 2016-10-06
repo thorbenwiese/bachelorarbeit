@@ -5,7 +5,7 @@ OBJ=front-with-trace.o tracer.o eoplist.o TracePoint.o
 
 all:test.x
 
-test:
+test:test.x
 	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 37 4 37 10
 	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 2 23 0 22 5
 	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 5 20 4 19 5
