@@ -16,7 +16,7 @@ struct TracePointList
 }; 
 
 /* function to create a TracePoint Array from eoplist*/
-TracePointList *gt_tracepoint_encode(TracePointList *tp_list, 
+void gt_tracepoint_encode(TracePointList *tp_list, 
                                      GtEoplist *eoplist)
 {
   GtEoplistReader *eoplist_reader;
@@ -91,9 +91,8 @@ TracePointList *gt_tracepoint_encode(TracePointList *tp_list,
   }
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
-  gt_free(v_tp);
+  //gt_free(v_tp);
 
-  return tp_list;
 }
 
 

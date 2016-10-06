@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 
   GtUchar *long_useq, *long_vseq, *useq = NULL, *vseq = NULL;
-  GtUword start1, end1, start2, end2, delta, edist;
+  GtUword start1, end1, start2, end2, delta, edist, *TP = NULL;
   TracePointList *tp_list = NULL;
   GtEoplist *eoplist = NULL;
   FrontEdistTrace *fet = NULL;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   long readstart1, readend1, readstart2, readend2, readdelta;
   bool haserr = false;
 
-  bool decode = false;
+  bool decode = true;
 
   if (argc != 8)
   {
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
                                       end2 - start2,
                                       true);
     assert(edist == gt_eoplist_unit_cost(eoplist));
-    tp_list = gt_tracepoint_encode(tp_list, eoplist);
+    gt_tracepoint_encode(tp_list, eoplist);
 
     if(decode)
     {
@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
   gt_eoplist_delete(eoplist);
   gt_free(long_useq);
   gt_free(long_vseq);
+  gt_free(TP);
 
   return haserr ? EXIT_FAILURE : EXIT_SUCCESS;
 }
