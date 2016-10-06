@@ -20,8 +20,7 @@ void gt_tracepoint_encode(TracePointList *tp_list,
 {
   GtEoplistReader *eoplist_reader;
   GtCigarOp co;
-  GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, 
-          v_len = 0;
+  GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, v_len = 0;
 
   eoplist_reader = gt_eoplist_reader_new(eoplist);
 

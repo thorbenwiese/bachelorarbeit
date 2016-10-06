@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
   }
   
   /* read and check parameters */
-  //TODO check if characters
   long_useq = (unsigned char *) strdup(argv[1]);
   long_vseq = (unsigned char *) strdup(argv[2]);
 
@@ -89,9 +88,9 @@ int main(int argc, char *argv[])
     assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
 
+    /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
     {
-      /* decode TracePoint Array and TracePointData to GtEoplist */
       gt_eoplist_reset(eoplist);
       eoplist = gt_tracepoint_decode(tp_list);
       printf("CIGAR from encode: %s\n\n", gt_eoplist2cigar_string(eoplist,false));
