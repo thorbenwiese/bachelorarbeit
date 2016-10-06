@@ -768,5 +768,6 @@ void gt_eoplist_append(GtEoplist *target_eoplist, GtEoplist *source_eoplist)
     target_eoplist->countmismatches += source_eoplist->countmismatches;
     target_eoplist->countinsertions += source_eoplist->countinsertions;
     target_eoplist->countdeletions += source_eoplist->countdeletions;
+    target_eoplist->spaceuint8_t = source_eoplist->spaceuint8_t;
   }
 }
