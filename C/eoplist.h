@@ -179,4 +179,5 @@ GtEoplist *gt_eoplist_new_from_cigar(const char *cigarstring,GtUword length);
 char *gt_eoplist2cigar_string(const GtEoplist *eoplist,
                               bool distinguish_mismatch_match);
 
+void gt_eoplist_append(GtEoplist *target_eoplist, GtEoplist *source_eoplist);
 #endif
