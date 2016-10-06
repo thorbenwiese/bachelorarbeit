@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   long readstart1, readend1, readstart2, readend2, readdelta;
   bool haserr = false;
 
-  bool decode = false;
+  bool decode = true;
 
   if (argc != 8)
   {
@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
       /* decode TracePoint Array and TracePointData to GtEoplist */
       gt_eoplist_reset(eoplist);
       eoplist = gt_tracepoint_decode(tp_list);
+      eoplist_reader = gt_eoplist_reader_new(eoplist);
       while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))                    
       {                                                                            
         printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));  
