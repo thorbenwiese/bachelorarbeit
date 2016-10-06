@@ -31,6 +31,6 @@ void gt_print_tracepoint_list(const TracePointList *tp_list);
 void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist);
 
 /* decode function to generate GtEoplist from TracePointList  */
-GtEoplist *gt_tracepoint_decode(TracePointList *tp_list);
+GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list);
 
 #endif

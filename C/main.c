@@ -11,11 +11,8 @@
 int main(int argc, char *argv[])
 {
 
-  GtUchar *long_useq, *long_vseq, *useq = NULL, *vseq = NULL;
+  GtUchar *long_useq, *long_vseq;
   GtUword start1, end1, start2, end2, delta, edist;
-  TracePointList *tp_list = NULL;
-  GtEoplist *eoplist = NULL;
-  FrontEdistTrace *fet = NULL;
 
   long readstart1, readend1, readstart2, readend2, readdelta;
   bool haserr = false;
@@ -60,6 +57,11 @@ int main(int argc, char *argv[])
   }
   if (!haserr)
   {
+    GtEoplist *eoplist;
+    FrontEdistTrace *fet = NULL;
+    TracePointList *tp_list = NULL;
+    GtUchar *useq = NULL, *vseq = NULL;
+
     start1 = (GtUword) readstart1;
     end1 = (GtUword) readend1;
     start2 = (GtUword) readstart2;
@@ -85,21 +87,21 @@ int main(int argc, char *argv[])
                                       vseq,
                                       end2 - start2,
                                       true);
+    front_edist_trace_delete(fet);
     assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
+    gt_eoplist_delete(eoplist);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
     {
-      gt_eoplist_reset(eoplist);
-      eoplist = gt_tracepoint_decode(tp_list);
-      printf("CIGAR from encode: %s\n\n", gt_eoplist2cigar_string(eoplist,false));
+      GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
+      printf("CIGAR from encode: %s\n\n", 
+              gt_eoplist2cigar_string(eoplist_tp,false));
     }
+    gt_tracepoint_list_delete(tp_list);
   }
 
-  front_edist_trace_delete(fet);
-  gt_tracepoint_list_delete(tp_list);
-  gt_eoplist_delete(eoplist);
   gt_free(long_useq);
   gt_free(long_vseq);
 
