@@ -97,10 +97,8 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
 {
   GtEoplist *eoplist = NULL;
   GtEoplist *final_eoplist = NULL;
-  GtEoplistReader *eoplist_reader = NULL;
   GtUchar *usub = NULL, *vsub = NULL;
   GtUword edist = 0, final_edist = 0, ulen, vlen, i;
-  GtCigarOp co;
   FrontEdistTrace *fet;
 
   fet = front_edist_trace_new();
@@ -131,7 +129,6 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
       ulen = (i+1) * tp_list->delta;
       vlen = tp_list->TP[i] + 1;
     }
-    gt_print_tracepoint_list(tp_list);
 
     edist = front_edist_trace_eoplist(eoplist,
                                       fet,
@@ -142,20 +139,13 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
                                       false);
     gt_assert(edist == gt_eoplist_unit_cost(eoplist));
 
-    eoplist_reader = gt_eoplist_reader_new(eoplist);
-
-    while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
-    {
-      printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
-    }
-    printf("\n");
-
     final_edist += edist;
     gt_eoplist_append(final_eoplist, eoplist);
+
   }
   gt_assert(final_edist == gt_eoplist_unit_cost(final_eoplist));
+
   front_edist_trace_delete(fet);
-  gt_eoplist_reader_delete(eoplist_reader);
 
   return final_eoplist;
 }
@@ -231,8 +221,6 @@ void gt_print_tracepoint_list(const TracePointList *tp_list)
   if(tp_list != NULL)
   {
     GtUword i;
-    //printf("useq: %s\nvseq: %s\n", tp_list->useq, tp_list->vseq);
-    //printf("TP_len: %lu\n",tp_list->TP_len);
     printf("Trace Points: ");
     for(i = 0; i < tp_list->TP_len; i++)
     {
