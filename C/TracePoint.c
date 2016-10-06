@@ -171,7 +171,7 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
   printf("while ende\n");
   */
   gt_eoplist_reader_delete(eoplist_reader);
-  gt_eoplist_delete(eoplist);
+  //gt_eoplist_delete(eoplist);
   front_edist_trace_delete(fet);
 
   return eoplist;

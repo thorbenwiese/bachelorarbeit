@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
       {                                                                            
         printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));  
       } 
+      gt_eoplist_reader_delete(eoplist_reader);
     }
   }
 
