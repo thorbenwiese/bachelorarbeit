@@ -16,7 +16,8 @@ struct TracePointList
 }; 
 
 /* function to create a TracePoint Array from eoplist*/
-void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
+TracePointList *gt_tracepoint_encode(TracePointList *tp_list, 
+                                     GtEoplist *eoplist)
 {
   GtEoplistReader *eoplist_reader;
   GtCigarOp co;
@@ -91,6 +92,8 @@ void gt_tracepoint_encode(TracePointList *tp_list, GtEoplist *eoplist)
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
   gt_free(v_tp);
+
+  return tp_list;
 }
 
 
@@ -251,8 +254,8 @@ void gt_print_tracepoint_list(const TracePointList *tp_list)
   if(tp_list != NULL)
   {
     GtUword i;
-    printf("%s\n%s\n", tp_list->useq, tp_list->vseq);
-    printf("TP_len: %lu\n",tp_list->TP_len);
+    //printf("useq: %s\nvseq: %s\n", tp_list->useq, tp_list->vseq);
+    //printf("TP_len: %lu\n",tp_list->TP_len);
     printf("Trace Points: ");
     for(i = 0; i < tp_list->TP_len; i++)
     {
