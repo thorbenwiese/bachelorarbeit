@@ -757,17 +757,3 @@ void gt_eoplist_format_generic(FILE *fp,
     fwrite(lowbuf,sizeof *lowbuf,pos+1,fp);
   }
 }
-
-void gt_eoplist_append(GtEoplist *target_eoplist, GtEoplist *source_eoplist)
-{
-  if(target_eoplist != NULL && source_eoplist != NULL)
-  {
-    target_eoplist->nextfreeuint8_t += source_eoplist->nextfreeuint8_t;
-    target_eoplist->allocateduint8_t += source_eoplist->allocateduint8_t;
-    target_eoplist->countmatches += source_eoplist->countmatches;
-    target_eoplist->countmismatches += source_eoplist->countmismatches;
-    target_eoplist->countinsertions += source_eoplist->countinsertions;
-    target_eoplist->countdeletions += source_eoplist->countdeletions;
-    target_eoplist->spaceuint8_t = source_eoplist->spaceuint8_t;
-  }
-}
