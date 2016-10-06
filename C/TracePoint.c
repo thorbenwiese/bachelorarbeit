@@ -96,27 +96,26 @@ void gt_tracepoint_encode(TracePointList *tp_list,
 GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
 {
   GtEoplist *eoplist = NULL;
+  GtEoplist *final_eoplist = NULL;
   GtEoplistReader *eoplist_reader = NULL;
   GtUchar *usub = NULL, *vsub = NULL;
-  GtUword edist = 0, ulen, vlen, i;
+  GtUword edist = 0, final_edist = 0, ulen, vlen, i;
   GtCigarOp co;
   FrontEdistTrace *fet;
 
   fet = front_edist_trace_new();
   eoplist = gt_eoplist_new();
+  final_eoplist = gt_eoplist_new();
 
   for(i = 0; i < tp_list->TP_len; i++)
   {
     gt_eoplist_reset(eoplist);
-    printf("I: %lu\n", i);
     if(i == 0)
     {
       usub = (unsigned char *) tp_list->useq;
       vsub = (unsigned char *) tp_list->vseq;
       ulen = tp_list->delta;
       vlen = tp_list->TP[0] + 1;
-      printf("ulen: %lu, vlen: %lu\n", ulen, vlen);
-      printf("usub: %s\nvsub: %s\n", usub, vsub);
     }
     else if(i == tp_list->TP_len - 1)
     {
@@ -124,19 +123,13 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
       vsub = (unsigned char *) tp_list->vseq + (tp_list->TP[i - 1] + 1);
       ulen = tp_list->end1 - i * tp_list->delta;
       vlen = tp_list->end2 - tp_list->TP[i - 1] + 1;
-      printf("ulen: %lu, vlen: %lu\n", ulen, vlen);
-      printf("usub: %s\nvsub: %s\n", usub, vsub);
     }
     else
     {
       usub = (unsigned char *) (tp_list->useq + (i * tp_list->delta));
       vsub = (unsigned char *) (tp_list->vseq + (tp_list->TP[i - 1] + 1));
-      //ulen = tp_list->end1 - (i+1) * tp_list->delta;
-      //vlen = tp_list->end2 - tp_list->TP[i] + 1;
       ulen = (i+1) * tp_list->delta;
       vlen = tp_list->TP[i] + 1;
-      printf("ulen: %lu, vlen: %lu\n", ulen, vlen);
-      printf("usub: %s\nvsub: %s\n", usub, vsub);
     }
     gt_print_tracepoint_list(tp_list);
 
@@ -148,33 +141,23 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
                                       vlen,
                                       false);
     gt_assert(edist == gt_eoplist_unit_cost(eoplist));
+
     eoplist_reader = gt_eoplist_reader_new(eoplist);
-    // ... read cigar and concatenate?
-    printf("while anfang\n");
+
     while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
     {
       printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
     }
     printf("\n");
-    printf("while ende\n");
-  }
-  /* 
-  gt_assert(edist == gt_eoplist_unit_cost(eoplist));
-  eoplist_reader = gt_eoplist_reader_new(eoplist);
-  // ... read cigar and concatenate?
-  printf("while anfang\n");
-  while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))
-  {
-    printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));
-  }
-  printf("\n");
-  printf("while ende\n");
-  */
-  gt_eoplist_reader_delete(eoplist_reader);
-  //gt_eoplist_delete(eoplist);
-  front_edist_trace_delete(fet);
 
-  return eoplist;
+    final_edist += edist;
+    gt_eoplist_append(final_eoplist, eoplist);
+  }
+  gt_assert(final_edist == gt_eoplist_unit_cost(final_eoplist));
+  front_edist_trace_delete(fet);
+  gt_eoplist_reader_delete(eoplist_reader);
+
+  return final_eoplist;
 }
 
 /* function to set TracePointData */

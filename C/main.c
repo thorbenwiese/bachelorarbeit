@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
       eoplist_reader = gt_eoplist_reader_new(eoplist);
       while (gt_eoplist_reader_next_cigar(&co, eoplist_reader))                    
       {                                                                            
-        printf("%lu%c",co.iteration, gt_eoplist_pretty_print(co.eoptype, false));  
+        printf("%lu%c",co.iteration,gt_eoplist_pretty_print(co.eoptype, false));  
       } 
       gt_eoplist_reader_delete(eoplist_reader);
     }
