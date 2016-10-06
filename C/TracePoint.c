@@ -102,12 +102,12 @@ GtEoplist *gt_tracepoint_decode(TracePointList *tp_list)
   GtCigarOp co;
   FrontEdistTrace *fet;
 
+  fet = front_edist_trace_new();
+  eoplist = gt_eoplist_new();
 
   for(i = 0; i < tp_list->TP_len; i++)
   {
-    fet = front_edist_trace_new();
-    eoplist = gt_eoplist_new();
-
+    gt_eoplist_reset(eoplist);
     printf("I: %lu\n", i);
     if(i == 0)
     {
