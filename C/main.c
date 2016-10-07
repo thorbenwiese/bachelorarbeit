@@ -98,8 +98,7 @@ int main(int argc, char *argv[])
     gt_eoplist_delete(eoplist);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
-    // TODO mit valgrind testen und Fehler beheben!
-    // Unit Cost bei Encode ist < als bei Decode ....
+    // TODO Unit Cost bei Encode ist < als bei Decode ....
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
