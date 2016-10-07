@@ -9,7 +9,11 @@ test:test.x
 	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 37 4 37 10
 	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 2 23 0 22 5
 	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 5 20 4 19 5
-	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 1 20 3 20 5
+	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 1 20 3 19 5
+	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 37 0 37 10
+	./test.x gagcatgttgcctggtcctttgctaggtactgtagaga gaccaagtaggcgtggaccttgctcggtctgtaagaga 0 23 0 22 5
+	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 0 20 0 19 5
+	./test.x acagcatcatcagacgcacat acgagacctactcagcagac 0 20 0 19 5
 
 # generic compilation rule which creates dependency file on the fly
 %.o: %.c

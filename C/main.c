@@ -90,14 +90,20 @@ int main(int argc, char *argv[])
     front_edist_trace_delete(fet);
     assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
+    printf("CIGAR Encode: %s\n\n", 
+           gt_eoplist2cigar_string(eoplist,false));
+    printf("Unit Cost Encode: %lu\n", gt_eoplist_unit_cost(eoplist));
     gt_eoplist_delete(eoplist);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
+    // TODO mit valgrind testen und Fehler beheben!
+    // Unit Cost bei Encode ist < als bei Decode ....
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
-      printf("CIGAR from encode: %s\n\n", 
+      printf("CIGAR Decode: %s\n\n", 
               gt_eoplist2cigar_string(eoplist_tp,false));
+      printf("Unit Cost Decode: %lu\n", gt_eoplist_unit_cost(eoplist_tp));
     }
     gt_tracepoint_list_delete(tp_list);
   }
