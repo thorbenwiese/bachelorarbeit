@@ -189,6 +189,7 @@ def main(argv):
     tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1, 
                                             end_seq1, start_seq2, end_seq2, 
                                             delta, cigar)
+    aln.show_aln(aln.seq1, aln.seq2, cigar)
 
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
 
