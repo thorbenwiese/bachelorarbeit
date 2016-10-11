@@ -92,20 +92,19 @@ int main(int argc, char *argv[])
     assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
     cigar = gt_eoplist2cigar_string(eoplist,false);
-    printf("CIGAR Encode: %s\n\n", cigar);
+    printf("CIGAR Encode: %s\n", cigar);
     gt_free(cigar);
-    printf("Unit Cost Encode: %lu\n", gt_eoplist_unit_cost(eoplist));
+    printf("Unit Cost Encode: %lu\n\n", gt_eoplist_unit_cost(eoplist));
     gt_eoplist_delete(eoplist);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
-    // TODO Unit Cost bei Encode ist < als bei Decode ....
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
       cigar = gt_eoplist2cigar_string(eoplist_tp,false);
-      printf("CIGAR Decode: %s\n\n", cigar);
+      printf("CIGAR Decode: %s\n", cigar);
       gt_free(cigar);
-      printf("Unit Cost Decode: %lu\n", gt_eoplist_unit_cost(eoplist_tp));
+      printf("Unit Cost Decode: %lu\n\n", gt_eoplist_unit_cost(eoplist_tp));
       gt_eoplist_delete(eoplist_tp);
     }
     gt_tracepoint_list_delete(tp_list);
