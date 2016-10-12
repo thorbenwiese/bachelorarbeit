@@ -114,7 +114,6 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
       usub = tp_list->useq + (i * tp_list->delta);
       vsub = tp_list->vseq + tp_list->TP[i - 1] + 1;
       vlen = tp_list->TP[i] - tp_list->TP[i - 1];
-      printf("ulen: %lu, vlen: %lu\n", ulen, vlen);
 
       final_edist += front_edist_trace_eoplist(eoplist,
                                                fet,
@@ -130,9 +129,9 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
       usub = tp_list->useq + (i * tp_list->delta);
       vsub = tp_list->vseq + (tp_list->TP[i - 1] + 1);
 
-      gt_assert(tp_list->end1 >= (i - 1) * tp_list->delta - tp_list->start1);
+      gt_assert(tp_list->end1 >= tp_list->start1 + i * tp_list->delta);
       ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta;
-      gt_assert(tp_list->end2 + 1 >= tp_list->TP[i - 1] + tp_list->start2);
+      gt_assert(tp_list->end2 >= tp_list->start2 + tp_list->TP[i - 1] + 1);
       vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1] - 1;
     }
     else
@@ -141,7 +140,6 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
       vsub = tp_list->vseq + tp_list->TP[i - 1] + 1;
       vlen = tp_list->TP[i] - tp_list->TP[i - 1];
     }
-    printf("ulen: %lu, vlen: %lu\n", ulen, vlen);
 
     final_edist += front_edist_trace_eoplist(eoplist,
                                              fet,
