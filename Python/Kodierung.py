@@ -6,6 +6,7 @@ import Alignment
 import TracePoint
 import Cigar_Pattern
 import math
+import numpy as np
 import matplotlib
 matplotlib.rcParams['text.usetex'] = True
 matplotlib.rcParams['text.latex.unicode'] = True
@@ -432,7 +433,7 @@ def deltaplot(bs1, bs2, bs3, bs4, buck1, buck2, buck3, buck4, t):
                counter3.most_common(1)[0][1],
                counter4.most_common(1)[0][1])
 
-  plt.axis([0, maxkey * 1.2, 0, maxend * 1.2])
+  plt.axis([0, maxkey, 0, maxend])
 
   plt.plot(counter1.keys(), counter1.values(), 'bo',
            label="50") 
@@ -492,21 +493,28 @@ def deltaplot(bs1, bs2, bs3, bs4, buck1, buck2, buck3, buck4, t):
   print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
   plt.show()
 
-def cigmultidelta(amount,length,err_rate,d1,d2,d3,d4,t):
+def multidelta(amount,length,err_rate,d1,d2,d3,d4,maxdelta,t,reg):
 
   start_seq1 = start_seq2 = 0
-  deltas = [d1,d2,d3,d4]
+  if not reg:
+    deltas = [d1, d2, d3, d4]
+  else:
+    deltas = []
+    for i in range(5,maxdelta+1,15):
+      deltas.append(i)
   bs1 = []
   bs2 = []
   bs3 = []
   bs4 = []
-
+  means = []
+  liste = []
 
   random_seq_list = tp_calc.random_sequences(amount, length, err_rate, "acgt")
   
+  print deltas
   for delta in deltas:
     for i in range(0, len(random_seq_list), 2):
-      print i/2 + 1, "von", len(random_seq_list)/2, "Delta:", delta, deltas
+      print i/2 + 1, "von", len(random_seq_list)/2, "von Delta",delta,"bis ",maxdelta
       end_seq1 = len(random_seq_list[i])
       end_seq2 = len(random_seq_list[i + 1])
       aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
@@ -516,43 +524,42 @@ def cigmultidelta(amount,length,err_rate,d1,d2,d3,d4,t):
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
                                 end_seq1, start_seq2, end_seq2, delta, cigar)
 
-      if i == len(random_seq_list) - 2 and delta == d4:
-        for item in tp_kodierung(TP, "tracepoint"): bs4.append(item)
-        print "\nBS1:\n", bs1, "\n"
-        print "\nBS2:\n", bs2, "\n"
-        print "\nBS3:\n", bs3, "\n"
-        print "\nBS4:\n", bs4, "\n"
-        deltaplot(bs1, bs2, bs3, bs4, 1, 1, 1, 1, t)
-      else:
-        TP = []
-        TP.append(delta)
-        TP.append(tp_aln.tp[0])
-        for j in range(1, len(tp_aln.tp)):
-          TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
-        if delta == d1:
-          for item in tp_kodierung(TP, "tracepoint"): bs1.append(item)
-        elif delta == d2:
-          for item in tp_kodierung(TP, "tracepoint"): bs2.append(item)
-        elif delta == d3:
-          for item in tp_kodierung(TP, "tracepoint"): bs3.append(item)
-        else:
-          for item in tp_kodierung(TP, "tracepoint"): bs4.append(item)
+      TP = []
+      TP.append(delta)
+      TP.append(tp_aln.tp[0])
+      for j in range(1, len(tp_aln.tp)):
+        TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
+      for item in tp_kodierung(TP, "tracepoint"): liste.append(item)
 
-def multierr(amount,length,e1,e2,e3,e4,delta,t):
+      if i == len(random_seq_list) - 2:
+        means.append(sum(liste)/ float(len(liste)))
+        if delta == deltas[-1]:
+          print "\nMEANS:\n", means, "\n"
+          regress([],[],means,deltas,t)
+            
+  print "Ende"
+  sys.exit(0)
+
+def multierr(amount,length,e1,e2,e3,e4,delta,t,reg):
 
   start_seq1 = start_seq2 = 0
-  errs = [e1,e2,e3,e4]
+  if not reg:
+    errs = [e1,e2,e3,e4]
+  else:
+    errs = [0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95]
+    print errs
   bs1 = []
   bs2 = []
   bs3 = []
   bs4 = []
-
+  means = []
+  liste = []
 
   print "err" 
   for err_rate in errs:
     random_seq_list = tp_calc.random_sequences(amount, length, err_rate, "acgt")
     for i in range(0, len(random_seq_list), 2):
-      print i/2 + 1, "von", len(random_seq_list)/2, "Err Rate:", err_rate, errs
+      print i/2 + 1, "von", len(random_seq_list)/2, "Err Rate:", err_rate
       end_seq1 = len(random_seq_list[i])
       end_seq2 = len(random_seq_list[i + 1])
       aln = Alignment.Alignment(random_seq_list[i], random_seq_list[i + 1], 
@@ -562,53 +569,115 @@ def multierr(amount,length,e1,e2,e3,e4,delta,t):
       tp_aln = TracePoint.TracePointAlignment(aln.seq1, aln.seq2, start_seq1,
                                 end_seq1, start_seq2, end_seq2, delta, cigar)
 
-      if i == len(random_seq_list) - 2 and err_rate == e4:
-        print "\nBS1:\n", bs1, "\n"
-        print "\nBS2:\n", bs2, "\n"
-        print "\nBS3:\n", bs3, "\n"
-        print "\nBS4:\n", bs4, "\n"
-        deltaplot(bs1, bs2, bs3, bs4, 1, 1, 1, 1, t)
-      else:
-        TP = []
-        TP.append(delta)
-        TP.append(tp_aln.tp[0])
-        for j in range(1, len(tp_aln.tp)):
-          TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
-        if err_rate == e1:
-          for item in tp_kodierung(TP, "tracepoint"): bs1.append(item)
-        elif err_rate == e2:
-          for item in tp_kodierung(TP, "tracepoint"): bs2.append(item)
-        elif err_rate == e3:
-          for item in tp_kodierung(TP, "tracepoint"): bs3.append(item)
+      TP = []
+      TP.append(delta)
+      TP.append(tp_aln.tp[0])
+      for j in range(1, len(tp_aln.tp)):
+        TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
+
+      if i == len(random_seq_list) - 2:
+
+        if not reg:
+          if err_rate == e1:
+            for item in tp_kodierung(TP, "tracepoint"): bs1.append(item)
+          elif err_rate == e2:
+            for item in tp_kodierung(TP, "tracepoint"): bs2.append(item)
+          elif err_rate == e3:
+            for item in tp_kodierung(TP, "tracepoint"): bs3.append(item)
+          else:
+            for item in tp_kodierung(TP, "tracepoint"): bs4.append(item)
+          if err_rate == e4:
+            print "\nBS1:\n", bs1, "\n"
+            print "\nBS2:\n", bs2, "\n"
+            print "\nBS3:\n", bs3, "\n"
+            print "\nBS4:\n", bs4, "\n"
+            deltaplot(bs1, bs2, bs3, bs4, 1, 1, 1, 1, t)
         else:
-          for item in tp_kodierung(TP, "tracepoint"): bs4.append(item)
+          TP = []
+          TP.append(delta)
+          TP.append(tp_aln.tp[0])
+          for j in range(1, len(tp_aln.tp)):
+            TP.append(tp_aln.tp[j] - tp_aln.tp[j - 1])
+          means.append(np.mean(liste))#sum(liste)/float(len(liste)))
+          if err_rate == errs[-1]:
+            print "\nMEANS:\n",means,"\n"
+            regress(means,errs,[],[],t)
+      else:
+        for item in tp_kodierung(TP, "tracepoint"): liste.append(item)
+
+def regress(err_means, errs, delta_means, deltas, t):
+  print "REGRESS DELTA:\n", delta_means, "\n", deltas
+  print "REGRESS ERRS:\n", err_means, "\n", errs
+
+  plt.figure(1)
+  plt.ylabel('Mittelwert der Kodierungsgröße')
+  plt.xlabel('Delta')
+
+  x = range(0,501)
+  y = [(-0.021707 * i) + 95.641191 for i in x]
+  for i in range(0,len(delta_means)):
+    print deltas[i], delta_means[i]
+  plt.plot(x,y, 'r--', label='Regressionsgerade')
+  plt.axis([5, 510, 80, 100])
+  plt.plot(deltas, delta_means, 'b-')
+  plt.legend(loc='upper right')
+
+  plt.figure(2)
+  plt.ylabel('Mittelwert der Kodierungsgröße')
+  plt.xlabel('Fehlerrate')
+
+  plt.axis([0, 1, 30, 235])
+  plt.plot(errs, err_means, 'b-')
+
+  print "Delta max:", max(delta_means)
+  print "Err max:", max(err_means)
+  print "Calculation complete.\nClock time: %.2f seconds." % (time.clock() - t)
+  plt.show()
+  sys.exit(0)
+
+  
 def main():
 
   # METHOD = "cigar" 
   # METHOD = "tracepoint"
   METHOD = "entropy"
   manual = 0
-  multidelta = 0
+  multi_delta = 0
   multierr_rate = 0
+  reg_delta = 1
+  reg_err = 0
   start_seq1 = start_seq2 = 0
 
   t = time.clock()
   print "Läuft..."
-  amount = 10
+  amount = 50
   length = 5000
-  delta = 200
+  delta = 500
   err_rate = 0.15
   bs1 = []
   bs2 = []
   bs3 = []
   TP = []
 
+   
+  delta_means = [95.76, 96.06, 95.02666666666667, 93.32, 92.184, 92.22, 92.44571428571429, 92.95, 91.93333333333334, 91.272, 92.02545454545455, 92.25333333333333, 92.31692307692308, 91.84, 92.144, 91.645, 91.32705882352941, 91.36888888888889, 91.40210526315789, 91.084, 90.52571428571429, 90.02181818181818, 89.38, 88.85416666666667, 88.1176, 87.84538461538462, 87.28666666666666, 86.78785714285715, 86.05586206896552, 85.46333333333334, 84.65096774193549, 83.964375, 83.4090909090909, 82.73588235294118]
+  deltas = [5, 20, 35, 50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500]
+  err_means = [44.408163265306122, 53.469387755102041, 62.38095238095238, 71.387755102040813, 79.877551020408163, 88.571428571428569, 97.18950437317784, 105.30612244897959, 113.91836734693878, 123.12244897959184, 132.40630797773656, 142.46938775510205, 154.64835164835165, 168.07434402332362, 182.45986394557823, 195.59438775510205, 207.74789915966386, 218.18480725623581, 227.16970998925885]
+  errs = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  regress(err_means, errs, delta_means, deltas, t)
+  
+
   print METHOD
 
-  if multidelta:
-    cigmultidelta(amount,length,0.15,50,100,200,500,t)
+  if multi_delta:
+    multidelta(amount,length,0.15,50,100,200,500,0,t,reg_delta)
   elif multierr_rate:
     multierr(amount, length, 0.05, 0.15, 0.30, 0.50, 200, t)
+  elif reg_delta:
+    print "DELTAALARM"
+    multidelta(amount,length,err_rate,0,0,0,0,delta,t,reg_delta)
+  elif reg_err:
+    multierr(amount, length, 0,0,0,0,delta,t,reg_err)
 
   if METHOD == "entropy":
 
