@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     FrontEdistTrace *fet = NULL;
     TracePointList *tp_list = NULL;
     GtUchar *useq = NULL, *vseq = NULL;
-    char *cigar = NULL;
+    char *enc_cigar = NULL, *dec_cigar = NULL;
 
     start1 = (GtUword) readstart1;
     end1 = (GtUword) readend1;
@@ -91,9 +91,9 @@ int main(int argc, char *argv[])
     front_edist_trace_delete(fet);
     assert(edist == gt_eoplist_unit_cost(eoplist));
     gt_tracepoint_encode(tp_list, eoplist);
-    cigar = gt_eoplist2cigar_string(eoplist,false);
-    printf("CIGAR Encode: %s\n", cigar);
-    gt_free(cigar);
+    enc_cigar = gt_eoplist2cigar_string(eoplist,false);
+    printf("CIGAR Encode: %s\n", enc_cigar);
+    gt_free(enc_cigar);
     printf("Unit Cost Encode: %lu\n\n", gt_eoplist_unit_cost(eoplist));
     gt_eoplist_delete(eoplist);
 
@@ -101,9 +101,9 @@ int main(int argc, char *argv[])
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
-      cigar = gt_eoplist2cigar_string(eoplist_tp,false);
-      printf("CIGAR Decode: %s\n", cigar);
-      gt_free(cigar);
+      dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
+      printf("CIGAR Decode: %s\n", dec_cigar);
+      gt_free(dec_cigar);
       printf("Unit Cost Decode: %lu\n\n", gt_eoplist_unit_cost(eoplist_tp));
       gt_eoplist_delete(eoplist_tp);
     }
