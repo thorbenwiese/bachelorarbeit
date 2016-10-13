@@ -61,9 +61,9 @@ int main(int argc, char *argv[])
     GtEoplist *eoplist;
     FrontEdistTrace *fet = NULL;
     TracePointList *tp_list = NULL;
-    GtUchar *useq = NULL, *vseq = NULL;
+    GtUchar *useq = NULL, *vseq = NULL, *u, *v;
     char *enc_cigar = NULL, *dec_cigar = NULL;
-    GtUword unitcost;
+    GtUword unitcost, l1, l2;
 
     struct timeval start_time;
     struct timeval comp_time;
@@ -106,12 +106,16 @@ int main(int argc, char *argv[])
     gt_free(enc_cigar);
     printf("Unit Cost Encode: %lu\n", unitcost);
     GtEoplistReader *eopr = gt_eoplist_reader_new(eoplist);
+    u = useq;
+    v = vseq;
+    l1 = end1 - start1 + 1;
+    l2 = end2 - start2 + 1;
     gt_eoplist_format_generic(stderr,
                               eopr,
-                              useq,
-                              end1 - start1 + 1,
-                              vseq,
-                              end2 - start2 + 1,
+                              u,
+                              l1,
+                              v,
+                              l2,
                               false);
     gt_eoplist_reader_delete(eopr);
     
