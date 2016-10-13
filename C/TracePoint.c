@@ -16,13 +16,11 @@ struct TracePointList
 
 /* function to create a TracePoint Array from eoplist*/
 void gt_tracepoint_encode(TracePointList *tp_list, 
-                                     GtEoplist *eoplist)
+                          GtEoplist *eoplist)
 {
-  GtEoplistReader *eoplist_reader;
+  GtEoplistReader *eoplist_reader = gt_eoplist_reader_new(eoplist);
   GtCigarOp co;
   GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, v_len = 0;
-
-  eoplist_reader = gt_eoplist_reader_new(eoplist);
 
   /* p is a factor to dynamically adjust the interval borders */
   /* if the sequence starts at pos 0 then p should be 1 */
@@ -89,7 +87,6 @@ void gt_tracepoint_encode(TracePointList *tp_list,
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
 }
-
 
 /* function to generate GtEoplist from TracePointList */
 GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
