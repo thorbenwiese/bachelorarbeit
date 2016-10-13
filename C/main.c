@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     TracePointList *tp_list = NULL;
     GtUchar *useq = NULL, *vseq = NULL;
     char *enc_cigar = NULL, *dec_cigar = NULL;
+    GtUword unitcost;
 
     struct timeval start_time;
     struct timeval comp_time;
@@ -88,12 +89,13 @@ int main(int argc, char *argv[])
     edist = front_edist_trace_eoplist(eoplist,
                                       fet,
                                       useq,
-                                      end1 - start1,
+                                      end1 - start1 + 1,
                                       vseq,
-                                      end2 - start2,
+                                      end2 - start2 + 1,
                                       true);
     front_edist_trace_delete(fet);
-    assert(edist == gt_eoplist_unit_cost(eoplist));
+    unitcost = gt_eoplist_unit_cost(eoplist);
+    assert(edist == unitcost);
 
     gettimeofday(&start_time, NULL);
     gt_tracepoint_encode(tp_list, eoplist);
@@ -102,8 +104,16 @@ int main(int argc, char *argv[])
     enc_cigar = gt_eoplist2cigar_string(eoplist,false);
     printf("CIGAR Encode: %s\n", enc_cigar);
     gt_free(enc_cigar);
-    printf("Unit Cost Encode: %lu\n", gt_eoplist_unit_cost(eoplist));
-    gt_eoplist_delete(eoplist);
+    printf("Unit Cost Encode: %lu\n", unitcost);
+    GtEoplistReader *eopr = gt_eoplist_reader_new(eoplist);
+    gt_eoplist_format_generic(stderr,
+                              eopr,
+                              useq,
+                              end1 - start1 + 1,
+                              vseq,
+                              end2 - start2 + 1,
+                              false);
+    gt_eoplist_reader_delete(eopr);
     
     double enc_time = (comp_time.tv_sec - start_time.tv_sec) + 
                       (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
@@ -113,6 +123,7 @@ int main(int argc, char *argv[])
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
+      GtUword unitcost_dc;
 
       gettimeofday(&start_time, NULL);
       dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
@@ -120,12 +131,29 @@ int main(int argc, char *argv[])
 
       printf("CIGAR Decode: %s\n", dec_cigar);
       gt_free(dec_cigar);
-      printf("Unit Cost Decode: %lu\n", gt_eoplist_unit_cost(eoplist_tp));
+      unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
+      printf("Unit Cost Decode: %lu\n", unitcost_dc);
+      if (unitcost_dc > unitcost)
+      {
+        GtEoplistReader *eopr1 = gt_eoplist_reader_new(eoplist_tp);
+        fprintf(stderr,"unitcost_dc = %lu > %lu = unitcostn", 
+                 unitcost_dc,unitcost);
+        gt_eoplist_format_generic(stderr,
+                               eopr1,
+                               useq,
+                               end1 - start1 + 1,
+                               vseq,
+                               end2 - start2 + 1,
+                               false);
+        gt_eoplist_reader_delete(eopr1);
+        exit(EXIT_FAILURE);
+      }
       gt_eoplist_delete(eoplist_tp);
       double dec_time = (comp_time.tv_sec - start_time.tv_sec) + 
                         (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
       printf("Berechnungszeit Decode: %f s\n\n", dec_time);
     }
+    gt_eoplist_delete(eoplist);
     gt_tracepoint_list_delete(tp_list);
   }
 

@@ -95,40 +95,27 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
   FrontEdistTrace *fet = front_edist_trace_new();
   GtUword i, final_edist = 0;
 
-  for(i = 0; i < tp_list->TP_len; i++)
+  for(i = 0; i <= tp_list->TP_len; i++)
   {
     const GtUchar *usub = NULL, *vsub = NULL;
     GtUword ulen = tp_list->delta, vlen = 0;
-
+    printf("%lu\n",i);
     if(i == 0)
     {
       usub = tp_list->useq;
       vsub = tp_list->vseq;
       vlen = tp_list->TP[0] + 1;
     }
-    else if(i == tp_list->TP_len - 1)
+    else if(i == tp_list->TP_len)
     {
-      usub = tp_list->useq + (i * tp_list->delta);
-      vsub = tp_list->vseq + tp_list->TP[i - 1] + 1;
-      vlen = tp_list->TP[i] - tp_list->TP[i - 1];
-
-      final_edist += front_edist_trace_eoplist(eoplist,
-                                               fet,
-                                               usub,
-                                               ulen,
-                                               vsub,
-                                               vlen,
-                                               false);
-
-      /* last interval without Trace Point */
-      i++;
-
       usub = tp_list->useq + (i * tp_list->delta);
       vsub = tp_list->vseq + (tp_list->TP[i - 1] + 1);
 
       gt_assert(tp_list->end1 >= tp_list->start1 + i * tp_list->delta);
+      //ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta;
       ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta;
       gt_assert(tp_list->end2 >= tp_list->start2 + tp_list->TP[i - 1] + 1);
+      //vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1] - 1;
       vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1] - 1;
     }
     else
@@ -146,6 +133,13 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
                                              vlen,
                                              false);
   }
+  gt_eoplist_reader_verify(eoplist,
+                           tp_list->useq,
+                           tp_list->end1 - tp_list->start1,
+                           tp_list->vseq,
+                           tp_list->end2 - tp_list->start2,
+                           final_edist,
+                           false);
   gt_assert(final_edist == gt_eoplist_unit_cost(eoplist));
   front_edist_trace_delete(fet);
   return eoplist;
