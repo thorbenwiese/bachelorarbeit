@@ -227,6 +227,6 @@ void gt_print_tracepoint_list(const TracePointList *tp_list)
     {
       printf("%lu ", tp_list->TP[i]);
     }
-    printf("\n");
+    printf("\n\n");
   }
 }

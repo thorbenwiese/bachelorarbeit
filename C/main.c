@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 
 #include "eoplist.h"
 #include "TracePoint.h"
@@ -63,6 +64,9 @@ int main(int argc, char *argv[])
     GtUchar *useq = NULL, *vseq = NULL;
     char *enc_cigar = NULL, *dec_cigar = NULL;
 
+    struct timeval start_time;
+    struct timeval comp_time;
+
     start1 = (GtUword) readstart1;
     end1 = (GtUword) readend1;
     start2 = (GtUword) readstart2;
@@ -90,22 +94,37 @@ int main(int argc, char *argv[])
                                       true);
     front_edist_trace_delete(fet);
     assert(edist == gt_eoplist_unit_cost(eoplist));
+
+    gettimeofday(&start_time, NULL);
     gt_tracepoint_encode(tp_list, eoplist);
+    gettimeofday(&comp_time, NULL); 
+
     enc_cigar = gt_eoplist2cigar_string(eoplist,false);
     printf("CIGAR Encode: %s\n", enc_cigar);
     gt_free(enc_cigar);
-    printf("Unit Cost Encode: %lu\n\n", gt_eoplist_unit_cost(eoplist));
+    printf("Unit Cost Encode: %lu\n", gt_eoplist_unit_cost(eoplist));
     gt_eoplist_delete(eoplist);
+    
+    double enc_time = (comp_time.tv_sec - start_time.tv_sec) + 
+                      (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
+    printf("Berechnungszeit Encode: %f s\n\n", enc_time);
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
     {
       GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
+
+      gettimeofday(&start_time, NULL);
       dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
+      gettimeofday(&comp_time, NULL); 
+
       printf("CIGAR Decode: %s\n", dec_cigar);
       gt_free(dec_cigar);
-      printf("Unit Cost Decode: %lu\n\n", gt_eoplist_unit_cost(eoplist_tp));
+      printf("Unit Cost Decode: %lu\n", gt_eoplist_unit_cost(eoplist_tp));
       gt_eoplist_delete(eoplist_tp);
+      double dec_time = (comp_time.tv_sec - start_time.tv_sec) + 
+                        (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
+      printf("Berechnungszeit Decode: %f s\n\n", dec_time);
     }
     gt_tracepoint_list_delete(tp_list);
   }
