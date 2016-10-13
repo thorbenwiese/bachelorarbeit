@@ -626,8 +626,15 @@ def regress(err_means, errs, delta_means, deltas, t):
   plt.ylabel('Mittelwert der Kodierungsgröße')
   plt.xlabel('Fehlerrate')
 
-  plt.axis([0, 1, 30, 235])
+  for i in range(0,len(err_means)):
+    print errs[i], err_means[i]
+  a = [float(i)/100 for i in range(1,100)]
+  print "AAAAAAAA", a
+  b = [204.263156 * i + 27.783514 for i in a]
+  plt.axis([0, 1, 0, 235])#30
+  plt.plot(a,b,'r--',label='Regressionsgerade')
   plt.plot(errs, err_means, 'b-')
+  plt.legend(loc='upper left')
 
   print "Delta max:", max(delta_means)
   print "Err max:", max(err_means)
