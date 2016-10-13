@@ -407,7 +407,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} b
 
 Der Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $01001;0001$ im Header kodiert werden, nötig.
 
-Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und benötigt damit nur $\frac{20}{70} \approx 28$\% der Huffman-Kodierung für den CIGAR-String.
+Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und benötigt damit nur $\frac{20}{87} \approx 23$\% der Huffman-Kodierung für den CIGAR-String.
 
 \begin{table}
 	\centering
@@ -470,7 +470,7 @@ Die in \ref{Differenzen-Kodierung} genannten Trace Point Differenzen des selben 
 und somit eine Gesamtentropie von $1.30 \cdot 8 = 10.4$ Bit.
 
 Zusammenfassend ergibt sich für die Größen der Kodierungen des Alignments aus Beispiel \ref{Bsp1} Tabelle \ref{Kodierung-Tabelle}.
-\begin{figure}[t]
+\begin{table}[t]
 	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
@@ -487,7 +487,7 @@ Zusammenfassend ergibt sich für die Größen der Kodierungen des Alignments aus Be
 	\end{tabular}
 	\caption{Anzahl der Bits für die Kodierung des Beispiel-Alignments}
 	\label{Kodierung-Tabelle}
-\end{figure}
+\end{table}
 
 \chapter{Resultate} \label{Resultate}
 
@@ -576,7 +576,7 @@ Err max: 227.169709989
 	\caption{Mittelwerte der Huffman-Kodierung der Trace Point Differenzen für \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\% bis $95$\%.} \label{var-errs}
 \end{figure}
 
-\begin{figure}[t]
+\begin{table}[t]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
@@ -589,7 +589,7 @@ Err max: 227.169709989
 	\end{tabular}
 	\caption{Größe der Kodierung für verschiedene $\Delta$-Werte und Fehlerraten}
 	\label{var-errs-deltas}
-\end{figure}
+\end{table}
 
 
 %Cig Entropy Mean: 1755.79258069
@@ -605,7 +605,7 @@ Err max: 227.169709989
 \end{figure}
 
 
-\begin{figure}[t]
+\begin{table}[t]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 		\hline
@@ -623,7 +623,7 @@ Err max: 227.169709989
 	\end{tabular}
 	\caption{Größe der Kodierungen und Entropie in Bit}
 	\label{bits-result}
-\end{figure}
+\end{table}
 \FloatBarrier
 Die Größe der Entropie für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% ist in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{entropy} grafisch dargestellt.
 
@@ -782,7 +782,7 @@ Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfall
 \chapter{Fazit}
 
 %TODO qualitative Ergebnisse für die Zeit fehlen u.a.
-Das Verfahren der Trace Point Differenzen stellt im Vergleich zu der üblichen Repräsentation von Alignments als CIGAR-String eine deutlich speichereffizientere Methode dar. Insbesondere durch eine Huffman-Kodierung der Differenzwerte kann bei den in dieser Arbeit errechneten Größen eine Speicherersparnis von etwa $94$\% gegenüber den CIGAR-Strings erzielt werden. Hierbei spielt jedoch der vorher definierte positive Parameter $\Delta$ eine entscheidende Rolle.
+Das Verfahren der Trace Point Differenzen stellt im Vergleich zu der üblichen Repräsentation von Alignments als CIGAR-String eine deutlich speichereffizientere Methode dar. Insbesondere durch eine Huffman-Kodierung der Differenzwerte kann bei den in dieser Arbeit errechneten Größen eine Speicherersparnis von etwa $77$\% gegenüber den CIGAR-Strings erzielt werden. Hierbei spielt jedoch der vorher definierte positive Parameter $\Delta$ eine entscheidende Rolle.
 
 Je größer $\Delta$ gewählt ist, umso weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
 
