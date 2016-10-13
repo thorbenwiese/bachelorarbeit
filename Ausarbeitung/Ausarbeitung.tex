@@ -66,7 +66,7 @@ Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
 Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
 Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
 
-Wenn die Edit-Distanz $e$ mit der Einheitskostenfunktion bekannt ist, kann ein optimales Alignment in $O(e^2)$ Zeit berechnet werden \cite{gsa-skript}.%TODO Seite?
+Wenn die Edit-Distanz $e$ mit der Einheitskostenfunktion bekannt ist, kann ein optimales lokales Alignment in $O(e^2)$ Zeit berechnet werden \cite{gsa-skript}.%TODO Seite?
 
 \section{Kodierung}
 
@@ -309,14 +309,15 @@ u[(p+\tau-2)\cdot\Delta...j] & \text{falls }q = \tau -1
 
 Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings von $v$, der in A mit $u_q$ aligniert. $t_q$ nennt man Trace Point. Für $q = 0$ aligniert $u_0$ mit $v_0 = v[k...t_0]$. Für alle $q$ mit $0<q< \tau -1$ aligniert $u_q$ mit $v_q = v[t_{q-1}+1...t_q]$.
 
-Jedes Paar von zu alignierenden Substrings kann in $O(e^2)$ Zeit berechnet werden. Für eine erwartete Fehlerrate von $\varepsilon$ gilt dann $e \leq \varepsilon\Delta$ \cite[S. 41-42]{gsa-skript}. 
+Jedes Paar von zu alignierenden Substrings kann in $O(e^2)$ Zeit berechnet werden. Für eine erwartete Fehlerrate von $\varepsilon$ gilt dann $e \leq \varepsilon\Delta$ \cite[S. 41-42]{gsa-skript}. Die Konkatenation der Teilalignments hat somit höchstens die Edit-Distanz des Alignments der Gesamtsequenz.
 
 Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$ für alle $q, 0 \leq q \leq \tau - 1$, berechnet hierfür jeweils ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
 %TODO Seitenumbruch
+\clearpage
 \begin{bsp}
 
 Sei $u = u[0...37]$ und $v = v[0...37]$ und das folgende Alignment gegeben:
-\clearpage
+
 \begin{verbatim}
 0    5    0    5    0    5    0    5    0    
 gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
@@ -500,7 +501,7 @@ Für die Kodierung der Trace Point Differenzen werden die Trace Points anhand des
 
 Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-Wert von $200$ bei jedem Durchlauf für $24$ Trace Points und den $\Delta$-Wert selbst insgesamt $\lceil \log_225$$\rceil = 125$ Bit benötigt.
 
-Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt.
+Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
 
 \begin{figure}[t]
 	\centering
@@ -586,26 +587,10 @@ Err max: 227.169709989
 		Größe & $95$ & $76$& $44$ & $227$ \\
 		\hline
 	\end{tabular}
+	\caption{Größe der Kodierung für verschiedene $\Delta$-Werte und Fehlerraten}
+	\label{var-errs-deltas}
 \end{figure}
 
-\begin{figure}[t]
-	\centering
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Delta & $35$ & $500$ \\
-		\hline
-		Größe & $95$ & $76$\\
-		\hline
-	\end{tabular}\begin{tabular}{cc}
-	&
-\end{tabular}\begin{tabular}{|c|c|c|}
-\hline
-Fehlerrate &  $5$\% &  $95$\% \\
-\hline
-Größe & $44$ & $227$ \\
-\hline
-\end{tabular}
-\end{figure}
 
 %Cig Entropy Mean: 1755.79258069
 %Diff Entropy Mean: 134.698836842
@@ -618,8 +603,7 @@ Größe & $44$ & $227$ \\
 	\caption{Entropie von \numprint{1000} CIGAR-Strings von DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%}
 	\label{entropy}
 \end{figure}
-\FloatBarrier
-Die Größe der Entropie für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% ist in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{entropy} grafisch dargestellt.
+
 
 \begin{figure}[t]
 	\centering
@@ -640,6 +624,8 @@ Die Größe der Entropie für \numprint{1000} Sequenzen mit je \numprint{5000} Base
 	\caption{Größe der Kodierungen und Entropie in Bit}
 	\label{bits-result}
 \end{figure}
+\FloatBarrier
+Die Größe der Entropie für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% ist in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{entropy} grafisch dargestellt.
 
 \chapter{Diskussion}
 
@@ -661,9 +647,9 @@ Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und ei
 
 Für einen $\Delta$-Wert von $200$ benötigt die Huffman-Kodierung im Durchschnitt nur $84.18$ Bit und damit etwa $9.3$\% weniger Speicher, als die unäre Kodierung mit $90.19$ Bit. Die binäre Kodierung liegt mit durchschnittlich $125$ Bit deutlich über dem Bedarf der anderen beiden Kodierungen. Da die einzelnen Abschnitte in der $v$-Sequenz zu $\Delta$ großen Abschnitten der $u$-Sequenz aligniert werden, sind diese üblicherweise auch genauso oder ähnlich groß wie das $\Delta$. Das hat zur Folge, dass die Differenzen der Trace Points in einem ähnlichen Wertebereich liegen und die unäre und Huffman-Kodierung aus dieser Verteilung einen Vorteil ziehen können und daher speichereffizienter kodieren, wobei der Huffman-Algorithmus etwas besser abschneidet als die unäre Kodierung.
 
-Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden Delta deutlich sinkt. Die Regressionsgerade entspricht der Funktion $y = -\frac{1}{50}x + 93$ mit $y$ als Kodierungsgröße und $x$ als $\Delta$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für ein Trade-Off zwischen Speicherbedarf und Rekonstruktionszeit.
+Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden Delta deutlich sinkt. Für ein $\Delta$ von $35$ werden die Trace Point Differenzen durchschnittlich mit $95$ Bit kodiert und für ein $\Delta$ von $500$ mit $76$ Bit im Mittel, also etwa $20$\% weniger. Die Regressionsgerade entspricht der Funktion $y = -\frac{1}{50}x + 93$ mit $y$ als Kodierungsgröße und $x$ als $\Delta$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für ein Trade-Off zwischen Speicherbedarf und Rekonstruktionszeit.
 
-Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment. Bei einer kleinen Fehlerrate ist somit eine hohe Anzahl an Matches vorhanden. Da die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Die Regressionsgerade entspricht der Funktion $y = 204x + 27.8$ mit $y$ als Kodierungsgröße und $x$ als Fehlerrate.
+Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment. Bei einer kleinen Fehlerrate ist somit eine hohe Anzahl an Matches vorhanden. Da die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Bei einer Fehlerrate von $95$\% wird für $\Delta = 100$ durchschnittlich $227$ Bit benötigt und für eine Fehlerrate von $5$\% im Mittel nur $44$ Bit, also etwa $19$\% weniger. Die Regressionsgerade entspricht der Funktion $y = 204x + 27.8$ mit $y$ als Kodierungsgröße und $x$ als Fehlerrate.
 
 Damit ist die Huffman-Kodierung, wie bei den CIGAR-Strings, das effizienteste Kodierungs-Verfahren.
 
@@ -673,7 +659,10 @@ Die Größe der Entropie der CIGAR-Strings und Trace Point Differenzen ist für \nu
 
 Sie gibt den Informationsgehalt einer Sequenz in Relation zu der Verteilung der Symbole an und wird deshalb in Bit pro Symbol berechnet und dann später mit der Anzahl der zu kodierenden Symbole multipliziert. Da ein CIGAR-String alle Edit-Operationen eines Alignments beschreibt und die Trace Point Differenzen lediglich die Abstände von einem zu alignierenden Abschnitt zu dem nächsten beschreiben, müssen in der Regel für CIGAR-Strings mehr Symbole kodiert werden, als für die Trace Point Differenzen. Diese Eigenschaft spiegelt sich auch in der Entropie beider Verfahren wieder. Die CIGAR-Strings weisen eine Entropie von durchschnittlich \numprint{1755} Bit auf. Dies bedeutet, dass sie etwa $13$ mal so viel wie die Entropie der Trace Point Differenzen ausmacht, welche bei durchschnittlich $134$ Bit liegt.
 
-%TODO Laufzeit der Rekonstruktion?!
+%TODO
+\section{Laufzeit der Rekonstruktion von Alignments}
+TODO
+%Wann Break-Even Point? Wahl von Delta bestimmt Zeit und Größe -> in einer Grafik!
 
 \chapter{Implementierung}
 
@@ -685,35 +674,7 @@ Die Implementierung besteht aus der Main-Datei, welche als Eingabeparameter die 
 
 Diese Funktion unterteilt die Sequenzen wie in Kapitel \ref{TP Konzept} beschrieben und bestimmt die Trace Points, welche dann ebenfalls in der Trace Point Liste gespeichert werden. Der Pseudocode der encode-Funktion ist in Algorithmus \ref{encode} beschrieben. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren. Es sind also lediglich die zu alignierenden Abschnitte bekannt, aber nicht die Alignierung selber. Diese muss bei der Dekodierung neu berechnet werden.
 
-Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfalls im TracePoint-Modul definiert ist. Sie nimmt eine Trace Point Liste als Parameter entgegen und berechnet für jedes Paar von zu alignierenden Teilabschnitten eine neue Liste von Edit-Operationen und konkateniert diese abschließend zu einer Gesamtliste und gibt sie als Rückgabewert zurück. Der Pseudocode der decode-Funktion ist in Algorithmus \ref{decode} zu finden. Hierbei ist nicht gewährleistet, dass das neue Alignment dem alten entspricht. Das neue Alignment hat jedoch mindestens die gleiche Edit-Distanz wie das alte Alignment. %TODO vorher beschreiben!
-
-\begin{figure}[t]
-\begin{tikzpicture}
-
-\begin{class}[text width=8.5cm]{Alignment}{4,-6.5}
-\operation{calculate\_edit\_operation\_list(Trace Point list)}
-\end{class}
-
-\begin{class}[text width=8.5cm]{TracePoint}{4,-3}
-\inherit{Alignment}
-\attribute{Trace Point List}
-\operation{encode(Trace Point List, Edit-Operation List)}
-\operation{decode(Trace Point List)}
-\end{class}
-
-\begin{class}[text width=5cm]{Main}{-5,-3.5}
-\attribute{Sequenz 1, Sequenz 2}
-\attribute{Start 1, End 1}
-\attribute{Start 2, End 2}
-\attribute{$\Delta$}
-\inherit{TracePoint}
-\inherit{Alignment}
-\operation{create\_Trace\_Point\_List()}
-\end{class}
-\end{tikzpicture}
-\caption{UML-Diagramm}
-\label{UML}
-\end{figure}
+Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfalls im TracePoint-Modul definiert ist. Sie nimmt eine Trace Point Liste als Parameter entgegen und berechnet für jedes Paar von zu alignierenden Teilabschnitten eine neue Liste von Edit-Operationen und konkateniert diese abschließend zu einer Gesamtliste und gibt sie als Rückgabewert zurück. Der Pseudocode der decode-Funktion ist in Algorithmus \ref{decode} zu finden. Hierbei ist nicht gewährleistet, dass das neue Alignment dem alten entspricht. Das neue Alignment hat jedoch, wie in \ref{TP Konzept} beschrieben, mindestens die gleiche Edit-Distanz wie das alte Alignment.
 
 \begin{algorithm}[t]
 	\caption{Berechnung der Trace Points aus einer gegebenen Liste von Edit-Operationen}
@@ -789,6 +750,34 @@ Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfall
 			\EndFunction
 		\end{algorithmic}
 	\end{algorithm}
+
+\begin{figure}[t]
+	\begin{tikzpicture}
+	
+	\begin{class}[text width=8.5cm]{Alignment}{4,-5}
+	\operation{calculate\_edit\_operation\_list(Trace Point list)}
+	\end{class}
+	
+	\begin{class}[text width=8.5cm]{TracePoint}{4,-1}
+	\inherit{Alignment}
+	\attribute{Trace Point List}
+	\operation{encode(Trace Point List, Edit-Operation List)}
+	\operation{decode(Trace Point List)}
+	\end{class}
+	
+	\begin{class}[text width=5cm]{Main}{-5,-2.5}
+	\attribute{Sequenz 1, Sequenz 2}
+	\attribute{Start 1, End 1}
+	\attribute{Start 2, End 2}
+	\attribute{$\Delta$}
+	\inherit{TracePoint}
+	\inherit{Alignment}
+	\operation{create\_Trace\_Point\_List()}
+	\end{class}
+	\end{tikzpicture}
+	\caption{UML-Diagramm}
+	\label{UML}
+\end{figure}
 	
 \chapter{Fazit}
 
