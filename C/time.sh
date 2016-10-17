@@ -1,6 +1,6 @@
 #!/bin/bash
 OUTPUT="$(ruby ./gen-randseq.rb -m pair -l 5000)"
-for i in {5..500}
+for i in {5..10}
 do
 	for j in {1..50}
 	do
