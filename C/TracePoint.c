@@ -20,24 +20,19 @@ void gt_tracepoint_encode(TracePointList *tp_list,
 {
   GtEoplistReader *eoplist_reader = gt_eoplist_reader_new(eoplist);
   GtCigarOp co;
-  GtUword p, q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, v_len = 0;
-
-  /* p is a factor to dynamically adjust the interval borders */
-  /* if the sequence starts at pos 0 then p should be 1 */
-  p = MAX(1, ceil(tp_list->start1 / tp_list->delta));
+  GtUword q, count = 0, num_chars_in_v = 0, num_chars_in_u = 0, v_len = 0;
 
   /* number of intervals */
-  GtUword tau = ceil(tp_list->end1 / tp_list->delta) - 
-                floor(tp_list->start1 / tp_list->delta);
+  GtUword tau = ceil((float)(tp_list->end1 - tp_list->start1) / tp_list->delta);
   
   /* Trace Points in useq */
   gt_assert(tau > 1);
   GtUword *u_tp = gt_malloc((tau) * sizeof *u_tp);
   gt_assert(u_tp != NULL);
 
-  for(q = 0; q <= tau - 1; q++)
+  for(q = 1; q <= tau; q++)
   {
-    u_tp[q] = (p + q) * tp_list->delta - 1;
+    u_tp[q] = q * tp_list->delta - 1;
   }
 
   /* Trace Point Array */
@@ -63,27 +58,21 @@ void gt_tracepoint_encode(TracePointList *tp_list,
         num_chars_in_u++;
       }
       gt_assert(count < tau);
-      if(num_chars_in_u == u_tp[count])
+      if(num_chars_in_u == u_tp[count] + 1 && count < tau - 1)
       {
-        tp_list->TP[v_len++] = num_chars_in_v;
-
-        // do not increment count in the last interval
-        if(count == tau - 1)
-        {
-          tp_list->TP_len = v_len;
-
-          /* print Trace Points -> for debugging only */
-          gt_print_tracepoint_list(tp_list);
-
-          break;
-        }
-        else
-        {
-          count++;
-        }
+        tp_list->TP[v_len++] = num_chars_in_v - 1;
+        count++;
+      }
+      if(count == tau - 1)
+      {
+        tp_list->TP_len = v_len;
+        break;
       }
     }
   }
+
+  /* print Trace Points -> for debugging only */
+  //gt_print_tracepoint_list(tp_list);
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
 }
@@ -99,7 +88,7 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
   {
     const GtUchar *usub = NULL, *vsub = NULL;
     GtUword ulen = tp_list->delta, vlen = 0;
-    printf("%lu\n",i);
+
     if(i == 0)
     {
       usub = tp_list->useq;
@@ -109,14 +98,12 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
     else if(i == tp_list->TP_len)
     {
       usub = tp_list->useq + (i * tp_list->delta);
-      vsub = tp_list->vseq + (tp_list->TP[i - 1] + 1);
+      vsub = tp_list->vseq + tp_list->TP[i - 1] + 1;
 
-      gt_assert(tp_list->end1 >= tp_list->start1 + i * tp_list->delta);
-      //ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta;
-      ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta;
-      gt_assert(tp_list->end2 >= tp_list->start2 + tp_list->TP[i - 1] + 1);
-      //vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1] - 1;
-      vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1] - 1;
+      gt_assert(tp_list->end1 + 1 >= tp_list->start1 + i * tp_list->delta);
+      ulen = tp_list->end1 - tp_list->start1 - i * tp_list->delta + 1;
+      gt_assert(tp_list->end2 >= tp_list->start2 + tp_list->TP[i - 1]);
+      vlen = tp_list->end2 - tp_list->start2 - tp_list->TP[i - 1];
     }
     else
     {
@@ -135,9 +122,9 @@ GtEoplist *gt_tracepoint_decode(const TracePointList *tp_list)
   }
   gt_eoplist_reader_verify(eoplist,
                            tp_list->useq,
-                           tp_list->end1 - tp_list->start1,
+                           tp_list->end1 - tp_list->start1 + 1,
                            tp_list->vseq,
-                           tp_list->end2 - tp_list->start2,
+                           tp_list->end2 - tp_list->start2 + 1,
                            final_edist,
                            false);
   gt_assert(final_edist == gt_eoplist_unit_cost(eoplist));

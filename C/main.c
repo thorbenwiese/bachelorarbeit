@@ -61,9 +61,9 @@ int main(int argc, char *argv[])
     GtEoplist *eoplist;
     FrontEdistTrace *fet = NULL;
     TracePointList *tp_list = NULL;
-    GtUchar *useq = NULL, *vseq = NULL, *u, *v;
+    GtUchar *useq = NULL, *vseq = NULL;
     char *enc_cigar = NULL, *dec_cigar = NULL;
-    GtUword unitcost, l1, l2;
+    GtUword unitcost;
 
     struct timeval start_time;
     struct timeval comp_time;
@@ -105,23 +105,23 @@ int main(int argc, char *argv[])
     printf("CIGAR Encode: %s\n", enc_cigar);
     gt_free(enc_cigar);
     printf("Unit Cost Encode: %lu\n", unitcost);
-    GtEoplistReader *eopr = gt_eoplist_reader_new(eoplist);
-    u = useq;
-    v = vseq;
-    l1 = end1 - start1 + 1;
-    l2 = end2 - start2 + 1;
-    gt_eoplist_format_generic(stderr,
-                              eopr,
-                              u,
-                              l1,
-                              v,
-                              l2,
-                              false);
-    gt_eoplist_reader_delete(eopr);
     
     double enc_time = (comp_time.tv_sec - start_time.tv_sec) + 
-                      (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
-    printf("Berechnungszeit Encode: %f s\n\n", enc_time);
+                      (comp_time.tv_usec - start_time.tv_usec) * 1e-6; 
+    printf("Berechnungszeit Encode: %.6f\n", enc_time);
+
+    /*
+    FILE *f1 = fopen("enc_time.txt", "a");
+    if (f1 == NULL)
+    {
+      printf("Error opening file!\n");
+      exit(EXIT_FAILURE);
+    }
+
+    fprintf(f1, "%f\n", enc_time);
+
+    fclose(f1);
+    */
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
@@ -133,29 +133,32 @@ int main(int argc, char *argv[])
       dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
       gettimeofday(&comp_time, NULL); 
 
-      printf("CIGAR Decode: %s\n", dec_cigar);
+      //printf("CIGAR Decode: %s\n", dec_cigar);
       gt_free(dec_cigar);
       unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
-      printf("Unit Cost Decode: %lu\n", unitcost_dc);
+      //printf("Unit Cost Decode: %lu\n", unitcost_dc);
       if (unitcost_dc > unitcost)
       {
-        GtEoplistReader *eopr1 = gt_eoplist_reader_new(eoplist_tp);
-        fprintf(stderr,"unitcost_dc = %lu > %lu = unitcostn", 
+        fprintf(stderr,"unitcost_decode = %lu > %lu = unitcost_encode\n", 
                  unitcost_dc,unitcost);
-        gt_eoplist_format_generic(stderr,
-                               eopr1,
-                               useq,
-                               end1 - start1 + 1,
-                               vseq,
-                               end2 - start2 + 1,
-                               false);
-        gt_eoplist_reader_delete(eopr1);
         exit(EXIT_FAILURE);
       }
       gt_eoplist_delete(eoplist_tp);
       double dec_time = (comp_time.tv_sec - start_time.tv_sec) + 
                         (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
-      printf("Berechnungszeit Decode: %f s\n\n", dec_time);
+      printf("Berechnungszeit Decode: %.6f\n", dec_time);
+      /*
+      FILE *f2 = fopen("dec_time.txt", "a");
+      if (f2 == NULL)
+      {
+        printf("Error opening file!\n");
+        exit(EXIT_FAILURE);
+      }
+
+      fprintf(f2, "%f\n", dec_time);
+
+      fclose(f2);
+      */
     }
     gt_eoplist_delete(eoplist);
     gt_tracepoint_list_delete(tp_list);
