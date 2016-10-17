@@ -30,9 +30,9 @@ void gt_tracepoint_encode(TracePointList *tp_list,
   GtUword *u_tp = gt_malloc((tau) * sizeof *u_tp);
   gt_assert(u_tp != NULL);
 
-  for(q = 1; q <= tau; q++)
+  for(q = 0; q <= tau-1; q++)
   {
-    u_tp[q] = q * tp_list->delta - 1;
+    u_tp[q] = (q + 1) * tp_list->delta - 1;
   }
 
   /* Trace Point Array */

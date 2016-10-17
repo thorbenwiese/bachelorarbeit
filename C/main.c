@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
   bool haserr = false;
 
   bool decode = true;
+  bool store = false;
 
   if (argc != 8)
   {
@@ -102,26 +103,26 @@ int main(int argc, char *argv[])
     gettimeofday(&comp_time, NULL); 
 
     enc_cigar = gt_eoplist2cigar_string(eoplist,false);
-    printf("CIGAR Encode: %s\n", enc_cigar);
+    //printf("CIGAR Encode: %s\n", enc_cigar);
     gt_free(enc_cigar);
-    printf("Unit Cost Encode: %lu\n", unitcost);
     
     double enc_time = (comp_time.tv_sec - start_time.tv_sec) + 
                       (comp_time.tv_usec - start_time.tv_usec) * 1e-6; 
     printf("Berechnungszeit Encode: %.6f\n", enc_time);
 
-    /*
-    FILE *f1 = fopen("enc_time.txt", "a");
-    if (f1 == NULL)
+    if(store)
     {
-      printf("Error opening file!\n");
-      exit(EXIT_FAILURE);
+      FILE *f1 = fopen("enc_time.txt", "a");
+      if (f1 == NULL)
+      {
+        printf("Error opening file!\n");
+        exit(EXIT_FAILURE);
+      }
+
+      fprintf(f1, "%f\n", enc_time);
+
+      fclose(f1);
     }
-
-    fprintf(f1, "%f\n", enc_time);
-
-    fclose(f1);
-    */
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
@@ -136,7 +137,6 @@ int main(int argc, char *argv[])
       //printf("CIGAR Decode: %s\n", dec_cigar);
       gt_free(dec_cigar);
       unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
-      //printf("Unit Cost Decode: %lu\n", unitcost_dc);
       if (unitcost_dc > unitcost)
       {
         fprintf(stderr,"unitcost_decode = %lu > %lu = unitcost_encode\n", 
@@ -147,18 +147,20 @@ int main(int argc, char *argv[])
       double dec_time = (comp_time.tv_sec - start_time.tv_sec) + 
                         (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
       printf("Berechnungszeit Decode: %.6f\n", dec_time);
-      /*
-      FILE *f2 = fopen("dec_time.txt", "a");
-      if (f2 == NULL)
+
+      if(store)
       {
-        printf("Error opening file!\n");
-        exit(EXIT_FAILURE);
+        FILE *f2 = fopen("dec_time.txt", "a");
+        if (f2 == NULL)
+        {
+          printf("Error opening file!\n");
+          exit(EXIT_FAILURE);
+        }
+
+        fprintf(f2, "%f\n", dec_time);
+
+        fclose(f2);
       }
-
-      fprintf(f2, "%f\n", dec_time);
-
-      fclose(f2);
-      */
     }
     gt_eoplist_delete(eoplist);
     gt_tracepoint_list_delete(tp_list);
