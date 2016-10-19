@@ -24,7 +24,7 @@ void gt_tracepoint_list_set(TracePointList *tp_list,
                             GtUword end2,
                             GtUword delta);
 
-/* print Trace Point List */
+/* print Trace Points of TracePointList */
 void gt_print_tracepoint_list(const TracePointList *tp_list);
 
 /* encode function to generate TracePoint Array */
