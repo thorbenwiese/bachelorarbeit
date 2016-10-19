@@ -12,7 +12,7 @@ Um die verschiedenen Sequenzen vergleichen zu können, berechnet man für das Alig
 
 Das in dieser Arbeit vorgestellte speichereffiziente Verfahren der Trace Points ist als Python- und C-Implementierung in meinem GitHub-Repository (\url{https://www.github.com/thorbenwiese/bachelorarbeit\_wiese.git}) zu finden.
 
-\chapter{Methoden}
+\chapter{Methoden}\label{methoden}
 
 \section*{Die Edit-Operationen}
 
@@ -440,7 +440,7 @@ Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und be
 \end{figure}
 \end{bsp}
 
-\section{Entropie der Methoden}
+\section{Entropie der Methoden}\label{entropie-der-methoden}
 
 Sei $S$ eine Sequenz der Länge $n$ in der die Symbole $a \in \cal A$ mit der Häufigkeit $h(a)$ auftreten. Die Entropie $H(S)$ beschreibt den durchschnittlichen Informationsgehalt für alle Symbole aus $S$ in der Einheit $\frac{\text{Bit}}{\text{Symbol}}$.
 \[H(S) = - \sum_{a \in S}h(a) \cdot \log_2h(a)\]
@@ -491,17 +491,13 @@ Zusammenfassend ergibt sich für die Größen der Kodierungen des Alignments aus Be
 
 \chapter{Resultate} \label{Resultate}
 
-Die Verfahren, um die in diesem Kapitel beschriebenen Resultate zu berechnen, wurden in Python implementiert.
+Die Verfahren, um die in diesem Kapitel beschriebenen Größen der Kodierungen zu berechnen, wurden in Python implementiert. Die Messung der Zeit für die Rekonstruktion der Teilalignments erfolgte aufgrund der effizienz hinsichtlich der Geschwindigkeit mit der C-Implementierung. Für die Messungen wurde ein MacBook Pro 11.1 mit einem 2.4 GHz Intel Core i5 Prozessor und 4 GB Arbeitsspeicher verwendet.
 
-Für die empirische Untersuchung der Größe der einzelnen Kodierungen wurden die verschiedenen Kodierungen für jeweils CIGAR-Strings und Trace Point Differenzen mit unterschiedlichen Parametern, sowie die Verteilung der Entropie der zwei Verfahren berechnet und grafisch dargestellt. Hierfür wurden DNA-Sequenzen aus zufällig aneinander gereihten Basen und daraus abgewandelte Sequenzen mit der jeweiligen Fehlerrate durch Austauschen oder Löschen bzw. Einfügen von Basen berechnet. Aus jedem Sequenzpaar wurde dann ein optimales Alignment berechnet, aus dem der CIGAR-String extrahiert wurde. Dieser konnte dann mit den oben beschriebenen Verfahren kodiert und die Größe der Kodierung bestimmt werden.
+\section{Kodierung der CIGAR-Strings}
+
+Für die empirische Untersuchung der Größe der einzelnen Kodierungen wurden die verschiedenen Kodierungen für jeweils CIGAR-Strings und Trace Point Differenzen mit unterschiedlichen Parametern, sowie die Verteilung der Entropie der zwei Verfahren berechnet und grafisch dargestellt. Hierfür wurden DNA-Sequenzen aus zufällig aneinander gereihten Basen und daraus abgewandelte Sequenzen mit der jeweiligen Fehlerrate durch Austauschen oder Löschen bzw. Einfügen von Basen berechnet. Aus jedem Sequenzpaar wurde dann ein optimales Alignment als Liste von Edit-Operationen berechnet und als CIGAR-String konvertiert. Dieser konnte dann mit den oben beschriebenen Verfahren kodiert und die Größe der Kodierung bestimmt werden.
 
 Die gemessenen Werte der Größe der Kodierung der CIGAR-Strings sind in Tabelle \ref{bits-result} enthalten und die Häufigkeitsverteilung der Kodierung für \numprint{1000} CIGAR-Strings mit je \numprint{5000} Basenpaaren und einer Fehlerrate von $15$\% ist in Abbildung \ref{cigar-coding} grafisch dargestellt.
-
-Für die Kodierung der Trace Point Differenzen werden die Trace Points anhand des $\Delta$-Wertes berechnet und die Differenzen der Trace Points bestimmt. Diese werden dann mit den oben beschriebenen Verfahren kodiert und dabei die Größe der Kodierung bestimmt.
-
-Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-Wert von $200$ bei jedem Durchlauf für $24$ Trace Points und den $\Delta$-Wert selbst insgesamt $\lceil \log_225$$\rceil = 125$ Bit benötigt.
-
-Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
 
 \begin{figure}[t]
 	\centering
@@ -509,7 +505,15 @@ Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \nump
 	\caption{Häufigkeitsverteilung der Kodierungen für \numprint{1000} CIGAR-Strings von DNA Sequenzen mit je \numprint{5000} Basenpaaren und einer Fehlerrate von $15$\%.} \label{cigar-coding}
 \end{figure}
 
-\FloatBarrier
+\section{Kodierung der Trace Point Differenzen}
+Für die Kodierung der Trace Point Differenzen wurden die Trace Points anhand des $\Delta$-Wertes aus der Liste der Edit-Operationen berechnet und die Differenzen der Trace Points bestimmt. Diese wurden dann mit den oben beschriebenen Verfahren kodiert und dabei die Größe der Kodierung bestimmt. Außerdem wurde die Zeit, die für die Dekodierung der Trace Points zu einer Liste von Edit-Operationen benötigt wird, gemessen.
+
+Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-Wert von $200$ bei jedem Durchlauf für $24$ Trace Points und den $\Delta$-Wert selbst insgesamt $\lceil \log_225$$\rceil = 125$ Bit benötigt.
+
+Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
+
+Um die Zeit, die für die Rekonstruktion der Teilalignments in Abhängigkeit von $\Delta$ benötigt wird, berechnen zu können, wurden für $\Delta$-Werte im Bereich von $5$ bis $500$ jeweils $50$ Sequenzpaare der Länge \numprint{5000} mit einer Fehlerrate von $15$\% wie oben beschrieben berechnet und die Trace Point Differenzen berechnet, anschließend dekodiert und die Zeit dafür gemessen. Diese Dekodierung entspricht der Rekonstruktion der Teilalignments und der anschließenden Konkatenation zu einem Gesamtalignment. Die Resultate sind in Tabelle \ref{time-table} beschrieben und in Abbildung \ref{time} numerisch dargestellt.
+
 \iffalse
 Bin/Una: 1.37071633993
 Una/Bin: 0.729545545546
@@ -576,35 +580,7 @@ Err max: 227.169709989
 	\caption{Mittelwerte der Huffman-Kodierung der Trace Point Differenzen für \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\% bis $95$\%.} \label{var-errs}
 \end{figure}
 
-\begin{table}[t]
-	\centering
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		& \multicolumn{2}{c|}{Delta} & \multicolumn{2}{c|}{Fehlerrate} \\
-		\hline
-		Wert & $35$ & $500$ &  $5$\% & $95$\% \\
-		\hline
-		Größe & $95$ & $76$& $44$ & $227$ \\
-		\hline
-	\end{tabular}
-	\caption{Größe der Kodierung für verschiedene $\Delta$-Werte und Fehlerraten}
-	\label{var-errs-deltas}
-\end{table}
-
-
-%Cig Entropy Mean: 1755.79258069
-%Diff Entropy Mean: 134.698836842
-%cig/diff: 13.0349498321
-%diff/cig: 0.0767168276731
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=13cm]{coding/new/entropy-1000-5000-d100}
-	\caption{Entropie von \numprint{1000} CIGAR-Strings von DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%}
-	\label{entropy}
-\end{figure}
-
-
+\FloatBarrier
 \begin{table}[t]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|}
@@ -624,8 +600,64 @@ Err max: 227.169709989
 	\caption{Größe der Kodierungen und Entropie in Bit}
 	\label{bits-result}
 \end{table}
-\FloatBarrier
-Die Größe der Entropie für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% ist in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{entropy} grafisch dargestellt.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=13cm]{coding/time}
+	\caption{Zeitbedarf der Rekonstruktion der Teilalignments in Abhängigkeit des $\Delta$-Wertes}
+	\label{time}
+\end{figure}
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& \multicolumn{2}{c|}{Delta} & \multicolumn{2}{c|}{Fehlerrate} \\
+		\hline
+		Wert & $35$ & $500$ &  $5$\% & $95$\% \\
+		\hline
+		Größe & $95$ & $76$& $44$ & $227$ \\
+		\hline
+	\end{tabular}
+	\caption{Größe der Kodierung für verschiedene $\Delta$-Werte und Fehlerraten}
+	\label{var-errs-deltas}
+\end{table}
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Delta & Zeit in Sekunden \\
+		\hline
+		$5$ & $0.000276$ \\
+		\hline
+		$198$ & $0.000275$ \\
+		\hline
+		$414$ & $0.000379$ \\
+		\hline
+		$500$ & $0.000326$ \\
+		\hline
+	\end{tabular}
+	\caption{Zeitbedarf der Rekonstruktion der Teilalignments in Abhängigkeit des $\Delta$-Wertes}
+	\label{time-table}
+\end{table}
+
+\section{Entropie beider Verfahren}
+Die Entropie der CIGAR-String Repräsentation und der Trace Point Differenzen wurde für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%, wie in Kapitel \ref{entropie-der-methoden} beschrieben, berechnet.
+
+Die Resultate sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{entropy} grafisch dargestellt.
+
+%Cig Entropy Mean: 1755.79258069
+%Diff Entropy Mean: 134.698836842
+%cig/diff: 13.0349498321
+%diff/cig: 0.0767168276731
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{coding/new/entropy-1000-5000-d100}
+	\caption{Entropie von \numprint{1000} CIGAR-Strings von DNA-Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\%}
+	\label{entropy}
+\end{figure}
 
 \chapter{Diskussion}
 
@@ -643,26 +675,26 @@ Die Huffman-Kodierung ist somit für CIGAR-Strings die speichereffizienteste der 
 
 \section{Kodierung der Differenzen der Trace Points}
 
-Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und eine Fehlerrate von $15$\% in Abbildung \ref{tracepoint-d200} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben. In Abbildung \ref{var-deltas} sind die Auswirkungen der Wahl des $\Delta$-Parameters dargestellt und in Abbildung \ref{var-errs} die Auswirkungen der Fehlerrate der Sequenzen.
+Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und eine Fehlerrate von $15$\% in Abbildung \ref{tracepoint-d200} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben. In Abbildung \ref{var-deltas} sind die Auswirkungen der Wahl des $\Delta$-Parameters auf die Größe der Kodierung und in \ref{time} auf die Rekonstruktionszeit der Teilalignments dargestellt. Die Entsprechenden Werte sind in Tabelle \ref{var-errs-deltas} für die Größe der Kodierung und in Tabelle \ref{time-table} für den Zeitbedarf der Rekonstruktionszeit beschrieben. In Abbildung \ref{var-errs}, sowie Tabelle \ref{var-errs-deltas} sind die Auswirkungen der Fehlerrate der Sequenzen auf die Kodierungsgröße dargestellt.
 
 Für einen $\Delta$-Wert von $200$ benötigt die Huffman-Kodierung im Durchschnitt nur $84.18$ Bit und damit etwa $9.3$\% weniger Speicher, als die unäre Kodierung mit $90.19$ Bit. Die binäre Kodierung liegt mit durchschnittlich $125$ Bit deutlich über dem Bedarf der anderen beiden Kodierungen. Da die einzelnen Abschnitte in der $v$-Sequenz zu $\Delta$ großen Abschnitten der $u$-Sequenz aligniert werden, sind diese üblicherweise auch genauso oder ähnlich groß wie das $\Delta$. Das hat zur Folge, dass die Differenzen der Trace Points in einem ähnlichen Wertebereich liegen und die unäre und Huffman-Kodierung aus dieser Verteilung einen Vorteil ziehen können und daher speichereffizienter kodieren, wobei der Huffman-Algorithmus etwas besser abschneidet als die unäre Kodierung.
 
-Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden Delta deutlich sinkt. Für ein $\Delta$ von $35$ werden die Trace Point Differenzen durchschnittlich mit $95$ Bit kodiert und für ein $\Delta$ von $500$ mit $76$ Bit im Mittel, also etwa $20$\% weniger. Die Regressionsgerade entspricht der Funktion $y = -\frac{1}{50}x + 93$ mit $y$ als Kodierungsgröße und $x$ als $\Delta$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für ein Trade-Off zwischen Speicherbedarf und Rekonstruktionszeit.
+Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden Delta deutlich sinkt. Für ein $\Delta$ von $35$ werden die Trace Point Differenzen durchschnittlich mit $95$ Bit kodiert und für ein $\Delta$ von $500$ mit $76$ Bit im Mittel, also etwa $20$\% weniger. Die Regressionsgerade entspricht der Funktion $y = -\frac{1}{50}x + 93$ mit $y$ als Kodierungsgröße und $x$ als $\Delta$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für den Speicherbedarf der Kodierung.
 
-Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment. Bei einer kleinen Fehlerrate ist somit eine hohe Anzahl an Matches vorhanden. Da die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Bei einer Fehlerrate von $95$\% wird für $\Delta = 100$ durchschnittlich $227$ Bit benötigt und für eine Fehlerrate von $5$\% im Mittel nur $44$ Bit, also etwa $19$\% weniger. Die Regressionsgerade entspricht der Funktion $y = 204x + 27.8$ mit $y$ als Kodierungsgröße und $x$ als Fehlerrate.
+Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment. Bei einer kleinen Fehlerrate ist somit eine hohe Anzahl an Matches vorhanden. Da die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Bei einer Fehlerrate von $35$\% wird für $\Delta = 100$ durchschnittlich $97$ Bit benötigt und für eine Fehlerrate von $5$\% im Mittel nur $44$ Bit, also etwa $55$\% weniger. Die Funktion $y = 173.45x + 36.25$ mit $y$ als Kodierungsgröße und $x$ als Fehlerrate beschreibt die Steigung der Geraden aus Abbildung \ref{var-errs}.
 
-Damit ist die Huffman-Kodierung, wie bei den CIGAR-Strings, das effizienteste Kodierungs-Verfahren.
+Damit ist die Huffman-Kodierung, wie bei den CIGAR-Strings, das speichereffizienteste Kodierungs-Verfahren für die Trace Point Differenzen.
+
+\section{Laufzeit der Rekonstruktion von Alignments}
+Für die Rekonstruktion der Teilalignments wird abhängig von $\Delta$ viel Zeit benötigt, da $\Delta$ die Größe der Teilabschnitte bestimmt und die optimalen Teilalignments, wie in Kapitel \ref{methoden} beschrieben, in $O(e^2)$ Zeit mit $e$ als Edit-Distanz rekonstruiert werden können.
+
+Die Abbildung \ref{time} verdeutlicht diese Abhängigkeit. Für ein $\Delta$ zwischen $5$ und $200$ werden demnach durchschnittlich etwa $0.000276$ Sekunden für die Rekonstruktion benötigt. Für $\Delta > 200$ wächst die Zeit für linear an und erreicht für ein $\Delta = 414$ mit $0.000379$ Sekunden, also etwa $27$\% mehr als für ein $\Delta \leq 200$, das Maximum. Mit Hilfe von $\Delta$ kann somit die Zeit, die für die Rekonstruktion der Teilalignments benötigt wird, eingestellt werden.
 
 \section{Entropie beider Methoden}
 
 Die Größe der Entropie der CIGAR-Strings und Trace Point Differenzen ist für \numprint{1000} Sequenzenpaare mit je \numprint{5000} Basen, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% in Abbildung \ref{entropy} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben.
 
 Sie gibt den Informationsgehalt einer Sequenz in Relation zu der Verteilung der Symbole an und wird deshalb in Bit pro Symbol berechnet und dann später mit der Anzahl der zu kodierenden Symbole multipliziert. Da ein CIGAR-String alle Edit-Operationen eines Alignments beschreibt und die Trace Point Differenzen lediglich die Abstände von einem zu alignierenden Abschnitt zu dem nächsten beschreiben, müssen in der Regel für CIGAR-Strings mehr Symbole kodiert werden, als für die Trace Point Differenzen. Diese Eigenschaft spiegelt sich auch in der Entropie beider Verfahren wieder. Die CIGAR-Strings weisen eine Entropie von durchschnittlich \numprint{1755} Bit auf. Dies bedeutet, dass sie etwa $13$ mal so viel wie die Entropie der Trace Point Differenzen ausmacht, welche bei durchschnittlich $134$ Bit liegt.
-
-%TODO
-\section{Laufzeit der Rekonstruktion von Alignments}
-TODO
-%Wann Break-Even Point? Wahl von Delta bestimmt Zeit und Größe -> in einer Grafik!
 
 \chapter{Implementierung}
 
@@ -781,9 +813,8 @@ Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfall
 	
 \chapter{Fazit}
 
-%TODO qualitative Ergebnisse für die Zeit fehlen u.a.
 Das Verfahren der Trace Point Differenzen stellt im Vergleich zu der üblichen Repräsentation von Alignments als CIGAR-String eine deutlich speichereffizientere Methode dar. Insbesondere durch eine Huffman-Kodierung der Differenzwerte kann bei den in dieser Arbeit errechneten Größen eine Speicherersparnis von etwa $77$\% gegenüber den CIGAR-Strings erzielt werden. Hierbei spielt jedoch der vorher definierte positive Parameter $\Delta$ eine entscheidende Rolle.
 
-Je größer $\Delta$ gewählt ist, umso weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist geringer.
+Je größer $\Delta$ gewählt ist, umso weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist entsprechend geringer.
 
 Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
