@@ -16,10 +16,7 @@ int main(int argc, char *argv[])
   GtUword start1, end1, start2, end2, delta, edist;
 
   long readstart1, readend1, readstart2, readend2, readdelta;
-  bool haserr = false;
-
-  bool decode = true;
-  bool store = false;
+  bool haserr = false, decode = true;
 
   if (argc != 8)
   {
@@ -42,6 +39,12 @@ int main(int argc, char *argv[])
     fprintf(stderr,"%s: <end1> must be greater than <start1>\n",argv[0]);
     haserr = true;
   }
+  else if (readend1 > strlen(argv[1]))
+  {
+    fprintf(stderr,"%s: <end1> must be smaller than length of sequence1\n",
+            argv[0]);
+    haserr = true;
+  }
   else if (sscanf(argv[5],"%ld",&readstart2) != 1 || readstart2 < 0)
   {
     fprintf(stderr,"%s: <start2> must be non-negative number\n",argv[0]);
@@ -50,6 +53,12 @@ int main(int argc, char *argv[])
   else if (sscanf(argv[6],"%ld",&readend2) != 1 || readend2 < readstart2)
   {
     fprintf(stderr,"%s: <end2> must be greater than <start2>\n",argv[0]);
+    haserr = true;
+  }
+  else if (readend2 > strlen(argv[2]))
+  {
+    fprintf(stderr,"%s: <end2> must be smaller than length of sequence2\n",
+            argv[0]);
     haserr = true;
   }
   else if (sscanf(argv[7],"%ld",&readdelta) != 1 || readdelta < 0)
@@ -103,26 +112,12 @@ int main(int argc, char *argv[])
     gettimeofday(&comp_time, NULL); 
 
     enc_cigar = gt_eoplist2cigar_string(eoplist,false);
-    //printf("CIGAR Encode: %s\n", enc_cigar);
     gt_free(enc_cigar);
     
     double enc_time = (comp_time.tv_sec - start_time.tv_sec) + 
                       (comp_time.tv_usec - start_time.tv_usec) * 1e-6; 
+
     printf("Berechnungszeit Encode: %.6f\n", enc_time);
-
-    if(store)
-    {
-      FILE *f1 = fopen("enc_time.txt", "a");
-      if (f1 == NULL)
-      {
-        printf("Error opening file!\n");
-        exit(EXIT_FAILURE);
-      }
-
-      fprintf(f1, "%f\n", enc_time);
-
-      fclose(f1);
-    }
 
     /* decode TracePoint Array and TracePointData to GtEoplist */
     if(decode)
@@ -134,7 +129,6 @@ int main(int argc, char *argv[])
       dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
       gettimeofday(&comp_time, NULL); 
 
-      //printf("CIGAR Decode: %s\n", dec_cigar);
       gt_free(dec_cigar);
       unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
       if (unitcost_dc > unitcost)
@@ -144,23 +138,12 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
       }
       gt_eoplist_delete(eoplist_tp);
+
       double dec_time = (comp_time.tv_sec - start_time.tv_sec) + 
                         (comp_time.tv_usec - start_time.tv_usec) * 1e-6;
+
       printf("Berechnungszeit Decode: %.6f\n", dec_time);
 
-      if(store)
-      {
-        FILE *f2 = fopen("dec_time.txt", "a");
-        if (f2 == NULL)
-        {
-          printf("Error opening file!\n");
-          exit(EXIT_FAILURE);
-        }
-
-        fprintf(f2, "%f\n", dec_time);
-
-        fclose(f2);
-      }
     }
     gt_eoplist_delete(eoplist);
     gt_tracepoint_list_delete(tp_list);
