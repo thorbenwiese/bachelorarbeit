@@ -50,11 +50,11 @@ static void parse_options(Options *options, int argc, char * const argv[])
     {
       case 'h':
         printf("Usage:\n"
-               "-f <inputfile>\n"
-               "-a <amount of sequence pairs read from file>\n"
-               "-p <positions of sequences: start1 end1 start2 end2>\n"
-               "-d <delta value>\n"
-               "-x <decode Trace Points>\n");
+               "\t-f <inputfile>\n"
+               "\t-a <amount of sequence pairs read from file>\n"
+               "\t-p <positions of sequences: start1 end1 start2 end2>\n"
+               "\t-d <delta value>\n"
+               "\t-x <decode Trace Points>\n");
       case 'f':
         options->inputfile = argv[optind];
         optind++;
