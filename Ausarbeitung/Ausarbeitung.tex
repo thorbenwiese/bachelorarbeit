@@ -512,7 +512,7 @@ Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-W
 
 Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
 
-Um die Zeit, die für die Rekonstruktion der Teilalignments in Abhängigkeit von $\Delta$ benötigt wird, berechnen zu können, wurden für $\Delta$-Werte im Bereich von $5$ bis $500$ jeweils $50$ Sequenzpaare der Länge \numprint{5000} mit einer Fehlerrate von $15$\% wie oben beschrieben berechnet und die Trace Point Differenzen berechnet, anschließend dekodiert und die Zeit dafür gemessen. Diese Dekodierung entspricht der Rekonstruktion der Teilalignments und der anschließenden Konkatenation zu einem Gesamtalignment. Die Resultate sind in Tabelle \ref{time-table} beschrieben und in Abbildung \ref{time} numerisch dargestellt.
+Um die Zeit, die für die Rekonstruktion der Teilalignments in Abhängigkeit von $\Delta$ benötigt wird, berechnen zu können, wurden für $\Delta$-Werte im Bereich von $5$ bis $500$ jeweils $50$ Sequenzpaare der Länge \numprint{5000} mit einer Fehlerrate von $15$\% wie oben beschrieben berechnet und die Trace Point Differenzen berechnet, anschließend dekodiert und die Zeit dafür gemessen. Diese Dekodierung entspricht der Rekonstruktion der Teilalignments und der anschließenden Konkatenation zu einem Gesamtalignment. Die Resultate sind in Tabelle \ref{time-table} beschrieben und in Abbildung \ref{time} grafisch dargestellt.
 
 \iffalse
 Bin/Una: 1.37071633993
@@ -625,20 +625,20 @@ Err max: 227.169709989
 
 \begin{table}[t]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|c|r|}
 		\hline
 		Delta & Zeit in Sekunden \\
 		\hline
-		$5$ & $0.000276$ \\
+		$5$ & $4.38$ \\
 		\hline
-		$198$ & $0.000275$ \\
+		$95$ & $26.60$ \\
 		\hline
-		$414$ & $0.000379$ \\
+		$200$ & $53.64$ \\
 		\hline
-		$500$ & $0.000326$ \\
+		$500$ & $144.51$ \\
 		\hline
 	\end{tabular}
-	\caption{Zeitbedarf der Rekonstruktion der Teilalignments in Abhängigkeit des $\Delta$-Wertes}
+	\caption{Gesamter Zeitbedarf der Rekonstruktion der Teilalignments für jeweils \numprint{5000} Sequenzpaare mit je \numprint{5000} Basen und einer Fehlerrate von $15$\% in Abhängigkeit des $\Delta$-Wertes}
 	\label{time-table}
 \end{table}
 
@@ -688,7 +688,9 @@ Damit ist die Huffman-Kodierung, wie bei den CIGAR-Strings, das speichereffizien
 \section{Laufzeit der Rekonstruktion von Alignments}
 Für die Rekonstruktion der Teilalignments wird abhängig von $\Delta$ viel Zeit benötigt, da $\Delta$ die Größe der Teilabschnitte bestimmt und die optimalen Teilalignments, wie in Kapitel \ref{methoden} beschrieben, in $O(e^2)$ Zeit mit $e$ als Edit-Distanz rekonstruiert werden können.
 
-Die Abbildung \ref{time} verdeutlicht diese Abhängigkeit. Für ein $\Delta$ zwischen $5$ und $200$ werden demnach durchschnittlich etwa $0.000276$ Sekunden für die Rekonstruktion benötigt. Für $\Delta > 200$ wächst die Zeit für linear an und erreicht für ein $\Delta = 414$ mit $0.000379$ Sekunden, also etwa $27$\% mehr als für ein $\Delta \leq 200$, das Maximum. Mit Hilfe von $\Delta$ kann somit die Zeit, die für die Rekonstruktion der Teilalignments benötigt wird, eingestellt werden.
+Die Abbildung \ref{time} verdeutlicht diese Abhängigkeit. Für $\Delta = 5$ wird demnach für die Rekonstruktion der Teilalignments von \numprint{5000} Sequenzpaaren mit je \numprint{5000} Basen etwa $4.38$ Sekunden benötigt. Für $\Delta = 500$ werden hingegen etwa $144.51$ Sekunden benötigt, also etwa $33$ mal so viel wie für $\Delta = 5$. Der Zeitbedarf wächst linear entsprechend der Funktion $y = 0.28x - 1.23$ mit $x$ als $\Delta$ -Wert und $y$ als Gesamtzeit in Sekunden an.
+
+Mit Hilfe von $\Delta$ kann somit die Zeit, die für die Rekonstruktion der Teilalignments benötigt wird, eingestellt werden.
 
 \section{Entropie beider Methoden}
 
