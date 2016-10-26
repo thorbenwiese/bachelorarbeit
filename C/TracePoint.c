@@ -72,6 +72,7 @@ void gt_tracepoint_encode(TracePointList *tp_list,
   }
 
   /* print Trace Points -> for debugging only */
+  //gt_print_tracepoint_list(tp_list);
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
 }
@@ -153,9 +154,9 @@ void gt_tracepoint_list_set(TracePointList *tp_list,
 
     gt_assert(useq != NULL);
     gt_assert(vseq != NULL);
-    gt_assert(start1 >= 0 && start1 < end1);
-    gt_assert(start2 >= 0 && start2 < end2);
-    gt_assert(delta > 0);
+    gt_assert(tp_list->start1 >= 0 && tp_list->start1 < tp_list->end1);
+    gt_assert(tp_list->start2 >= 0 && tp_list->start2 < tp_list->end2);
+    gt_assert(tp_list->delta > 0);
   }
 }
 
