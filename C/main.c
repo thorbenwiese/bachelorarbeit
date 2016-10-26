@@ -10,7 +10,7 @@
 #include "gt-alloc.h"
 #include "front-with-trace.h"
 
-#define OPTIONS "hfpdaex"
+#define OPTIONS "hfpdax"
 
 /* struct to store input parameters: 
    input sequence file, start/end positions, delta*/
@@ -18,7 +18,7 @@ typedef struct
 {
   char *inputfile;
   GtUword start1, end1, start2, end2, delta, amount;
-  bool encode, decode;
+  bool decode;
 } Options;
 
 static void parse_options(Options *options, int argc, char * const argv[])
@@ -31,7 +31,6 @@ static void parse_options(Options *options, int argc, char * const argv[])
   options->end2 = 0;
   options->delta = 0;
   options->amount = 0;
-  options->encode = false;
   options->decode = false;
 
   if (argc == 1)
@@ -52,9 +51,9 @@ static void parse_options(Options *options, int argc, char * const argv[])
       case 'h':
         printf("Usage:\n"
                "-f <inputfile>\n"
+               "-a <amount of sequence pairs read from file>\n"
                "-p <positions of sequences: start1 end1 start2 end2>\n"
                "-d <delta value>\n"
-               "-e <encode Trace Points>\n"
                "-x <decode Trace Points>\n");
       case 'f':
         options->inputfile = argv[optind];
@@ -111,9 +110,6 @@ static void parse_options(Options *options, int argc, char * const argv[])
         options->amount = (GtUword) readamount;
         optind++;
         break;
-      case 'e':
-        options->encode = true;
-        break;
       case 'x':
         options->decode = true;
         break;
@@ -122,11 +118,9 @@ static void parse_options(Options *options, int argc, char * const argv[])
                "-f <inputfile>\n"
                "-p <positions of sequences: start1 end1 start2 end2>\n"
                "-d <delta value>\n"
-               "-e <encode Trace Points>\n"
                "-x <decode Trace Points>\n");
     }
   }
-  
 }
 
 int main(int argc, char *argv[])
@@ -136,18 +130,9 @@ int main(int argc, char *argv[])
   FrontEdistTrace *fet = NULL;
   TracePointList *tp_list = NULL;
   GtUchar *useq = NULL, *vseq = NULL;
-  //char *enc_cigar = NULL, *dec_cigar = NULL;
   GtUword unitcost, edist;
-  FILE *inf;//, *outf;
+  FILE *inf;
 
-  struct timeval start_enc_time;
-  struct timeval comp_enc_time;
-
-  struct timeval start_dec_time;
-  struct timeval comp_dec_time;
-
-  double total_enc_time = 0.0, total_dec_time = 0.0;
-  
   parse_options(&options, argc, argv);
 
   if(options.inputfile != NULL)
@@ -168,7 +153,7 @@ int main(int argc, char *argv[])
       fgets(line2, len, inf);
       vseq = (unsigned char *) line2 + options.start2;
 
-      // create TracePointData
+      /* create TracePointData */
       tp_list = gt_tracepoint_list_new();
       gt_tracepoint_list_set(tp_list,
                              useq, 
@@ -179,7 +164,7 @@ int main(int argc, char *argv[])
                              options.end2,
                              options.delta);
 
-      // encode list to Trace Point Array
+      /* encode list to Trace Point Array */
       eoplist = gt_eoplist_new();
       fet = front_edist_trace_new();
       edist = front_edist_trace_eoplist(eoplist,
@@ -193,34 +178,17 @@ int main(int argc, char *argv[])
       unitcost = gt_eoplist_unit_cost(eoplist);
       assert(edist == unitcost);
 
-      gettimeofday(&start_enc_time, NULL);
       gt_tracepoint_encode(tp_list, eoplist);
-      gettimeofday(&comp_enc_time, NULL); 
-      //store to TP File
 
-      //enc_cigar = gt_eoplist2cigar_string(eoplist,false);
-      //printf("ENCODE CIGAR: %s\n",enc_cigar);
-      //gt_free(enc_cigar);
       gt_eoplist_delete(eoplist);
     
-      double enc_time = (comp_enc_time.tv_sec - start_enc_time.tv_sec) + 
-                        (comp_enc_time.tv_usec - start_enc_time.tv_usec) * 1e-6; 
-
-      total_enc_time += enc_time;
-      //printf("Berechnungszeit Encode: %.6f\n", enc_time);
-
       if(options.decode)
       {
-        gettimeofday(&start_dec_time, NULL);
         GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
-        gettimeofday(&comp_dec_time, NULL); 
+          
         GtUword unitcost_dc;
-
-        //dec_cigar = gt_eoplist2cigar_string(eoplist_tp,false);
-        //printf("DECODE CIGAR: %s\n",dec_cigar);
-
-        //gt_free(dec_cigar);
         unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
+
         if (unitcost_dc > unitcost)
         {
           fprintf(stderr,"unitcost_decode = %lu > %lu = unitcost_encode\n", 
@@ -228,17 +196,9 @@ int main(int argc, char *argv[])
           exit(EXIT_FAILURE);
         }
         gt_eoplist_delete(eoplist_tp);
-
-        double dec_time = (comp_dec_time.tv_sec - start_dec_time.tv_sec) + 
-                          (comp_dec_time.tv_usec - start_dec_time.tv_usec)*1e-6;
-
-        total_dec_time += dec_time;
-        //printf("Berechnungszeit Decode: %.6f\n", dec_time);
       }
     }
-    //printf("Gesamte Berechnungszeit Encode: %.6f\n", total_enc_time);
-    printf("%.8f,", total_dec_time);
-    //printf("%.6f\n", (float) total_dec_time/options.amount);
+
     gt_free(line1);
     gt_free(line2);
     fclose(inf);
