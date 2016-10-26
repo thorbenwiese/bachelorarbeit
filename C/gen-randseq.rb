@@ -496,5 +496,6 @@ elsif options.seeded
 elsif options.pairparam
   seq1 = rseq.sequence(options.totallength)
   seq2 = rseq.sequence(options.totallength)
-  puts "#{seq1} #{seq2}"
+  puts "#{seq1}"
+  puts "#{seq2}"
 end
