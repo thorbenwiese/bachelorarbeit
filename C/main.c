@@ -71,17 +71,20 @@ static void parse_options(Options *options, int argc, char * const argv[])
           fprintf(stderr,"%s: <start1> must be non-negative number\n",argv[0]);
           exit(EXIT_FAILURE);
         }
-        else if (sscanf(argv[optind + 1],"%ld",&readend1) != 1 || readend1 < readstart1)
+        else if (sscanf(argv[optind + 1],"%ld",&readend1) != 1 || 
+                 readend1 < readstart1)
         {
           fprintf(stderr,"%s: <end1> must be greater than <start1>\n",argv[0]);
           exit(EXIT_FAILURE);
         }
-        else if (sscanf(argv[optind + 2],"%ld",&readstart2) != 1 || readstart2 < 0)
+        else if (sscanf(argv[optind + 2],"%ld",&readstart2) != 1 || 
+                 readstart2 < 0)
         {
           fprintf(stderr,"%s: <start2> must be non-negative number\n",argv[0]);
           exit(EXIT_FAILURE);
         }
-        else if (sscanf(argv[optind + 3],"%ld",&readend2) != 1 || readend2 < readstart2)
+        else if (sscanf(argv[optind + 3],"%ld",&readend2) != 1 || 
+                 readend2 < readstart2)
         {
           fprintf(stderr,"%s: <end2> must be greater than <start2>\n",argv[0]);
           exit(EXIT_FAILURE);
@@ -116,6 +119,7 @@ static void parse_options(Options *options, int argc, char * const argv[])
       default:
         printf("Usage:\n"
                "-f <inputfile>\n"
+               "-a <amount of sequence pairs read from file>\n"
                "-p <positions of sequences: start1 end1 start2 end2>\n"
                "-d <delta value>\n"
                "-x <decode Trace Points>\n");
