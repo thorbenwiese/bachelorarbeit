@@ -35,9 +35,12 @@ static void parse_options(Options *options, int argc, char * const argv[])
 
   if (argc == 1)
   {
-    fprintf(stderr,"Usage: %s <input file> <start1> <end1> "
-                             "<start2> <end2> <delta>\n", argv[0]);
-    exit(EXIT_FAILURE);
+    printf("Usage:\n"
+           "\t-f <inputfile>\n"
+           "\t-a <amount of sequence pairs read from file>\n"
+           "\t-p <positions of sequences: start1 end1 start2 end2>\n"
+           "\t-d <delta value>\n"
+           "\t-x <decode Trace Points>\n");
   }
   while (true)
   {
@@ -150,13 +153,14 @@ int main(int argc, char *argv[])
       fprintf(stderr,"%s: cannot read file \"%s\"\n",argv[0],options.inputfile);
       exit(EXIT_FAILURE);
     }
-    for(i = 1; i < options.amount * 2; i++)
+    for(i = 0; i < options.amount; i++)
     {
       fgets(line1, len, inf);
       useq = (unsigned char *) line1 + options.start1;
       fgets(line2, len, inf);
       vseq = (unsigned char *) line2 + options.start2;
 
+      //printf("%s\n\n%s\n",useq,vseq);
       /* create TracePointData */
       tp_list = gt_tracepoint_list_new();
       gt_tracepoint_list_set(tp_list,
