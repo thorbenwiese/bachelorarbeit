@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
   {
     GtEoplist *eoplist;
     FrontEdistTrace *fet = NULL;
-    TracePointList *tp_list = NULL;
+    TracePointList *tp_list = NULL, *tp_list_dec = NULL;
     GtUchar *useq = NULL, *vseq = NULL;
     GtUword unitcost, edist;
     FILE *inf;
@@ -197,6 +197,16 @@ int main(int argc, char *argv[])
     
       if(options.decode)
       {
+        tp_list_dec = gt_tracepoint_list_new();
+        gt_tracepoint_list_set(tp_list_dec,
+                               useq, 
+                               vseq, 
+                               options.start1,
+                               options.end1,
+                               options.start2,
+                               options.end2,
+                               options.delta);
+
         GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
           
         GtUword unitcost_dc;
@@ -209,6 +219,7 @@ int main(int argc, char *argv[])
           exit(EXIT_FAILURE);
         }
         gt_eoplist_delete(eoplist_tp);
+        tracepoint_list_delete(tp_list_dec);
       }
     }
 
