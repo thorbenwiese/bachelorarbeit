@@ -212,14 +212,15 @@ int main(int argc, char *argv[])
         GtUword unitcost_dc;
         unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
 
+        gt_eoplist_delete(eoplist_tp);
+        gt_tracepoint_list_delete(tp_list_dec);
+
         if (unitcost_dc > unitcost)
         {
           fprintf(stderr,"unitcost_decode = %lu > %lu = unitcost_encode\n", 
                   unitcost_dc,unitcost);
           exit(EXIT_FAILURE);
         }
-        gt_eoplist_delete(eoplist_tp);
-        gt_tracepoint_list_delete(tp_list_dec);
       }
     }
 
