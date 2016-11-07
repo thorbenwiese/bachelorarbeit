@@ -148,12 +148,14 @@ int main(int argc, char *argv[])
     GtUword len = 10000, i;
     char *line1 = malloc(len);
     char *line2 = malloc(len);
+
     inf = fopen(options.inputfile, "r");
     if(inf == NULL)
     {
       fprintf(stderr,"%s: cannot read file \"%s\"\n",argv[0],options.inputfile);
       exit(EXIT_FAILURE);
     }
+
     for(i = 0; i < options.amount; i++)
     {
       fgets(line1, len, inf);
@@ -190,6 +192,8 @@ int main(int argc, char *argv[])
       gt_tracepoint_encode(tp_list, eoplist);
 
       gt_eoplist_delete(eoplist);
+      //TODO egtl nach unten
+      gt_tracepoint_list_delete(tp_list);
     
       if(options.decode)
       {
@@ -208,7 +212,6 @@ int main(int argc, char *argv[])
       }
     }
 
-    gt_tracepoint_list_delete(tp_list);
     gt_free(line1);
     gt_free(line2);
     fclose(inf);
