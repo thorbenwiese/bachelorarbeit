@@ -208,10 +208,10 @@ int main(int argc, char *argv[])
       }
     }
 
+    gt_tracepoint_list_delete(tp_list);
     gt_free(line1);
     gt_free(line2);
     fclose(inf);
-    gt_tracepoint_list_delete(tp_list);
   }
   return EXIT_SUCCESS;
 }
