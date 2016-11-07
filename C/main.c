@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
           exit(EXIT_FAILURE);
         }
         gt_eoplist_delete(eoplist_tp);
-        tracepoint_list_delete(tp_list_dec);
+        gt_tracepoint_list_delete(tp_list_dec);
       }
     }
 
