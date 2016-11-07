@@ -133,17 +133,18 @@ static void parse_options(Options *options, int argc, char * const argv[])
 int main(int argc, char *argv[])
 {
   Options options;
-  GtEoplist *eoplist;
-  FrontEdistTrace *fet = NULL;
-  TracePointList *tp_list = NULL;
-  GtUchar *useq = NULL, *vseq = NULL;
-  GtUword unitcost, edist;
-  FILE *inf;
 
   parse_options(&options, argc, argv);
 
   if(options.inputfile != NULL)
   {
+    GtEoplist *eoplist;
+    FrontEdistTrace *fet = NULL;
+    TracePointList *tp_list = NULL;
+    GtUchar *useq = NULL, *vseq = NULL;
+    GtUword unitcost, edist;
+    FILE *inf;
+
     GtUword len = 10000, i;
     char *line1 = malloc(len);
     char *line2 = malloc(len);
