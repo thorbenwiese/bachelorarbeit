@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
                                options.end2,
                                options.delta);
 
-        GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list);
+        GtEoplist *eoplist_tp = gt_tracepoint_decode(tp_list_dec);
           
         GtUword unitcost_dc;
         unitcost_dc = gt_eoplist_unit_cost(eoplist_tp);
