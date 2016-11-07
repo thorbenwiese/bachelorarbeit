@@ -71,9 +71,6 @@ void gt_tracepoint_encode(TracePointList *tp_list,
     }
   }
 
-  /* print Trace Points -> for debugging only */
-  gt_print_tracepoint_list(tp_list);
-
   gt_eoplist_reader_delete(eoplist_reader);
   gt_free(u_tp);
 }

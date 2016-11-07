@@ -10,7 +10,7 @@
 #include "gt-alloc.h"
 #include "front-with-trace.h"
 
-#define OPTIONS "hfpdax"
+#define OPTIONS "hfpdaxv"
 
 /* struct to store input parameters: 
    input sequence file, start/end positions, delta*/
@@ -18,7 +18,7 @@ typedef struct
 {
   char *inputfile;
   GtUword start1, end1, start2, end2, delta, amount;
-  bool decode;
+  bool decode, verbose;
 } Options;
 
 static void parse_options(Options *options, int argc, char * const argv[])
@@ -32,6 +32,7 @@ static void parse_options(Options *options, int argc, char * const argv[])
   options->delta = 0;
   options->amount = 0;
   options->decode = false;
+  options->verbose = false;
 
   if (argc == 1)
   {
@@ -57,7 +58,8 @@ static void parse_options(Options *options, int argc, char * const argv[])
                "\t-a <amount of sequence pairs read from file>\n"
                "\t-p <positions of sequences: start1 end1 start2 end2>\n"
                "\t-d <delta value>\n"
-               "\t-x <decode Trace Points>\n");
+               "\t-x <decode Trace Points>\n"
+               "\t-v <verbose output>\n");
       case 'f':
         options->inputfile = argv[optind];
         optind++;
@@ -119,13 +121,17 @@ static void parse_options(Options *options, int argc, char * const argv[])
       case 'x':
         options->decode = true;
         break;
+      case 'v':
+        options->verbose = true;
+        break;
       default:
         printf("Usage:\n"
-               "-f <inputfile>\n"
-               "-a <amount of sequence pairs read from file>\n"
-               "-p <positions of sequences: start1 end1 start2 end2>\n"
-               "-d <delta value>\n"
-               "-x <decode Trace Points>\n");
+               "\t-f <inputfile>\n"
+               "\t-a <amount of sequence pairs read from file>\n"
+               "\t-p <positions of sequences: start1 end1 start2 end2>\n"
+               "\t-d <delta value>\n"
+               "\t-x <decode Trace Points>\n"
+               "\t-v <verbose output>\n");
     }
   }
 }
@@ -190,6 +196,10 @@ int main(int argc, char *argv[])
       assert(edist == unitcost);
 
       gt_tracepoint_encode(tp_list, eoplist);
+      if(options.verbose)
+      {
+        gt_print_tracepoint_list(tp_list);
+      }
 
       gt_eoplist_delete(eoplist);
     
