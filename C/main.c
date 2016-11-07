@@ -41,7 +41,8 @@ static void parse_options(Options *options, int argc, char * const argv[])
            "\t-a <amount of sequence pairs read from file>\n"
            "\t-p <positions of sequences: start1 end1 start2 end2>\n"
            "\t-d <delta value>\n"
-           "\t-x <decode Trace Points>\n");
+           "\t-x <decode Trace Points>\n"
+           "\t-v <verbose output>\n");
   }
   while (true)
   {
@@ -169,7 +170,6 @@ int main(int argc, char *argv[])
       fgets(line2, len, inf);
       vseq = (unsigned char *) line2 + options.start2;
 
-      //printf("%s\n\n%s\n",useq,vseq);
       /* create TracePointData */
       tp_list = gt_tracepoint_list_new();
       gt_tracepoint_list_set(tp_list,
