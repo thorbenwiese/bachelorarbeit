@@ -62,11 +62,11 @@ void gt_tracepoint_encode(TracePointList *tp_list,
       {
         tp_list->TP[v_len++] = num_chars_in_v - 1;
         count++;
-      }
-      if(count == tau - 1)
-      {
-        tp_list->TP_len = v_len;
-        break;
+        if(count == tau - 1)
+        {
+          tp_list->TP_len = v_len;
+          break;
+        }
       }
     }
   }
