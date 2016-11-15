@@ -66,7 +66,7 @@ Die Edit-Distanz von zwei Sequenzen ist wie folgt definiert:
 Ein Alignment A ist optimal, wenn $\delta(A) = edist_\delta(u,v)$ gilt.\\[0,5cm]
 Wenn $\delta$ die Einheitskostenfunktion ist, so ist $edist_\delta(u,v)$ die Levenshtein Distanz \cite[S. 19-21]{gsa-skript}.
 
-Wenn die Edit-Distanz $e$ mit der Einheitskostenfunktion bekannt ist, kann ein optimales lokales Alignment in $O(e^2)$ Zeit berechnet werden \cite{gsa-skript}.%TODO Seite?
+Wenn die Edit-Distanz $e$ mit der Einheitskostenfunktion bekannt ist, kann ein optimales lokales Alignment in $O(e^2)$ Zeit berechnet werden \cite{myers}.
 
 \section{Kodierung}
 
@@ -315,7 +315,7 @@ Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings
 Jedes Paar von zu alignierenden Substrings mit der Einheitskosteneditdistanz $e$ kann in $O(e^2)$ Zeit berechnet werden. Für eine erwartete Fehlerrate von $\varepsilon$ gilt dann $e \leq \varepsilon\Delta$. Die Konkatenation der Teilalignments hat somit höchstens die Kosten des Alignments der Gesamtsequenz \cite[S. 41-42]{gsa-skript}.
 
 Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann man ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruieren. Dann bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$ für alle $q, 0 \leq q \leq \tau - 1$, berechnet hierfür jeweils ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
-%TODO Seitenumbruch
+
 \clearpage
 \begin{bsp}
 
