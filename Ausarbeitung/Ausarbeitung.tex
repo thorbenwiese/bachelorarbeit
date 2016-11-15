@@ -70,68 +70,71 @@ Wenn die Edit-Distanz $e$ mit der Einheitskostenfunktion bekannt ist, kann ein o
 
 \section{Kodierung}
 
-In der Informatik ist eine Kodierung eine Zuweisung von Bits zu jedem Symbol $a$ aus einem Alphabet $\cal{A}$. Die Kombination von Bits, die einem Symbol zugeordnet wird, wird Codewort genannt. Eine Kodierung, deren Codewörter nie der Anfang eines anderen Codewortes sind, nennt man einen präfixfreien Code. Dieser hat die Eigenschaft, dass alle Codewörter eindeutig sind und die Dekodierung somit deterministisch ist.
+In der Informatik ist eine Kodierung eine Zuweisung von Bits zu jedem Symbol $a$ aus einem Alphabet $\mathcal{A}$. Die Kombination von Bits, die einem Symbol zugeordnet wird, wird Codewort genannt. Eine Kodierung, deren Codewörter nie der Anfang eines anderen Codewortes sind, nennt man einen präfixfreien Code. Dieser hat die Eigenschaft, dass alle Codewörter eindeutig sind und die Dekodierung somit deterministisch ist.
 
 Das effiziente Speichern der Sequenz-Alignments wird durch ihre Kodierung maßgebend beeinflusst. Drei der gängigsten Kodierungsverfahren, die in diesem Kapitel beschrieben werden, sind die unäre Kodierung, die naive binäre Kodierung und die Huffman-Kodierung. 
 
 \subsection{Unäre Kodierung}
 
-Für ein gegebenes Alphabet $\cal{A}$ und eine Häufigkeitsverteilung der Symbole aus $\cal{A}$ in einer Sequenz kodiert die unäre Kodierung jedes Symbol in Abhängigkeit von seiner Häufigkeit mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort den Wert $1$, was den Vorteil hat, dass lediglich die Länge variiert. Somit entspricht die Länge eines Codewortes dem Wert, den es kodiert, bzw. die Position in einer nach der Häufigkeit sortierten Liste. Die Gesamtgröße einer unären Kodierung ist somit die Häufigkeit $h(a)$ eines Symbols $a \in \cal A$, multipliziert mit der Codewortlänge $c(a)$ des Symbols, summiert über alle Symbole.
-\[\sum_{a \in \cal A}^{}h(a) \cdot c(a) \]
+Für ein gegebenes Alphabet $\mathcal{A}$ und eine Häufigkeitsverteilung der Symbole aus $\mathcal{A}$ in einer Sequenz $u$ kodiert die unäre Kodierung jedes Symbol in Abhängigkeit von seiner Häufigkeit mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort den Wert $1$, was den Vorteil hat, dass lediglich die Länge variiert. Somit entspricht die Länge eines Codewortes dem Wert, den es kodiert, bzw. die Position in einer nach der Häufigkeit sortierten Liste. Die Gesamtgröße einer unären Kodierung ist somit die Häufigkeit $h(a)$ eines Symbols $a \in \mathcal{A}$, multipliziert mit der Codewortlänge $c(a)$ des Symbols, summiert über alle Symbole.
+
+\[uc(u, \mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
 
 \subsection{Naive Binäre Kodierung}
 
-Bei einer naiven binären Kodierung wird jedes Symbol $a$ aus dem Alphabet $\cal{A}$ der zu kodierenden Symbole mit $\lceil \log_2$$|\cal{A}|$$\rceil$ Bit kodiert. Dies hat den Vorteil, dass alle Codewörter die gleiche Länge haben. Diese Art der Kodierung berücksichtigt jedoch lediglich die absolute Anzahl der zu kodierenden Symbole und nicht deren Häufigkeitsverteilung, was eine effiziente Kodierung bei Symbolen mit der selben Häufigkeit ermöglicht, bei einer Abweichung der Häufigkeiten aber keinen Vorteil daraus ziehen kann. Die Größe der Kodierung berechnet sich somit aus dem Produkt der Anzahl der Symbole, multipliziert mit der Anzahl der benötigten Bits für jedes Symbol.
-\begin{center}
-	$\sum\limits_{a\in\cal A}^{}|\cal A| \cdot \lceil $$\log_2$$ |\cal A|\rceil$
-\end{center}
+Bei einer naiven binären Kodierung wird jedes Symbol $a$ aus dem Alphabet $\cal{A}$ der zu kodierenden Symbole mit $\lceil \log_2$$|\cal{A}|$$\rceil$ Bit kodiert. Dies hat den Vorteil, dass alle Codewörter die gleiche Länge haben. Diese Art der Kodierung berücksichtigt jedoch lediglich die absolute Anzahl der zu kodierenden Symbole und nicht deren Häufigkeitsverteilung, was eine effiziente Kodierung bei Symbolen mit der selben Häufigkeit ermöglicht, bei einer Abweichung der Häufigkeiten aber keinen Vorteil daraus ziehen kann. Die Größe der Kodierung für eine Sequenz der Länge $n$ berechnet sich somit aus dem Produkt der Anzahl der Symbole, multipliziert mit der Anzahl der benötigten Bits für jedes Symbol.
+
+\[nbc(u,\mathcal{A}) = n \cdot \lceil \log_2 |\mathcal{A}|\rceil\]
 
 \subsection{Huffman-Kodierung}
 
-Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz bestimmt. Hierbei werden häufig vorkommende Symbole durch kurze Codewörter kodiert und weniger häufige durch längere Codewörter. Somit lässt sich eine Kodierung ermöglichen, die im Durchschnitt weniger Bit pro Symbol beansprucht als etwa die naive binäre Kodierung, bei der die Häufigkeitsverteilung der Symbole nicht berücksichtigt wird. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes. Dies macht den Code präfixfrei, so dass die Codewörter eindeutig zugeordnet werden können \cite[S. 53-57]{coding}.
+Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz bestimmt. Hierbei werden häufig vorkommende Symbole durch kurze Codewörter kodiert und weniger häufige durch längere Codewörter. Somit hat die Kodierung im Durchschnitt weniger Bit pro Symbol als etwa die naive binäre Kodierung, bei der die Häufigkeitsverteilung der Symbole nicht berücksichtigt wird. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes. Das macht den Code präfixfrei, so dass die Codewörter eindeutig zugeordnet werden können \cite[S. 53-57]{coding}.
 
-Als Datenstruktur der zu kodierenden Symbole wird hierbei eine priorisierte Queue verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. Der Huffman-Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie jeweils als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird ein Baum mit den kodierten Symbolen als Blätter aufgebaut. Anschließend können durch das Hinzufügen der Kantenbeschriftungen $0$ und $1$ für die ausgehenden Kanten eines Knotens die Kodierungen der einzelnen Symbole durch die Kantenbeschriftungen von der Wurzel aus bis zu den Blättern bestimmt werden. Für die Dekodierung der Codewörter wird somit der Huffman-Baum benötigt, um die Codewörter der Symbole anhand des Pfades von der Wurzel bis zum Blatt bestimmen zu können. Der Pseudocode des Algorithmus ist in Algorithmus 1 dargestellt \cite{fastq-compress}. 
+Als Datenstruktur der zu kodierenden Symbole wird hierbei eine priorisierte Queue $Q$ verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. $Q$ stellt die Operatoren $add$ zum Hinzufügen eines Elements zu $Q$ und $extractmin$ zur Extraktion und Löschung des Elements mit der niedrigsten Priorität zur Verfügung. Falls zwei Elemente die gleiche Priorität haben, wird das in der Alphabetordnung kleinere Symbol extrahiert. %TODO
+
+ Der Huffman-Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie jeweils als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird ein Baum mit den kodierten Symbolen als Blätter aufgebaut. Anschließend können durch das Hinzufügen der Kantenbeschriftungen $0$ und $1$ für die ausgehenden Kanten eines Knotens die Kodierungen der einzelnen Symbole durch die Kantenbeschriftungen von der Wurzel aus bis zu den Blättern bestimmt werden. Für die Dekodierung der Codewörter wird somit der Huffman-Baum benötigt, um die Codewörter der Symbole anhand des Pfades von der Wurzel bis zum Blatt bestimmen zu können. Der Pseudocode des Algorithmus ist in Algorithmus 1 dargestellt \cite{fastq-compress}. 
 
 \begin{algorithm}[t]
 	\caption{Pseudocode des Huffman-Algorithmus}
 	\noindent\begin{tabular}{@{}l@{~}l}
 		\textbf{Parameter:}
 		& $\cal{A}$ ist das Alphabet der zu kodierenden Symbole mit den Häufigkeiten \\
-		& $p(a)$ für alle $a \in \ $$\cal{A}$.\\
+		& $p(a)$ für alle $a \in \ \mathcal{A}$.\\
 		\textbf{Ausgabe:}
-		& Der Huffman-Baum des Alphabets $\cal{A}$.
+		& Der Huffman-Baum des Alphabets $\mathcal{A}$.
 	\end{tabular}
 	\medskip
 	\begin{algorithmic}[1]
-		\Function{\textit{Huffman}}{$\cal{A}$$ , p: $$\ \cal{A}$\ $\rightarrow \mathbb{N}$}
-		\State assert($\cal{|A|}$$ > 0$)
+		\Function{\textit{Huffman}}{$\mathcal{A} , p: \ \mathcal{A}\ \rightarrow \mathbb{N}$}
+		\State assert($\mathcal{|A|} > 0$)
 		\State assert($p(a) > 0$)
 		\State \Assign{Q}{\emptyset \textit{ als leere priorisierte Queue}}
-		\For{\textbf{all} $a \in $$\cal{A}$}
+		\For{\textbf{all} $a \in \mathcal{A}$}
 		\State erzeuge neuen Knoten $z$
 		\State $(z.\textit{links}, z.\textit{rechts}, z.\textit{char}, z.\textit{count}) = ($nil, nil, $a, p(a))$
-		\State füge $z$ in $Q$ ein
+		\State $Q.add(z)$
 		\EndFor
 		\While{$\Size{Q} \geq 2$}
-		\State \Assign{x}{extractmin(Q)}
-		\State \Assign{y}{extractmin(Q)}
+		\State \Assign{x}{Q.extractmin}
+		\State \Assign{y}{Q.extractmin}
 		\State erzeuge neuen Knoten $z$
 		\State \Assign{(z.\textit{links}, z.\textit{rechts})}{(y, x)}
 		\State \Assign{z.\textit{char}}{x.\textit{char} < y.\textit{char} \text{ ? } y.\textit{char} \text{ : } x.\textit{char}}
 		\State \Assign{z.\textit{count}}{x.\textit{count} + y.\textit{count}}
-		\State füge $z$ in $Q$ ein
+		\State $Q.add(z)$
 		\EndWhile
 		\State \Assign{root}{z}
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
 
-Immer dann, wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Beispielsweise können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Diese Regel ist im Pseudocode als $extractmin$ in Zeile 11 und 12 beschrieben. Hierdurch wird die Kodierung eindeutig und läuft somit deterministisch ab. Diese Art der Kodierung nennt man eine 'kanonische' Kodierung bzw. einen kanonischen Huffman-Algorithmus. Falls keine Regel eingeführt wird, werden die Symbole zufällig ausgewählt und die Kodierung ist nicht-deterministisch.
+%TODO kanonischer Huffman
+%Immer dann, wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Beispielsweise können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Diese Regel ist im Pseudocode als $extractmin$ in Zeile 11 und 12 beschrieben. Hierdurch wird die Kodierung eindeutig und läuft somit deterministisch ab. Diese Art der Kodierung nennt man eine 'kanonische' Kodierung bzw. einen kanonischen Huffman-Algorithmus. Falls keine Regel eingeführt wird, werden die Symbole zufällig ausgewählt und die Kodierung ist nicht-deterministisch.
 
-Die Gesamtanzahl der Bits für die Huffman-Kodierung ergibt sich, wie bei der unären Kodierung, durch das Produkt der Codewortlänge $c(a)$ eines Symbols $a \in $$\cal A$ multipliziert mit der Häufigkeit $h(a)$ des Symbols, aufsummiert über alle Symbole.
-\[\sum_{a \in \cal A}^{}h(a) \cdot c(a) \]
+Die Gesamtanzahl der Bits für die Huffman-Kodierung ergibt sich, wie bei der unären Kodierung, durch das Produkt der Codewortlänge $c(a)$ eines Symbols $a \in \mathcal{A}$ mit der Häufigkeit $h(a)$ des Symbols, aufsummiert über alle Symbole.
+\[hc(u,c,\mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
 
-Der kanonische Huffman-Algorithmus benötigt aufgrund der oben genannten Eigenschaften statt des gesamten Huffman-Baums lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die sortierten Symbole für die Dekodierung. Diese zusätzliche Information muss zu der Gesamtgröße der Kodierung hinzuaddiert werden \cite{canonical}.
+Der kanonische Huffman-Algorithmus benötigt aufgrund der oben genannten Eigenschaften statt des gesamten Huffman-Baums lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die nach der Codewortlänge sortierten Symbole für die Dekodierung. Diese zusätzliche Information muss zu der Gesamtgröße der Kodierung hinzuaddiert werden \cite{canonical}.
 
 \section{CIGAR-Strings}
 
@@ -161,7 +164,7 @@ Dieses Alignment wird duch den CIGAR-String \texttt{3M1I3M1D1M} repräsentiert \c
 
 Für die Kodierung eines CIGAR-Strings ist es sinnvoll, die Quantitäten und Symbole seperat zu kodieren, um so mit kleineren Alphabeten arbeiten zu können.
 
-$\cal{A}$$_s = \{$M$, $I$, $D$\}$ und $\cal{A}$$_c = \{s_i \mid 1 \leq i \leq n\}$ sind somit die Alphabete der zu kodierenden Symbole eines CIGAR-Strings.
+$\mathcal{A}_s = \{$M$, $I$, $D$\}$ und $\mathcal{A}_c = \{s_i \mid 1 \leq i \leq n\}$ sind somit die Alphabete der zu kodierenden Symbole eines CIGAR-Strings.
 
 Im Folgenden vergleiche ich ausführlich für den CIGAR-String eines Alignments die Verfahren der naiven binären Kodierung, der unären Kodierung und der Huffman-Kodierung.
 
@@ -177,11 +180,21 @@ gagc-a-t-gttgcc-tggtcctttgctaggtactgta-gaga
 gaccaagtag--g-cgtggacctt-gctcggt-ctgtaagaga
 0    5    0    5    0    5    0    5    0   
 \end{verbatim}
-gegeben, welches durch den CIGAR-String\\ \texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M1D7M1D5M1I4M} der Länge $19$ repräsentiert werden kann.
+gegeben, welches durch den CIGAR-String\\
+\texttt{4M1I1M1I1M1I1M2D1M1D1M1I8M1D7M1D5M1I4M} der Länge $19$ repräsentiert werden kann.
 
-Aus dem CIGAR-String ergibt sich das Alphabet $\cal{A}$$_c$ $= \{1, 2, 4, 5, 7, 8\}$, welches alle Zahlen aus dem CIGAR-String enthält.
+Aus dem CIGAR-String ergibt sich das Alphabet $\mathcal{A}_c = \{1, 2, 4, 5, 7, 8\}$.
 
-Bei einer naiven binären Kodierung wird jedes Symbol $a \in \cal{A}$$_{s,c}$ mit $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol kodiert. Insgesamt ergibt das somit $19 \cdot 5 = 95$ Bit für die Kodierung des CIGAR-Strings.
+%%%%%
+Bei einer naiven binären Kodierung wird jedes Symbol aus $\mathcal{A}_{c}$ mit $\lceil \log_26\rceil$ Bit kodiert. Für das Alphabet $\mathcal{A}_s$ gilt, dass das erste Symbol mit $\lceil \log_23\rceil = 2$ Bit und jedes darauf folgende mit lediglich einem Bit kodiert werden kann, da niemals zwei gleiche Symbole aufeinander folgen können und es somit nur zwei Optionen für ein Nachfolgendes Symbol gibt.
+
+Insgesamt benötigt die naive binäre Kodierung somit $19 \cdot \lceil \log_26\rceil + \lceil \log_23\rceil + 18 = 77$ Bit für die Kodierung des CIGAR-Strings.
+
+%%%%%
+
+%TODO ist 77 richtig??
+
+%Bei einer naiven binären Kodierung wird jedes Symbol $a \in \mathcal{A}_{s,c}$ mit $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol kodiert. Insgesamt ergibt das somit $19 \cdot 5 = 95$ Bit für die Kodierung des CIGAR-Strings.
 
 Die unäre Kodierung des oben genannte CIGAR-Strings ist in Tabelle \ref{cigar-unary} beschrieben. Sie benötigt $32 + 35 = 67$ Bit.
 
@@ -214,7 +227,7 @@ Die unäre Kodierung des oben genannte CIGAR-Strings ist in Tabelle \ref{cigar-un
 \label{cigar-unary}
 \end{table}
 
-Der kanonische Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{cig-huf-coding} beschrieben kodieren. Die Huffman-Bäume beider Alphabete sind in Abbildung \ref{Huff-Tree-Cig} dargestellt. Für die Dekodierung sind somit zusätzlich die Listen $(1,2),($M$, $D$, $I$)$ und $(1,1,0,4),(1,4,2,5,7,8)$ zu speichern. Diese können als sogenannter 'Header' am Anfang der kodierten Datei unär kodiert werden. In diesem Fall würde der Header als $01001;0001$ und $0101100001;0000001$ kodiert werden, wobei jeweils der erste Teil die Häufigkeiten der Code-Längen und der zweite Teil die Gesamtanzahl der Symbole kodiert.
+Der kanonische Huffman-Algorithmus würde bei dem oben genannten Beispiel des CIGAR-Strings nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{cig-huf-coding} beschrieben kodieren. Die Huffman-Bäume beider Alphabete sind in Abbildung \ref{Huff-Tree-Cig} dargestellt. Für die Dekodierung sind somit zusätzlich die Listen $(1,2),($M$, $D$, $I$)$ und $(1,1,0,4),(1,4,2,5,7,8)$ zu speichern. Diese können als sogenannter 'Header' am Anfang der kodierten Datei unär kodiert werden. In diesem Fall würde der Header als $01001\ 0001$ und $0101100001\ 0000001$ kodiert werden, wobei jeweils der erste Teil die Häufigkeiten der Code-Längen und der zweite Teil die Gesamtanzahl der Symbole kodiert.
 
 Die Größe dieser Kodierung ist demnach $28 + 33 + 9 + 17 = 87$ Bit.
 
@@ -309,9 +322,9 @@ u[(p+\tau-2)\cdot\Delta...j] & \text{falls }q = \tau -1
 
 Für alle $q$ mit $ 0 \leq q < \tau -1$ sei $t_q$ der letzte Index des Substrings von $v$, der in A mit $u_q$ aligniert. $t_q$ nennt man Trace Point. Für $q = 0$ aligniert $u_0$ mit $v_0 = v[k...t_0]$. Für alle $q$ mit $0<q< \tau -1$ aligniert $u_q$ mit $v_q = v[t_{q-1}+1...t_q]$.
 
-Jedes Paar von zu alignierenden Substrings kann in $O(e^2)$ Zeit berechnet werden. Für eine erwartete Fehlerrate von $\varepsilon$ gilt dann $e \leq \varepsilon\Delta$ \cite[S. 41-42]{gsa-skript}. Die Konkatenation der Teilalignments hat somit höchstens die Edit-Distanz des Alignments der Gesamtsequenz.
+Jedes Paar von zu alignierenden Substrings mit der Einheitskosteneditdistanz $e$ kann in $O(e^2)$ Zeit berechnet werden. Für eine erwartete Fehlerrate von $\varepsilon$ gilt dann $e \leq \varepsilon\Delta$. Die Konkatenation der Teilalignments hat somit höchstens die Kosten des Alignments der Gesamtsequenz \cite[S. 41-42]{gsa-skript}.
 
-Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruiert werden. Danach bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$ für alle $q, 0 \leq q \leq \tau - 1$, berechnet hierfür jeweils ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
+Seien $i,j,k,\ell,\Delta$ und die Trace-Points eines Alignments von $u$ und $v$ gegeben. Dann kann man ein Alignment $A'$ von $u$ und $v$ mit $\delta (A') \leq \delta (A)$ konstruieren. Dann bestimmt man aus den Trace-Points die Substring-Paare $u_q$ und $v_q$ für alle $q, 0 \leq q \leq \tau - 1$, berechnet hierfür jeweils ein optimales Alignment und konkateniert die Alignments von den aufeinanderfolgenden Substring-Paaren zu $A'$.
 %TODO Seitenumbruch
 \clearpage
 \begin{bsp}
@@ -356,7 +369,7 @@ Anstatt jeden Wert in $L$ als solchen abzuspeichern, kann alternativ die Differe
 
 Bei gleichmäßig ansteigenden Werten ist die Abweichung der Differenzen zweier aufeinanderfolgender Werte in der Liste untereinander gering und die Menge der zu kodierenden Symbole ist klein.
 
-Im Folgenden Beispiel werde ich die Kodierung der Trace Point Differenzen ausführlich für die naive binäre, unäre und Huffman-Kodierung erläutern.
+Im folgenden Beispiel werde ich die Kodierung der Trace Point Differenzen ausführlich für die naive binäre, unäre und Huffman-Kodierung erläutern.
 
 \begin{bsp}
 Sei $\Delta = 5$ und das Alignment $A$
@@ -384,9 +397,9 @@ Für das oben genannten Beispiel ergibt sich somit
 \end{tabular}
 \end{center}
 
-sowie das Alphabet $\cal{A}$ $= \{4, 5, 6\}$ mit den Häufigkeiten aus Tabelle \ref{diff-unary}. 
+sowie das Alphabet $\mathcal{A} = \{4, 5, 6\}$ mit den Häufigkeiten aus Tabelle \ref{diff-unary}. 
 
-Bei der naiven binären Kodierung von $L_{\mathit{diff}}$ ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_28\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt und damit nur  $\frac{24}{95} = 25.26$\% der Größe der binären Kodierung für den CIGAR-String.
+Bei der naiven binären Kodierung von $L_{\mathit{diff}}$ ergibt sich analog zu \ref{Cigar_Speicher} ein Bedarf von $\lceil \log_28\rceil = 3$ Bit pro Symbol, also $8 \cdot 3 = 24$ Bit insgesamt und damit nur  $\frac{24}{77} = 31.17$\% der Größe der naiven binären Kodierung für den CIGAR-String.
 
 Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} beschriebene Kodierung. Die Größe dieser Kodierung ist demnach $12$ Bit und benötigt damit nur $\frac{12}{67} = 17.91$\% der unären Kodierung für den CIGAR-String.
 
@@ -442,9 +455,9 @@ Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und be
 
 \section{Entropie der Methoden}\label{entropie-der-methoden}
 
-Sei $S$ eine Sequenz der Länge $n$ in der die Symbole $a \in \cal A$ mit der Häufigkeit $h(a)$ auftreten. Die Entropie $H(S)$ beschreibt den durchschnittlichen Informationsgehalt für alle Symbole aus $S$ in der Einheit $\frac{\text{Bit}}{\text{Symbol}}$.
+Sei $S$ eine Sequenz der Länge $n$ in der die Symbole $a \in \mathcal{A}$ mit der Häufigkeit $h(a)$ auftreten. Die Entropie $H(S)$ beschreibt den durchschnittlichen Informationsgehalt für alle Symbole aus $S$ in der Einheit $\frac{\text{Bit}}{\text{Symbol}}$.
 \[H(S) = - \sum_{a \in S}h(a) \cdot \log_2h(a)\]
-Sie ist maximal, wenn $h(a) = h(b)$ für jeweils zwei verschiedene Symbole $a,b \in \cal A$ gilt \cite{entropy}.
+Sie ist maximal, wenn $h(a) = h(b)$ für jeweils zwei verschiedene Symbole $a,b \in \mathcal{A}$ gilt \cite{entropy}.
 
 Für den in \ref{Cigar_Speicher} genannten CIGAR-String $S$ mit der Häufigkeitsverteilung aus Tabelle \ref{diff-unary} ergibt sich eine Entropie von
 
@@ -476,7 +489,7 @@ Zusammenfassend ergibt sich für die Größen der Kodierungen des Alignments aus Be
 		\hline
 		&CIGAR-String&Trace Point Differenzen\\
 		\hline
-		Binäre Kodierung&$95$&$24$\\
+		Binäre Kodierung&$77$&$24$\\
 		\hline
 		Unäre Kodierung&$67$&$12$\\
 		\hline
@@ -489,9 +502,126 @@ Zusammenfassend ergibt sich für die Größen der Kodierungen des Alignments aus Be
 	\label{Kodierung-Tabelle}
 \end{table}
 
+\chapter{Implementierung}
+
+Die Umsetzung des Trace Point Verfahrens, sowie die Berechnung der verschiedenen Größen der Kodierung ist im Rahmen dieser Arbeit zunächst in Python und anschließend als C-Implementierung realisiert worden. 
+
+Die Implementierung besteht aus dem Main-Modul, welches als Eingabeparameter die Sequenzen, deren Start- und Endpositionen, sowie den $\Delta$-Wert entgegennimmt und diese in einer 'Trace Point Liste' speichert. Anschließend wird mithilfe eines dynamischen Programmieralgorithmus' ein optimales lokales Alignment der zu alignierenden Teilabschnitte der Sequenzen erzeugt und als Liste von Edit-Operationen gespeichert. Die Trace Point Liste und die Liste der Edit-Operationen werden dann an die encode-Funktion übergeben, die in einem eigenen TracePoint-Modul definiert ist.
+
+Diese Funktion unterteilt die Sequenzen wie in Kapitel \ref{TP Konzept} beschrieben und bestimmt die Trace Points, welche dann ebenfalls in der Trace Point Liste gespeichert werden. Der Pseudocode der encode-Funktion ist in Algorithmus \ref{encode} beschrieben. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren. Es sind also lediglich die zu alignierenden Abschnitte bekannt, aber nicht die Alignierung selber. Diese muss bei der Dekodierung neu berechnet werden.
+
+Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfalls im TracePoint-Modul definiert ist. Sie nimmt eine Trace Point Liste als Parameter entgegen und berechnet für jedes Paar von zu alignierenden Teilabschnitten eine neue Liste von Edit-Operationen und konkateniert diese abschließend zu einer Gesamtliste und gibt sie als Rückgabewert zurück. Der Pseudocode der decode-Funktion ist in Algorithmus \ref{decode} zu finden. Hierbei ist nicht gewährleistet, dass das neue Alignment dem alten entspricht. Das neue Alignment hat jedoch, wie in \ref{TP Konzept} beschrieben, keine höheren Kosten als das Ausgangsalignment.
+
+Der Aufbau der Implementierung ist als UML-Klassendiagramm in Abbildung \ref{UML} dargestellt. Die im Rahmen dieser Arbeit von mir implementierten Module belaufen sich dabei auf die dargestellten Klassen Main und TracePoint. Die Alignment-Klasse wurde von Prof. Dr. Stefan Kurtz bereitgestellt, um einen dynamischen Programmieralgorithmus für die Berechnung von Alignments in Form von Edit-Operations-Listen nutzen zu können.
+
+\begin{algorithm}[t]
+	\caption{Berechnung der Trace Points aus einer gegebenen Liste von Edit-Operationen}
+	\label{encode}
+	\noindent\begin{tabular}{@{}l@{~}l}
+		\textbf{Parameter}:
+		& Der Funktion wird eine Referenz auf eine Trace Point Liste $*tp\_list$ und \\
+		& eine Referenz auf die Liste der Edit-Operationen $*eoplist$ übergeben.
+	\end{tabular}
+	\medskip
+	\begin{algorithmic}[1]
+		\Function{\textit{encode}}{$*tp\_list, *eoplist$}
+		\State assert($tp\_list.start1, tp\_list.start2 \geq 0$)
+		\State assert($tp\_list.start1 < tp\_list.end1$)
+		\State \Assign{p}{MAX(1, \Roundup{start1/\Delta})}
+		\State \Assign{\tau}{\Roundup{end1/\Delta} - \Rounddown{start1/\Delta}}
+		\State \Assign{uTP}{\text{Array of length $\tau + 1$ for interval termini in first sequence}}
+		\For{\Assign{q}{0} \Upto $\tau$}
+		\State \Assign{uTP[q]}{(p + q) \cdot \Delta - 1}
+		\EndFor
+		\State \Assign{uChars, vChars, count}{0}
+		\State \Assign{TP}{\text{Array of length $\tau - 1$ of Trace Points}}
+		\For{\textbf{each} \text{Operation in eoplist}}
+		\For{\Assign{i}{0} \Upto \(eop\_count - 1\)}
+		\If{$eop\_type$ = 'Insertion'}
+		\State increment $uChars$
+		\ElsIf{$eop\_type$ = 'Deletion'}
+		\State increment $vChars$
+		\Else
+		\State increment $uChars, vChars$
+		\EndIf
+		\If{$uChars = uTP[count]$}
+		\State $tp\_list.TP$.append($vChars$)
+		\EndIf
+		\If{$count = \tau - 1$}
+		\State \textbf{\textit{break}}
+		\Else
+		\State increment $count$
+		\EndIf
+		\EndFor
+		\EndFor
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+	\caption{Berechnung einer Liste von Edit-Operationen aus einer gegebenen Trace Point Liste}
+	\label{decode}
+	\noindent\begin{tabular}{@{}l@{~}l}
+		\textbf{Parameter:}
+		& Der Funktion wird eine Referenz auf eine Trace Point Liste $*tp\_list$ \\
+		& übergeben. \\
+		\textbf{Ausgabe:}
+		& Die Funktion liefert eine konkatenierte Liste von Edit-Operationen \\
+		& zurück.
+	\end{tabular}
+	\medskip
+	\begin{algorithmic}[1]
+		\Function{\textit{decode}}{$*tp\_list$}
+		\State \Assign{eoplist }{\text{empty list of edit operations}}
+		\For{\Assign{k}{0} \Upto \(tp\_list.TP\_len - 1\)}
+		\If{k = 0}
+		\State \Assign{sub\_eoplist}{opt\_align(seq1[0...\Delta], seq2[0...tp\_list.TP[k] + 1])}
+		\ElsIf{k = \Size{TP} - 1}
+		\State \Assign{sub\_eoplist}{opt\_align(seq1[k \cdot \Delta...\Size{seq1}],}
+		\State \hspace{4.25cm} $\ \ seq2[tp\_list.TP[k - 1] + 1...\Size{seq2}])$
+		\Else
+		\State \Assign{sub\_eoplist}{opt\_align(seq1[k \cdot \Delta...(k + 1) \cdot \Delta],}
+		\State \hspace{4.25cm} $\ \ seq2[tp\_list.TP[k - 1] + 1]...$
+		\State \hspace{5.4cm} $tp\_list.TP[k] + 1)$
+		\EndIf
+		\State $eoplist.append(sub\_eoplist)$	
+		\EndFor
+		\State \Return $eoplist$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[t]
+	\begin{tikzpicture}
+	
+	\begin{class}[text width=8.5cm]{Alignment}{4,-5}
+	\operation{calculate\_edit\_operation\_list(Trace Point list)}
+	\end{class}
+	
+	\begin{class}[text width=8.5cm]{TracePoint}{4,-1}
+	\inherit{Alignment}
+	\attribute{Trace Point List}
+	\operation{encode(Trace Point List, Edit-Operation List)}
+	\operation{decode(Trace Point List)}
+	\end{class}
+	
+	\begin{class}[text width=5cm]{Main}{-5,-2.5}
+	\attribute{Sequenz 1, Sequenz 2}
+	\attribute{Start 1, End 1}
+	\attribute{Start 2, End 2}
+	\attribute{$\Delta$}
+	\inherit{TracePoint}
+	\inherit{Alignment}
+	\operation{create\_Trace\_Point\_List()}
+	\end{class}
+	\end{tikzpicture}
+	\caption{UML Klassendiagramm der Implementierung des Trace Point Konzepts}
+	\label{UML}
+\end{figure}
+
 \chapter{Resultate} \label{Resultate}
 
-Die Verfahren, um die in diesem Kapitel beschriebenen Größen der Kodierungen zu berechnen, wurden in Python implementiert. Die Messung der Zeit für die Rekonstruktion der Teilalignments erfolgte aufgrund der Effizienz hinsichtlich der Geschwindigkeit mit der C-Implementierung. Für die Messungen wurde ein MacBook Pro 11.1 mit einem 2.4 GHz Intel Core i5 Prozessor und 4 GB Arbeitsspeicher verwendet.
+Die Verfahren, um die in diesem Kapitel beschriebenen Größen der Kodierungen zu berechnen, wurden in Python implementiert. Die Messung der Zeit für die Rekonstruktion der Teilalignments erfolgte mit den gleichen Daten mit einer C-Implementierung. Für die Messungen wurde ein MacBook Pro 11.1 mit macOS Sierra 10.12.1, einem 2.4 GHz Intel Core i5 Prozessor und 4 GB Arbeitsspeicher verwendet.
 
 \section{Kodierung der CIGAR-Strings}
 
@@ -510,7 +640,7 @@ Für die Kodierung der Trace Point Differenzen wurden die Trace Points anhand des
 
 Für die binäre Kodierung der Trace Point Differenzen werden bei einem $\Delta$-Wert von $200$ bei jedem Durchlauf für $24$ Trace Points und den $\Delta$-Wert selbst insgesamt $\lceil \log_225$$\rceil = 125$ Bit benötigt.
 
-Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von dem Parameters $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
+Die Größe der unären und Huffman-Kodierung der Trace Point Differenzen für \numprint{1000} Sequenzen mit je \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $200$ und einer Fehlerrate von $15$\% sind in Tabelle \ref{bits-result} beschrieben und in Abbildung \ref{tracepoint-d200} dargestellt. Die Abhängigkeit der Größe der Kodierung von $\Delta$ ist in Abbildung \ref{var-deltas} zu erkennen und die Auswirkungen der Fehlerrate sind in Abbildung \ref{var-errs} grafisch dargestellt. Die Größen der Kodierungen in Abhängigkeit beider Parameter ist in Tabelle \ref{var-errs-deltas} beschrieben.
 
 Um die Zeit, die für die Rekonstruktion der Teilalignments in Abhängigkeit von $\Delta$ benötigt wird, berechnen zu können, wurden für $\Delta$-Werte im Bereich von $5$ bis $500$ jeweils $50$ Sequenzpaare der Länge \numprint{5000} mit einer Fehlerrate von $15$\% wie oben beschrieben berechnet und die Trace Point Differenzen berechnet, anschließend dekodiert und die Zeit dafür gemessen. Diese Dekodierung entspricht der Rekonstruktion der Teilalignments und der anschließenden Konkatenation zu einem Gesamtalignment. Die Resultate sind in Tabelle \ref{time-table} beschrieben und in Abbildung \ref{time} grafisch dargestellt.
 
@@ -577,7 +707,7 @@ Err max: 227.169709989
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=13cm]{coding/Regression/var-errs-dotline}
-	\caption{Mittelwerte der Huffman-Kodierung der Trace Point Differenzen für \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\% bis $95$\%.} \label{var-errs}
+	\caption{Mittelwerte der Huffman-Kodierung der Trace Point Differenzen für \numprint{5000} Basenpaaren, einem $\Delta$-Wert von $100$ und Fehlerraten von $5$\% bis $35$\%.} \label{var-errs}
 \end{figure}
 
 \FloatBarrier
@@ -612,11 +742,11 @@ Err max: 227.169709989
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		& \multicolumn{2}{c|}{Delta} & \multicolumn{2}{c|}{Fehlerrate} \\
+		& \multicolumn{2}{c|}{$\Delta$} & \multicolumn{2}{c|}{Fehlerrate} \\
 		\hline
-		Wert & $35$ & $500$ &  $5$\% & $95$\% \\
+		Wert & $35$ & $500$ &  $5$\% & $35$\% \\
 		\hline
-		Größe & $95$ & $76$& $44$ & $227$ \\
+		Größe & $95$ & $76$& $44$ & $97$ \\
 		\hline
 	\end{tabular}
 	\caption{Größe der Kodierung für verschiedene $\Delta$-Werte und Fehlerraten}
@@ -627,7 +757,7 @@ Err max: 227.169709989
 	\centering
 	\begin{tabular}{|c|r|}
 		\hline
-		Delta & Zeit in Sekunden \\
+		$\Delta$ & Zeit in Sekunden \\
 		\hline
 		$5$ & $4.38$ \\
 		\hline
@@ -675,20 +805,20 @@ Die Huffman-Kodierung ist somit für CIGAR-Strings die speichereffizienteste der 
 
 \section{Kodierung der Differenzen der Trace Points}
 
-Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und eine Fehlerrate von $15$\% in Abbildung \ref{tracepoint-d200} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben. In Abbildung \ref{var-deltas} sind die Auswirkungen der Wahl des $\Delta$-Parameters auf die Größe der Kodierung und in \ref{time} auf die Rekonstruktionszeit der Teilalignments dargestellt. Die Entsprechenden Werte sind in Tabelle \ref{var-errs-deltas} für die Größe der Kodierung und in Tabelle \ref{time-table} für den Zeitbedarf der Rekonstruktionszeit beschrieben. In Abbildung \ref{var-errs}, sowie Tabelle \ref{var-errs-deltas} sind die Auswirkungen der Fehlerrate der Sequenzen auf die Kodierungsgröße dargestellt.
+Die Kodierung der Differenzen der Trace Points ist für ein $\Delta = 200$ und eine Fehlerrate von $15$\% in Abbildung \ref{tracepoint-d200} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben. In Abbildung \ref{var-deltas} sind die Auswirkungen der Wahl des $\Delta$-Parameters auf die Größe der Kodierung und in \ref{time} auf die Rekonstruktionszeit der Teilalignments dargestellt. Die entsprechenden Werte sind in Tabelle \ref{var-errs-deltas} für die Größe der Kodierung und in Tabelle \ref{time-table} für den Zeitbedarf der Rekonstruktionszeit beschrieben. In Abbildung \ref{var-errs}, sowie Tabelle \ref{var-errs-deltas} sind die Auswirkungen der Fehlerrate der Sequenzen auf die Kodierungsgröße dargestellt.
 
 Für einen $\Delta$-Wert von $200$ benötigt die Huffman-Kodierung im Durchschnitt nur $84.18$ Bit und damit etwa $9.3$\% weniger Speicher, als die unäre Kodierung mit $90.19$ Bit. Die binäre Kodierung liegt mit durchschnittlich $125$ Bit deutlich über dem Bedarf der anderen beiden Kodierungen. Da die einzelnen Abschnitte in der $v$-Sequenz zu $\Delta$ großen Abschnitten der $u$-Sequenz aligniert werden, sind diese üblicherweise auch genauso oder ähnlich groß wie das $\Delta$. Das hat zur Folge, dass die Differenzen der Trace Points in einem ähnlichen Wertebereich liegen und die unäre und Huffman-Kodierung aus dieser Verteilung einen Vorteil ziehen können und daher speichereffizienter kodieren, wobei der Huffman-Algorithmus etwas besser abschneidet als die unäre Kodierung.
 
-Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden Delta deutlich sinkt. Für ein $\Delta$ von $35$ werden die Trace Point Differenzen durchschnittlich mit $95$ Bit kodiert und für ein $\Delta$ von $500$ mit $76$ Bit im Mittel, also etwa $20$\% weniger. Die Regressionsgerade entspricht der Funktion $y = -\frac{1}{50}x + 93$ mit $y$ als Kodierungsgröße und $x$ als $\Delta$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für den Speicherbedarf der Kodierung.
+Die Wahl des $\Delta$-Wertes kann die Größe der Kodierung deutlich beeinflussen, da dieser Wert die Anzahl der zu speichernden Symbole bestimmt. In Abbildung \ref{var-deltas} ist deutlich zu erkennen, dass die Größe der Kodierung mit einem größer werdenden $\Delta$ deutlich sinkt. Für ein $\Delta$ von $35$ werden die Trace Point Differenzen durchschnittlich mit $95$ Bit kodiert und für ein $\Delta$ von $500$ mit $76$ Bit im Mittel, also etwa $20$\% weniger. Die Regressionsgerade entspricht der Funktion $f(\Delta) = -\frac{1}{50}\Delta + 93$. Der $\Delta$-Wert kann jedoch nicht beliebig groß gewählt werden, da mit größeren Teilabschnitten der Sequenzen auch eine längere Rekonstruktionszeit der Teilalignments einher geht. Der $\Delta$-Parameter dient also als Regler für den Speicherbedarf der Kodierung.
 
-Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment. Bei einer kleinen Fehlerrate ist somit eine hohe Anzahl an Matches vorhanden. Da die Trace Points ein Vielfaches von $\Delta$ sind und somit die Differenzen der Trace Points ebenfalls $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Bei einer Fehlerrate von $35$\% wird für $\Delta = 100$ durchschnittlich $97$ Bit benötigt und für eine Fehlerrate von $5$\% im Mittel nur $44$ Bit, also etwa $55$\% weniger. Die Funktion $y = 173.45x + 36.25$ mit $y$ als Kodierungsgröße und $x$ als Fehlerrate beschreibt die Steigung der Geraden aus Abbildung \ref{var-errs}.
+Die Fehlerrate der Sequenzen hat ebenfalls einen großen Einfluss auf die Größe der Kodierung. Je größer die Fehlerrate, umso größer ist die Anzahl der Insertions und Deletions im Alignment und umso geringer ist die Anzahl der Matches. Da die Trace Points eine geringe Differenz zu den Vielfachen von $\Delta$ haben und somit die Differenzen der Trace Points in etwa $\Delta$ groß sind, müssen daher deutlich weniger unterschiedliche Symbole kodiert werden. In Abbildung \ref{var-errs} ist die lineare Abhängikeit der Fehlerrate in den Sequenzen von der Größe der Kodierung zu erkennen. Bei einer Fehlerrate von $35$\% wird für $\Delta = 100$ durchschnittlich $97$ Bit benötigt und für eine Fehlerrate von $5$\% im Mittel nur $44$ Bit, also etwa $55$\% weniger. Die Funktion $f(\varepsilon) = 173.45\varepsilon + 36.25$ beschreibt die Größe der Kodierung in Abhängigkeit von $\varepsilon$, welche in Abbildung \ref{var-errs} dargestellt ist.
 
 Damit ist die Huffman-Kodierung, wie bei den CIGAR-Strings, das speichereffizienteste Kodierungs-Verfahren für die Trace Point Differenzen.
 
 \section{Laufzeit der Rekonstruktion von Alignments}
 Für die Rekonstruktion der Teilalignments wird abhängig von $\Delta$ viel Zeit benötigt, da $\Delta$ die Größe der Teilabschnitte bestimmt und die optimalen Teilalignments, wie in Kapitel \ref{methoden} beschrieben, in $O(e^2)$ Zeit mit $e$ als Edit-Distanz rekonstruiert werden können.
 
-Die Abbildung \ref{time} verdeutlicht diese Abhängigkeit. Für $\Delta = 5$ wird demnach für die Rekonstruktion der Teilalignments von \numprint{5000} Sequenzpaaren mit je \numprint{5000} Basen etwa $4.38$ Sekunden benötigt. Für $\Delta = 500$ werden hingegen etwa $144.51$ Sekunden benötigt, also etwa $33$ mal so viel wie für $\Delta = 5$. Der Zeitbedarf wächst linear entsprechend der Funktion $y = 0.28x - 1.23$ mit $x$ als $\Delta$ -Wert und $y$ als Gesamtzeit in Sekunden an.
+Die Abbildung \ref{time} verdeutlicht diese Abhängigkeit. Für $\Delta = 5$ wird demnach für die Rekonstruktion der Teilalignments von \numprint{5000} Sequenzpaaren mit je \numprint{5000} Basen etwa $4.38$ Sekunden benötigt. Für $\Delta = 500$ werden hingegen etwa $144.51$ Sekunden benötigt, also etwa $33$ mal so viel wie für $\Delta = 5$. Der Zeitbedarf in Sekunden lässt sich durch die Funktion $f(\Delta) = 0.28\Delta - 1.23$ beschreiben.
 
 Mit Hilfe von $\Delta$ kann somit die Zeit, die für die Rekonstruktion der Teilalignments benötigt wird, eingestellt werden.
 
@@ -696,122 +826,7 @@ Mit Hilfe von $\Delta$ kann somit die Zeit, die für die Rekonstruktion der Teila
 
 Die Größe der Entropie der CIGAR-Strings und Trace Point Differenzen ist für \numprint{1000} Sequenzenpaare mit je \numprint{5000} Basen, einem $\Delta$-Wert von $100$ und einer Fehlerrate von $15$\% in Abbildung \ref{entropy} grafisch dargestellt und in der Tabelle \ref{bits-result} numerisch beschrieben.
 
-Sie gibt den Informationsgehalt einer Sequenz in Relation zu der Verteilung der Symbole an und wird deshalb in Bit pro Symbol berechnet und dann später mit der Anzahl der zu kodierenden Symbole multipliziert. Da ein CIGAR-String alle Edit-Operationen eines Alignments beschreibt und die Trace Point Differenzen lediglich die Abstände von einem zu alignierenden Abschnitt zu dem nächsten beschreiben, müssen in der Regel für CIGAR-Strings mehr Symbole kodiert werden, als für die Trace Point Differenzen. Diese Eigenschaft spiegelt sich auch in der Entropie beider Verfahren wieder. Die CIGAR-Strings weisen eine Entropie von durchschnittlich \numprint{1755} Bit auf. Dies bedeutet, dass sie etwa $13$ mal so viel wie die Entropie der Trace Point Differenzen ausmacht, welche bei durchschnittlich $134$ Bit liegt.
-
-\chapter{Implementierung}
-
-Die Umsetzung des Trace Point Verfahrens, sowie die Berechnung der verschiedenen Größen der Kodierung ist im Rahmen dieser Arbeit zunächst als Python Implementierung und anschließend als C Implementierung realisiert worden. 
-
-Der Aufbau der Implementierung ist als UML-Klassendiagramm in Abbildung \ref{UML} dargestellt.
-
-Die Implementierung besteht aus der Main-Datei, welche als Eingabeparameter die Sequenzen, deren Start- und Endpositionen, sowie der $\Delta$-Wert entgegennimmt und diese in einer 'Trace Point Liste' speichert. Anschließend wird mithilfe eines dynamischen Programmieralgorithmus' ein optimales lokales Alignment der zu alignierenden Teilabschnitte der Sequenzen erzeugt und als Liste von Edit-Operationen gespeichert. Die Trace Point Liste und die Liste der Edit-Operationen werden dann an die encode-Funktion übergeben, die in einem eigenen TracePoint-Modul definiert ist.
-
-Diese Funktion unterteilt die Sequenzen wie in Kapitel \ref{TP Konzept} beschrieben und bestimmt die Trace Points, welche dann ebenfalls in der Trace Point Liste gespeichert werden. Der Pseudocode der encode-Funktion ist in Algorithmus \ref{encode} beschrieben. Hierbei geht die Information, wie die jeweiligen Intervalle zwischen den Trace Points zu den komplementären Intervallen in der Ursprungssequenz aligniert werden, verloren. Es sind also lediglich die zu alignierenden Abschnitte bekannt, aber nicht die Alignierung selber. Diese muss bei der Dekodierung neu berechnet werden.
-
-Die Dekodierung der Trace Points erfolgt in der decode-Funktion, welche ebenfalls im TracePoint-Modul definiert ist. Sie nimmt eine Trace Point Liste als Parameter entgegen und berechnet für jedes Paar von zu alignierenden Teilabschnitten eine neue Liste von Edit-Operationen und konkateniert diese abschließend zu einer Gesamtliste und gibt sie als Rückgabewert zurück. Der Pseudocode der decode-Funktion ist in Algorithmus \ref{decode} zu finden. Hierbei ist nicht gewährleistet, dass das neue Alignment dem alten entspricht. Das neue Alignment hat jedoch, wie in \ref{TP Konzept} beschrieben, mindestens die gleiche Edit-Distanz wie das alte Alignment.
-
-\begin{algorithm}[t]
-	\caption{Berechnung der Trace Points aus einer gegebenen Liste von Edit-Operationen}
-	\label{encode}
-	\noindent\begin{tabular}{@{}l@{~}l}
-		\textbf{Parameter}:
-		& Der Funktion wird eine Referenz auf eine Trace Point Liste $*tp\_list$ und \\
-		& eine Referenz auf die Liste der Edit-Operationen $*eoplist$ übergeben.
-	\end{tabular}
-	\medskip
-	\begin{algorithmic}[1]
-		\Function{\textit{encode}}{$*tp\_list, *eoplist$}
-		\State assert($tp\_list.start1, tp\_list.start2 \geq 0$)
-		\State assert($tp\_list.start1 < tp\_list.end1$)
-		\State \Assign{p}{MAX(1, \Roundup{start1/\Delta})}
-		\State \Assign{\tau}{\Roundup{end1/\Delta} - \Rounddown{start1/\Delta}}
-		\State \Assign{uTP}{\text{Array for interval termini in the first sequence}}
-		\For{\Assign{q}{0} \Upto $\tau$}
-		\State \Assign{uTP[q]}{(p + q) \cdot \Delta - 1}
-			\EndFor
-			\State \Assign{uChars, vChars, count}{0}
-			\State \Assign{TP}{\text{Array for Trace Points}}
-			\For{\textbf{each} \text{Operation in eoplist}}
-			\For{\Assign{i}{0} \Upto \(eop\_count - 1\)}
-			\If{$eop\_type$ = 'Insertion'}
-			\State increment $uChars$
-			\ElsIf{$eop\_type$ = 'Deletion'}
-			\State increment $vChars$
-			\Else
-			\State increment $uChars, vChars$
-			\EndIf
-			\If{$uChars = uTP[count]$}
-			\State $tp\_list.TP$.append($vChars$)
-			\EndIf
-			\If{$count = \tau - 1$}
-			\State \Assign{tp\_list.TP\_len}{\Size{tp\_list.TP}}
-			\State \textbf{\textit{break}}
-			\Else
-			\State increment $count$
-			\EndIf
-			\EndFor
-			\EndFor
-			\EndFunction
-		\end{algorithmic}
-	\end{algorithm}
-	
-	\begin{algorithm}[t]
-		\caption{Berechnung einer Liste von Edit-Operationen aus einer gegebenen Trace Point Liste}
-		\label{decode}
-		\noindent\begin{tabular}{@{}l@{~}l}
-			\textbf{Parameter:}
-			& Der Funktion wird eine Referenz auf eine Trace Point Liste $*tp\_list$ \\
-			& übergeben. \\
-			\textbf{Ausgabe:}
-			& Die Funktion liefert eine konkatenierte Liste von Edit-Operationen \\
-			& zurück.
-		\end{tabular}
-		\medskip
-		\begin{algorithmic}[1]
-			\Function{\textit{decode}}{$*tp\_list$}
-			\State \Assign{eoplist }{\text{empty list of edit operations}}
-			\For{\Assign{k}{0} \Upto \(tp\_list.TP\_len - 1\)}
-			\If{k = 0}
-			\State $eoplist.append(seq1[0...\Delta], seq2[0...tp\_list.TP[k] + 1])$
-			\ElsIf{k = \Size{TP} - 1}
-			\State $eoplist.append(seq1[k \cdot \Delta...\Size{seq1}], seq2[tp\_list.TP[k - 1] + 1...\Size{seq2}]))$
-			\Else
-			\State $eoplist.append(seq1[k \cdot \Delta...(k + 1) \cdot \Delta],$
-			\State \indent \indent \indent $\ \ seq2[tp\_list.TP[k - 1] + 1]...tp\_list.TP[k] + 1))$
-			\EndIf
-			\EndFor
-			\State \Return $eoplist$
-			\EndFunction
-		\end{algorithmic}
-	\end{algorithm}
-
-\begin{figure}[t]
-	\begin{tikzpicture}
-	
-	\begin{class}[text width=8.5cm]{Alignment}{4,-5}
-	\operation{calculate\_edit\_operation\_list(Trace Point list)}
-	\end{class}
-	
-	\begin{class}[text width=8.5cm]{TracePoint}{4,-1}
-	\inherit{Alignment}
-	\attribute{Trace Point List}
-	\operation{encode(Trace Point List, Edit-Operation List)}
-	\operation{decode(Trace Point List)}
-	\end{class}
-	
-	\begin{class}[text width=5cm]{Main}{-5,-2.5}
-	\attribute{Sequenz 1, Sequenz 2}
-	\attribute{Start 1, End 1}
-	\attribute{Start 2, End 2}
-	\attribute{$\Delta$}
-	\inherit{TracePoint}
-	\inherit{Alignment}
-	\operation{create\_Trace\_Point\_List()}
-	\end{class}
-	\end{tikzpicture}
-	\caption{UML-Diagramm}
-	\label{UML}
-\end{figure}
+Sie gibt den Informationsgehalt einer Sequenz abhängig von der Häufigkeitsverteilung der Symbole an und wird deshalb in Bit pro Symbol berechnet und dann später mit der Anzahl der zu kodierenden Symbole multipliziert. Da ein CIGAR-String alle Edit-Operationen eines Alignments beschreibt und die Trace Point Differenzen lediglich die Abstände von einem zu alignierenden Abschnitt zu dem nächsten beschreiben, müssen in der Regel für CIGAR-Strings mehr Symbole kodiert werden, als für die Trace Point Differenzen. Diese Eigenschaft spiegelt sich auch in der Entropie beider Verfahren wieder. Die CIGAR-Strings weisen eine Entropie von durchschnittlich \numprint{1755} Bit auf. Dies bedeutet, dass sie etwa $13$ mal so viel wie die Entropie der Trace Point Differenzen ausmacht, welche bei durchschnittlich $134$ Bit liegt.
 	
 \chapter{Fazit}
 
