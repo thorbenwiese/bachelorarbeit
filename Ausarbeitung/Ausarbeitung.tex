@@ -408,7 +408,7 @@ Die unäre Kodierung ergibt für dieses Beispiel die in Tabelle \ref{diff-unary} b
 	\label{diff-unary}
 \end{table}
 
-Der Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $01001;0001$ im Header kodiert werden, nötig.
+Der Huffman-Algorithmus kodiert nach \cite[S. 54]{coding} die Symbole wie in Tabelle \ref{Diff-Huff} aufgelistet. Der dazugehörige Huffmann-Baum aus \ref{Huff-Tree-Diff} verdeutlicht die Kodierung der einzelnen Symbole, muss aber für den kanonischen Huffman-Algorithmus, wie in \ref{Cigar_Speicher} beschrieben, nicht komplett gespeichert werden. Aufgrund der Beschaffenheit der Codewörter des kanonischen Huffman-Algorithmus ist hier lediglich die Speicherung der Listen $(1,2),(5,4,6)$, welche als $01001 0001$ im Header kodiert werden, nötig.
 
 Die Größe der kanonischen Huffman-Kodierung ist demnach $11 + 9 = 20$ Bit und benötigt damit nur $\frac{20}{87} \approx 23$\% der Huffman-Kodierung für den CIGAR-String.
 
