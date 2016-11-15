@@ -78,19 +78,19 @@ Das effiziente Speichern der Sequenz-Alignments wird durch ihre Kodierung maßgeb
 
 Für ein gegebenes Alphabet $\mathcal{A}$ und eine Häufigkeitsverteilung der Symbole aus $\mathcal{A}$ in einer Sequenz $u$ kodiert die unäre Kodierung jedes Symbol in Abhängigkeit von seiner Häufigkeit mit $i - 1$ $'0'$-Bits, gefolgt von einem $'1'$-Bit, wobei $i$ die Position des Symbols in einer nach der Häufigkeit absteigend sortierten Liste ist. Das am Häufigsten auftretende Symbol des Alphabets wird also mit $'1'$, das zweithäufigste mit $'01'$, das dritthäufigste mit $'001'$ usw. kodiert \cite[S. 29-30]{coding}. Diese Art der Kodierung bietet sich insbesondere dann an, wenn ein zu kodierendes Symbol deutlich häufiger auftritt, als die anderen Symbole. Außerdem hat jedes Codewort den Wert $1$, was den Vorteil hat, dass lediglich die Länge variiert. Somit entspricht die Länge eines Codewortes dem Wert, den es kodiert, bzw. die Position in einer nach der Häufigkeit sortierten Liste. Die Gesamtgröße einer unären Kodierung ist somit die Häufigkeit $h(a)$ eines Symbols $a \in \mathcal{A}$, multipliziert mit der Codewortlänge $c(a)$ des Symbols, summiert über alle Symbole.
 
-\[uc(u, \mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
+\[unary(u, \mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
 
 \subsection{Naive Binäre Kodierung}
 
 Bei einer naiven binären Kodierung wird jedes Symbol $a$ aus dem Alphabet $\cal{A}$ der zu kodierenden Symbole mit $\lceil \log_2$$|\cal{A}|$$\rceil$ Bit kodiert. Dies hat den Vorteil, dass alle Codewörter die gleiche Länge haben. Diese Art der Kodierung berücksichtigt jedoch lediglich die absolute Anzahl der zu kodierenden Symbole und nicht deren Häufigkeitsverteilung, was eine effiziente Kodierung bei Symbolen mit der selben Häufigkeit ermöglicht, bei einer Abweichung der Häufigkeiten aber keinen Vorteil daraus ziehen kann. Die Größe der Kodierung für eine Sequenz der Länge $n$ berechnet sich somit aus dem Produkt der Anzahl der Symbole, multipliziert mit der Anzahl der benötigten Bits für jedes Symbol.
 
-\[nbc(u,\mathcal{A}) = n \cdot \lceil \log_2 |\mathcal{A}|\rceil\]
+\[binary(u,\mathcal{A}) = n \cdot \lceil \log_2 |\mathcal{A}|\rceil\]
 
 \subsection{Huffman-Kodierung}
 
 Bei einer \textit{minimalen} binären Kodierung, wie sie auch im Huffman-Alogrithmus verwendet wird, werden die Längen der Codewörter anhand der Häufigkeiten der Symbole in der zu kodierenden Sequenz bestimmt. Hierbei werden häufig vorkommende Symbole durch kurze Codewörter kodiert und weniger häufige durch längere Codewörter. Somit hat die Kodierung im Durchschnitt weniger Bit pro Symbol als etwa die naive binäre Kodierung, bei der die Häufigkeitsverteilung der Symbole nicht berücksichtigt wird. Jedes Codewort ist dabei nie der Anfang eines anderen Codewortes. Das macht den Code präfixfrei, so dass die Codewörter eindeutig zugeordnet werden können \cite[S. 53-57]{coding}.
 
-Als Datenstruktur der zu kodierenden Symbole wird hierbei eine priorisierte Queue $Q$ verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. $Q$ stellt die Operatoren $add$ zum Hinzufügen eines Elements zu $Q$ und $extractmin$ zur Extraktion und Löschung des Elements mit der niedrigsten Priorität zur Verfügung. Falls zwei Elemente die gleiche Priorität haben, wird das in der Alphabetordnung kleinere Symbol extrahiert. %TODO
+Als Datenstruktur der zu kodierenden Symbole wird hierbei eine priorisierte Queue $Q$ verwendet, welche nach den Häufigkeiten der Symbole sortiert ist. $Q$ stellt die Operatoren $add$ zum Hinzufügen eines Elements zu $Q$ und $extractmin$ zur Extraktion und Löschung des Elements mit der niedrigsten Priorität zur Verfügung. Falls zwei Elemente die gleiche Priorität haben, wird das in der Alphabetordnung kleinere Symbol extrahiert. 
 
  Der Huffman-Algorithmus wählt immer die zwei Symbole mit den geringsten Häufigkeiten aus und fügt sie jeweils als ein Symbol zusammen, bis am Ende alle Symbole zusammengefügt wurden. So wird ein Baum mit den kodierten Symbolen als Blätter aufgebaut. Anschließend können durch das Hinzufügen der Kantenbeschriftungen $0$ und $1$ für die ausgehenden Kanten eines Knotens die Kodierungen der einzelnen Symbole durch die Kantenbeschriftungen von der Wurzel aus bis zu den Blättern bestimmt werden. Für die Dekodierung der Codewörter wird somit der Huffman-Baum benötigt, um die Codewörter der Symbole anhand des Pfades von der Wurzel bis zum Blatt bestimmen zu können. Der Pseudocode des Algorithmus ist in Algorithmus 1 dargestellt \cite{fastq-compress}. 
 
@@ -128,13 +128,10 @@ Als Datenstruktur der zu kodierenden Symbole wird hierbei eine priorisierte Queu
 	\end{algorithmic}
 \end{algorithm}
 
-%TODO kanonischer Huffman
-%Immer dann, wenn die Wahl zwischen mehreren Symbolen mit der selben Häufigkeit getroffen werden muss, kann eine Regel eingeführt werden. Beispielsweise können immer die zwei Symbole, die im Alphabet oder numerisch vor den anderen stehen, ausgewählt werden. Diese Regel ist im Pseudocode als $extractmin$ in Zeile 11 und 12 beschrieben. Hierdurch wird die Kodierung eindeutig und läuft somit deterministisch ab. Diese Art der Kodierung nennt man eine 'kanonische' Kodierung bzw. einen kanonischen Huffman-Algorithmus. Falls keine Regel eingeführt wird, werden die Symbole zufällig ausgewählt und die Kodierung ist nicht-deterministisch.
+Eine komprimierte Darstellung einer Kodierung des Huffman-Algorithmus ist ein kanonischer Huffman-Code. Dieser lässt sich aus dem ursprünglichen Huffman-Code erstellen, indem alle Codewörter der selben Länge sequenziell aufsteigende Codewörter erhalten, ohne dass sich die Länge ändert. Aufgrund dieser Eigenschaft wird statt des gesamten Huffman-Baums lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die nach der Codewortlänge sortierten Symbole für die Dekodierung benötigt. Diese zusätzliche Information muss zu der Gesamtgröße der Kodierung hinzuaddiert werden \cite{canonical}.
 
 Die Gesamtanzahl der Bits für die Huffman-Kodierung ergibt sich, wie bei der unären Kodierung, durch das Produkt der Codewortlänge $c(a)$ eines Symbols $a \in \mathcal{A}$ mit der Häufigkeit $h(a)$ des Symbols, aufsummiert über alle Symbole.
-\[hc(u,c,\mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
-
-Der kanonische Huffman-Algorithmus benötigt aufgrund der oben genannten Eigenschaften statt des gesamten Huffman-Baums lediglich die Anzahl der Codewörter für jede vorhandene Codewortlänge, sowie die nach der Codewortlänge sortierten Symbole für die Dekodierung. Diese zusätzliche Information muss zu der Gesamtgröße der Kodierung hinzuaddiert werden \cite{canonical}.
+\[\mathit{huffman}(u,c,\mathcal{A}) = \sum_{a \in \mathcal{A}}^{}h(a) \cdot c(a) \]
 
 \section{CIGAR-Strings}
 
@@ -185,16 +182,9 @@ gegeben, welches durch den CIGAR-String\\
 
 Aus dem CIGAR-String ergibt sich das Alphabet $\mathcal{A}_c = \{1, 2, 4, 5, 7, 8\}$.
 
-%%%%%
 Bei einer naiven binären Kodierung wird jedes Symbol aus $\mathcal{A}_{c}$ mit $\lceil \log_26\rceil$ Bit kodiert. Für das Alphabet $\mathcal{A}_s$ gilt, dass das erste Symbol mit $\lceil \log_23\rceil = 2$ Bit und jedes darauf folgende mit lediglich einem Bit kodiert werden kann, da niemals zwei gleiche Symbole aufeinander folgen können und es somit nur zwei Optionen für ein Nachfolgendes Symbol gibt.
 
 Insgesamt benötigt die naive binäre Kodierung somit $19 \cdot \lceil \log_26\rceil + \lceil \log_23\rceil + 18 = 77$ Bit für die Kodierung des CIGAR-Strings.
-
-%%%%%
-
-%TODO ist 77 richtig??
-
-%Bei einer naiven binären Kodierung wird jedes Symbol $a \in \mathcal{A}_{s,c}$ mit $\lceil \log_23\rceil + \lceil \log_26\rceil = 2 + 3 = 5$ Bit pro Symbol kodiert. Insgesamt ergibt das somit $19 \cdot 5 = 95$ Bit für die Kodierung des CIGAR-Strings.
 
 Die unäre Kodierung des oben genannte CIGAR-Strings ist in Tabelle \ref{cigar-unary} beschrieben. Sie benötigt $32 + 35 = 67$ Bit.
 
