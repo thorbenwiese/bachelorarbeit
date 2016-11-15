@@ -769,6 +769,8 @@ Sie gibt den Informationsgehalt einer Sequenz abhängig von der Häufigkeitsvertei
 
 Das Verfahren der Trace Point Differenzen stellt im Vergleich zu der üblichen Repräsentation von Alignments als CIGAR-String eine deutlich speichereffizientere Methode dar. Insbesondere durch eine Huffman-Kodierung der Differenzwerte kann bei den in dieser Arbeit errechneten Größen eine Speicherersparnis von etwa $77$\% gegenüber den CIGAR-Strings erzielt werden. Hierbei spielt jedoch der vorher definierte positive Parameter $\Delta$ eine entscheidende Rolle.
 
-Je größer $\Delta$ gewählt ist, umso weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist entsprechend geringer.
+Je größer $\Delta$ gewählt ist, umso weniger Trace Points werden gespeichert und umso länger dauert die Berechnung, um die Teil-Alignments zu rekonstruieren. Bei einem kleinen $\Delta$ werden analog mehr Trace Points gespeichert, aber die Rekonstruktionszeit der Teil-Alignments ist entsprechend geringer. 
+
+Für Sequenzen der Länge \numprint{5000} mit $\varepsilon = 15\%$ erlaubt die durch Regression berechnete Funktion $f(\Delta) = -\frac{1}{50}\Delta + 93$ eine Abschätzung des Speicherbedarfs und die Funktion $f(\Delta) = 0.28\Delta - 1.23$ eine Abschätzung der Zeit in Abhängigkeit von $\Delta$.
 
 Mithilfe von $\Delta$ lässt sich somit ein Trade-Off zwischen dem Speicherplatzverbrauch und dem Zeitbedarf für die Rekonstruktion der Teil-Alignments einstellen.
