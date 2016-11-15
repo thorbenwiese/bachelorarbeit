@@ -534,13 +534,13 @@ Der Aufbau der Implementierung ist als UML-Klassendiagramm in Abbildung \ref{UML
 		\Else
 		\State increment $uChars, vChars$
 		\EndIf
-		\If{$uChars = uTP[count]$}
+		\If{$uChars = uTP[count] + 1$ \textbf{and} $count < \tau - 1$}
 		\State $tp\_list.TP$.append($vChars$)
-		\EndIf
+		\State increment $count$
 		\If{$count = \tau - 1$}
 		\State \textbf{\textit{break}}
 		\Else
-		\State increment $count$
+		\EndIf
 		\EndIf
 		\EndFor
 		\EndFor
