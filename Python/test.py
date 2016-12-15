@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from random import randint
 import tp_calc
 import Alignment
 import TracePoint
@@ -153,6 +154,16 @@ def test_cigar(verbose, decode):
 
 	
 def main():
+
+  randstring = ""
+  for i in range(0,100):
+    randstring += str(randint(0,9))
+
+  print len(randstring)
+  print randstring
+  return
+
+
 
   parser = argparse.ArgumentParser()
   parser.add_argument("-a", "--all", help="All tests", action="store_true")
